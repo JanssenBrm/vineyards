@@ -39,13 +39,15 @@ export class MapPage implements OnInit, AfterViewInit {
       ],
       target: document.getElementById('map'),
       view: new View({
-        center: [0, 0]
+        center: [0, 0],
+        zoom: 10
       })
     });
     setTimeout(() => {
       this._map.updateSize();
+      this._getData();
     }, 500);
-    this._getData();
+
   }
 
   private _getFeatureLayer(): VectorLayer {
@@ -96,7 +98,7 @@ export class MapPage implements OnInit, AfterViewInit {
         geometry: v.location,
         name: v.id
       })));
-      this._map.getView().fit(center);
+      this._map.getView().fit(center, {size: this._map.getSize(), maxZoom: 18});
     });
   }
 }
