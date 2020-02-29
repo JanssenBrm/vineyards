@@ -1,0 +1,39 @@
+<ion-menu side="start" content-id="map-content" (ionWillClose)="menuClosed()" (ionDidOpen)="menuOpened()">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{activeVineyard?.name}}</ion-title>
+      <ion-select [(ngModel)]="season" slot="end" placeholder="Season">
+        <ion-select-option *ngFor="let season of activeVineyard?.seasons" [value]="season.year">{{season.year}}</ion-select-option>
+      </ion-select>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="content">
+      <h3>Info</h3>
+      <div class="row">
+        <div class="col">
+          <table>
+            <tr>
+              <th>Address</th>
+              <td>{{activeVineyard?.address}}</td>
+            </tr>
+            <tr>
+              <th>Total plants</th>
+              <td>{{getTotalPlantCount(activeSeason?.varieties)}}</td>
+            </tr>
+            <tr>
+              <th>Varieties</th>
+              <td>
+                <span *ngFor="let variety of activeSeason?.varieties">{{variety.name}} ({{variety.rows}} x {{variety.platsPerRow}})</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="col">
+          <div id="vineyard-map"></div>
+        </div>
+      </div>
+
+    </div>
+  </ion-content>
+</ion-menu>

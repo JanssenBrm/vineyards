@@ -1,7 +1,7 @@
 import { XYZ } from 'ol/source.js';
 import { UtilService } from './../services/util.service';
 import { Vineyard } from './../models/vineyard.model';
-import { ApiService } from './../services/api.service';
+import { VineyardService } from '../services/vineyard.service';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Map as olMap } from 'ol';
 import {get as getProjection} from 'ol/proj';
@@ -13,6 +13,7 @@ import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
+import Select from 'ol/interaction/Select';
 
 @Component({
   selector: 'app-map',
@@ -21,12 +22,13 @@ import Feature from 'ol/Feature';
 })
 export class MapPage implements OnInit, AfterViewInit {
   constructor(
-    private apiService: ApiService,
+    private vineyardService: VineyardService,
     private utilService: UtilService
   ) {}
 
   private _map: olMap;
   private _featureLayer: VectorLayer;
+  private _select: Select;
 
   ngOnInit() {}
 
@@ -43,11 +45,23 @@ export class MapPage implements OnInit, AfterViewInit {
         zoom: 10
       })
     });
+    this._select = this._getSelectInteraction();
+    this._map.addInteraction(this._select);
     setTimeout(() => {
       this._map.updateSize();
       this._getData();
     }, 500);
 
+  }
+
+  private _getSelectInteraction(): Select {
+    const select = new Select();
+    select.on('select', (feature: any) => {
+      if (feature.selected) {
+        this.vineyardService.setActiveVineyard(feature.selected.length > 0 ? feature.selected[0].get('name') : null);
+      }
+    })
+    return select;
   }
 
   private _getFeatureLayer(): VectorLayer {
@@ -90,7 +104,7 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   private _getData(): void {
-    this.apiService.getVineyards().subscribe((vineyards: Vineyard[]) => {
+    this.vineyardService.getVineyards().subscribe((vineyards: Vineyard[]) => {
       const center = this.utilService.getExtent(
         vineyards.map((v: Vineyard) => v.location)
       );
@@ -99,6 +113,13 @@ export class MapPage implements OnInit, AfterViewInit {
         name: v.id
       })));
       this._map.getView().fit(center, {size: this._map.getSize(), maxZoom: 18});
+    });
+
+    this.vineyardService.getActiveVineyard().subscribe((vineyard: Vineyard) => {
+      if (!vineyard) {
+        console.log("CLEARING SELECTION");
+        this._select.getFeatures().clear();
+      }
     });
   }
 }

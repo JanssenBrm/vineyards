@@ -1,5 +1,6 @@
 <app-header [title]="'My vineyards'">
 </app-header>
-<ion-content>
+<ion-content id="map-content">
   <div id="map"></div>
 </ion-content>
+<app-sidepanel [activeVineyard]="vineyardService.getActiveVineyard() | async"></app-sidepanel>

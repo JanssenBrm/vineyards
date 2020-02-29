@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "Tuin Bram",
-    "address": "Scheperstraat 17",
+    "address": "Scheperstraat 17, 2480 Dessel",
     "location": {
       "type": "Polygon",
       "coordinates": [
@@ -14,6 +14,16 @@
           [5.166538059711456, 51.2409885544861]
         ]
       ]
-    }
+    },
+    "seasons": [
+      {
+        "year": 2019,
+        "varieties":  [{
+          "name": "Leon Millot",
+          "rows": 2,
+          "platsPerRow": 6
+        }]
+      }
+    ]
   }
 ]

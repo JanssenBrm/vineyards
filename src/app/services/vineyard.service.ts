@@ -8,17 +8,27 @@ import { switchMap, map, take } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class VineyardService {
 
   private _vineyards: BehaviorSubject<Vineyard[]>;
+  private _activeVineyard: BehaviorSubject<Vineyard>;
 
   constructor( private http: HttpClient, private utilService: UtilService) {
       this._vineyards = new BehaviorSubject<Vineyard[]>([]);
+      this._activeVineyard = new BehaviorSubject<Vineyard>(null);
       this.readVineyards();
   }
 
   getVineyards(): Observable<Vineyard[]> {
     return this._vineyards;
+  }
+
+  setActiveVineyard(id: string): void {
+    this._activeVineyard.next(id ? this._vineyards.getValue().find((v: Vineyard) => v.id === id) : null);
+  }
+
+  getActiveVineyard(): Observable<Vineyard> {
+    return this._activeVineyard;
   }
 
   private readVineyards(): void {
@@ -28,4 +38,5 @@ export class ApiService {
       this._vineyards.next(vineyards);
     });
   }
+
 }
