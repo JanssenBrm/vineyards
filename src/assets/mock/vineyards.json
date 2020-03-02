@@ -17,9 +17,30 @@
     },
     "seasons": [
       {
+        "year": 2018,
+        "varieties":  [{
+          "name": "Leon Millot A",
+          "rows": 2,
+          "platsPerRow": 6
+        }]
+      },
+      {
         "year": 2019,
         "varieties":  [{
-          "name": "Leon Millot",
+          "name": "Leon Millot A",
+          "rows": 2,
+          "platsPerRow": 6
+        }]
+      },
+      {
+        "year": 2020,
+        "varieties":  [{
+          "name": "Leon Millot A",
+          "rows": 2,
+          "platsPerRow": 6
+        },
+        {
+          "name": "Leon Millot B",
           "rows": 2,
           "platsPerRow": 6
         }]

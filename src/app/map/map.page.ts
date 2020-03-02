@@ -1,3 +1,4 @@
+import { Season } from './../models/season.model';
 import { Variety } from './../models/variety.model';
 import { Polygon } from 'ol/geom/Polygon';
 import { XYZ } from 'ol/source.js';
@@ -35,6 +36,8 @@ export class MapPage implements OnInit, AfterViewInit {
   private _overlay: Overlay;
 
   public activeVineyard: Vineyard;
+  public activeSeason: number;
+  public seasons: number[];
 
   ngOnInit() {}
 
@@ -120,6 +123,12 @@ export class MapPage implements OnInit, AfterViewInit {
       this._map
         .getView()
         .fit(center, { size: this._map.getSize(), maxZoom: 18 });
+
+      this.seasons = this.vineyardService.getSeasons();
+
+      if (!this.activeSeason && this.seasons.length > 0) {
+        this.activeSeason = this.seasons[this.seasons.length - 1];
+      }
     });
 
     this.vineyardService.getActiveVineyard().subscribe((vineyard: Vineyard) => {
@@ -133,10 +142,21 @@ export class MapPage implements OnInit, AfterViewInit {
     this.vineyardService.setActiveVineyard(info.id);
   }
 
-  getVariety(info: Vineyard): string {
-    return this.vineyardService
-      .getLatestVarieties(info)
-      .map((v: Variety) => v.name)
-      .join(',');
+  getVariety(info: Vineyard, season: number): string {
+    const varities = season
+      ? this.vineyardService.getVarieties(info, season)
+      : this.vineyardService.getLatestVarieties(info);
+    return varities.map((v: Variety) => v.name).join(', ');
+  }
+
+  getVarietyCount(info: Vineyard, season: number): number {
+    const varities = season
+      ? this.vineyardService.getVarieties(info, season)
+      : this.vineyardService.getLatestVarieties(info);
+    return varities.length > 0 ? varities.map((v: Variety) => v.platsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
+  }
+
+  setSeason(year: number): void {
+    this.activeSeason = year;
   }
 }

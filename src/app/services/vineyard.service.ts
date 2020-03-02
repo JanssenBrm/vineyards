@@ -50,12 +50,16 @@ export class VineyardService {
     return info ?  info.seasons.find((s: Season) => s.year === seasons[seasons.length - 1]).varieties : [];
   }
 
-  getVarieties(info: Vineyard): Variety[] {
-    return info ? [].concat(...info.seasons.map((s: Season) => s.varieties)) : [];
+  getVarieties(info: Vineyard, year: number): Variety[] {
+    return info ? [].concat(...info.seasons.find((s: Season) => s.year === year).varieties) : [];
   }
 
   getYears(info: Vineyard): number[] {
     return info ? info.seasons.map((s: Season) => s.year).sort() : [];
+  }
+
+  getSeasons(): number[] {
+    return [...new Set([].concat(...this._vineyards.getValue().map((v: Vineyard) => this.getYears(v))))];
   }
 
 }
