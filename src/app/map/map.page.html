@@ -1,6 +1,34 @@
-<app-header [title]="'My vineyards'">
-</app-header>
+<app-header [title]="'My vineyards'"> </app-header>
 <ion-content id="map-content">
   <div id="map"></div>
 </ion-content>
-<app-sidepanel [activeVineyard]="vineyardService.getActiveVineyard() | async"></app-sidepanel>
+<app-sidepanel
+  [activeVineyard]="vineyardService.getActiveVineyard() | async"
+></app-sidepanel>
+<div id="popup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closePopup()"></a>
+  <div id="popup-content">
+    <div class="title">{{activeVineyard?.name}}</div>
+    <div class="row">
+      <div class="icon">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+      <div>
+        {{activeVineyard?.address}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="icon">
+        <ion-icon name="leaf-outline"></ion-icon>
+      </div>
+      <div>
+        {{getVariety(activeVineyard)}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="actions">
+        <ion-button size="small" (click)="setActiveVineyard(activeVineyard)">Show info</ion-button>
+      </div>
+    </div>
+  </div>
+</div>

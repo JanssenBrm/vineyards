@@ -1,3 +1,5 @@
+import { Variety } from './../models/variety.model';
+import { Season } from './../models/season.model';
 import { UtilService } from './util.service';
 import { Vineyard } from './../models/vineyard.model';
 import { Injectable } from '@angular/core';
@@ -37,6 +39,23 @@ export class VineyardService {
     ).subscribe((vineyards: Vineyard[]) => {
       this._vineyards.next(vineyards);
     });
+  }
+
+  getInfo(id: string): Vineyard {
+    return this._vineyards.getValue().find((v: Vineyard) => v.id === id);
+  }
+
+  getLatestVarieties(info: Vineyard): Variety[] {
+    const seasons = this.getYears(info);
+    return info ?  info.seasons.find((s: Season) => s.year === seasons[seasons.length - 1]).varieties : [];
+  }
+
+  getVarieties(info: Vineyard): Variety[] {
+    return info ? [].concat(...info.seasons.map((s: Season) => s.varieties)) : [];
+  }
+
+  getYears(info: Vineyard): number[] {
+    return info ? info.seasons.map((s: Season) => s.year).sort() : [];
   }
 
 }
