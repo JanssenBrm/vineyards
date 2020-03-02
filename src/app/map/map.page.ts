@@ -72,30 +72,6 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
   private _getBaseMap(): TileLayer {
-   /* const projection = getProjection('EPSG:3857');
-    const projectionExtent = projection.getExtent();
-    const size = getWidth(projectionExtent) / 256;
-    const resolutions = new Array(20);
-    const matrixIds = new Array(20);
-    for (let z = 0; z < resolutions.length; ++z) {
-      // generate resolutions and matrixIds arrays for this WMTS
-      resolutions[z] = size / Math.pow(2, z);
-      matrixIds[z] = z;
-    }
-    return new TileLayer({
-      source: new WMTS({
-        url:
-          'http://tile.informatievlaanderen.be/ws/raadpleegdiensten/wmts',
-        layer: 'omzrgb18vl',
-        matrixSet: 'GoogleMapsVL',
-        format: 'image/png',
-        tileGrid: new WMTSTileGrid({
-          origin: getTopLeft(projectionExtent),
-          resolutions,
-          matrixIds
-        })
-      })
-    });*/
     return new TileLayer({
       source: new XYZ({
         url: 'https://api.mapbox.com/styles/v1/bramjanssen/ck77to6kv269x1ipk96lk1udu/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJhbWphbnNzZW4iLCJhIjoiY2s3N3RraXY1MDlqYTNmcGQ5MXRlc253MyJ9.nivXa7rSweT_gUHI80CKIw'
