@@ -1,4 +1,4 @@
-<app-header [title]="'My vineyards'" [seasons]="seasons" [activeSeason]="activeSeason" (setSeason)="setSeason($event)"> </app-header>
+<app-header [title]="activeVineyard ? activeVineyard.name : 'My vineyards'" [seasons]="seasons" [activeSeason]="activeSeason" (setSeason)="setSeason($event)"> </app-header>
 
 <ion-content>
   <div class="content">
