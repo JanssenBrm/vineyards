@@ -143,17 +143,15 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   getVariety(info: Vineyard, season: number): string {
-    const varities = season
-      ? this.vineyardService.getVarieties(info, season)
-      : this.vineyardService.getLatestVarieties(info);
-    return varities.map((v: Variety) => v.name).join(', ');
+    return [...new Set(this.vineyardService.getVarieties(info, season).map((v: Variety) => v.name))].join(', ');
   }
 
   getVarietyCount(info: Vineyard, season: number): number {
-    const varities = season
-      ? this.vineyardService.getVarieties(info, season)
-      : this.vineyardService.getLatestVarieties(info);
-    return varities.length > 0 ? varities.map((v: Variety) => v.platsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
+    return this.vineyardService.getPlantCount(info, season);
+  }
+
+  getLastUpdate(info: Vineyard): string {
+    return this.vineyardService.getLastUpdate(info);
   }
 
   setSeason(year: number): void {

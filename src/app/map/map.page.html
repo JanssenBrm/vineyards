@@ -33,6 +33,14 @@
           {{getVarietyCount(activeVineyard, activeSeason)}} plants
         </div>
       </div>
+      <div class="row">
+        <div class="icon">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div>
+          {{getLastUpdate(activeVineyard) | date:'dd/MM/yyyy'}}
+        </div>
+      </div>
     <div class="row">
       <div class="actions">
         <ion-button size="small" (click)="setActiveVineyard(activeVineyard)">Show info</ion-button>

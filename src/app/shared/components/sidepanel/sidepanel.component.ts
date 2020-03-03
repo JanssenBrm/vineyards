@@ -40,16 +40,16 @@ export class SidepanelComponent implements OnInit, OnChanges {
       if (this.activeVineyard) {
         this.menuController.open();
 
-        if (!this.season && this.activeVineyard.seasons.length > 0) {
+       /* if (!this.season && this.activeVineyard.seasons.length > 0) {
           this.season = this.activeVineyard.seasons[0].year;
           this.setActiveSeason(this.season);
-        }
+        }*/
       }
     }
   }
 
   public setActiveSeason(year: number): void {
-    this.activeSeason = this.activeVineyard.seasons.find((s: Season) => s.year === year);
+   // this.activeSeason = this.activeVineyard.seasons.find((s: Season) => s.year === year);
     console.log(this.activeSeason);
   }
 

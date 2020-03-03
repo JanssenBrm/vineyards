@@ -15,9 +15,11 @@
         ]
       ]
     },
-    "seasons": [
+    "actions": [
       {
-        "year": 2018,
+        "type": "planting",
+        "date": "2018-04-28",
+        "description": "Aanplanten van de druiven",
         "varieties":  [{
           "name": "Leon Millot A",
           "rows": 2,
@@ -25,25 +27,14 @@
         }]
       },
       {
-        "year": 2019,
-        "varieties":  [{
-          "name": "Leon Millot A",
-          "rows": 2,
-          "platsPerRow": 6
-        }]
+        "type": "prune",
+        "date": "2019-02-16",
+        "description": "Wintersnoei eerste vruchten. Warm en zonnig (15 graden)"
       },
       {
-        "year": 2020,
-        "varieties":  [{
-          "name": "Leon Millot A",
-          "rows": 2,
-          "platsPerRow": 6
-        },
-        {
-          "name": "Leon Millot B",
-          "rows": 2,
-          "platsPerRow": 6
-        }]
+        "type": "harvest",
+        "date": "2019-10-05",
+        "description": "5 volle emmers"
       }
     ]
   }
