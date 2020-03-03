@@ -15,10 +15,12 @@ export class VineyardService {
 
   private _vineyards: BehaviorSubject<Vineyard[]>;
   private _activeVineyard: BehaviorSubject<Vineyard>;
+  private _activeSeason: BehaviorSubject<number>;
 
   constructor( private http: HttpClient, private utilService: UtilService) {
       this._vineyards = new BehaviorSubject<Vineyard[]>([]);
       this._activeVineyard = new BehaviorSubject<Vineyard>(null);
+      this._activeSeason = new BehaviorSubject<number>((new Date()).getFullYear());
       this.readVineyards();
   }
 
@@ -34,6 +36,13 @@ export class VineyardService {
     return this._activeVineyard;
   }
 
+  getActiveSeason(): Observable<number> {
+    return this._activeSeason;
+  }
+
+  setActiveSeason(season: number): void {
+    this._activeSeason.next(season);
+  }
   private readVineyards(): void {
     this.http.get('./assets/mock/vineyards.json').pipe(
       map((data: Vineyard[]) => data.map((v: Vineyard) => this.utilService.reproject(v, 'EPSG:4326', 'EPSG:3857'))),

@@ -1,0 +1,25 @@
+<app-header [title]="'My vineyards'" [seasons]="seasons" [activeSeason]="activeSeason" (setSeason)="setSeason($event)"> </app-header>
+
+<ion-content>
+  <div class="content">
+    <h3>Info</h3>
+    <div class="row">
+      <div class="col">
+        <table>
+          <tr>
+            <th>Address</th>
+            <td>{{activeVineyard?.address}}</td>
+          </tr>
+          <tr>
+            <th>Total plants</th>
+            <td>{{vineyardService.getPlantCount(activeVineyard, activeSeason)}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="col">
+        <div id="vineyard-map"></div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

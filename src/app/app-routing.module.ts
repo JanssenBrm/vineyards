@@ -5,6 +5,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
+  },
+  {
+    path: 'vineyard/view',
+    loadChildren: () => import('./vineyeard-view/vineyeard-view.module').then( m => m.VineyeardViewPageModule)
   }
 ];
 @NgModule({
