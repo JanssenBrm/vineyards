@@ -1,10 +1,25 @@
 <app-header [title]="activeVineyard ? activeVineyard.name : 'My vineyards'" [seasons]="seasons" [activeSeason]="activeSeason" (setSeason)="setSeason($event)"> </app-header>
 
 <ion-content>
+  <div class="nav">
+      <ion-tabs>
+          <!-- Tab bar -->
+          <ion-tab-bar slot="top">
+            <ion-tab-button [selected]="true">
+              <ion-icon name="information-circle"></ion-icon>
+              <ion-label>Info</ion-label>
+            </ion-tab-button>
+            <ion-tab-button>
+              <ion-icon name="time"></ion-icon>
+              <ion-label>Actions</ion-label>
+            </ion-tab-button>
+          </ion-tab-bar>
+        </ion-tabs>
+  </div>
   <div class="content">
     <h3>Info</h3>
     <div class="row">
-      <div class="col">
+      <div class="col large">
         <table>
           <tr>
             <th>Address</th>

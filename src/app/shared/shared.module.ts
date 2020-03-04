@@ -4,14 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { HttpClientModule } from '@angular/common/http';
-import {SidepanelComponent} from './components/sidepanel/sidepanel.component';
 
 
 
 @NgModule({
   declarations: [
-    HeaderComponent,
-      SidepanelComponent
+    HeaderComponent
   ],
   imports: [
     CommonModule,
@@ -20,8 +18,7 @@ import {SidepanelComponent} from './components/sidepanel/sidepanel.component';
     HttpClientModule
   ],
   exports: [
-    HeaderComponent,
-      SidepanelComponent
+    HeaderComponent
   ]
 })
 export class SharedModule { }

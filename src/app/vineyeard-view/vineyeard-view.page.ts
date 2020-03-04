@@ -1,6 +1,7 @@
+import { Platform } from '@ionic/angular';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from './../services/vineyard.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import View from 'ol/View';
@@ -17,9 +18,9 @@ import { RouterStateSnapshot, ActivatedRoute } from '@angular/router';
   templateUrl: './vineyeard-view.page.html',
   styleUrls: ['./vineyeard-view.page.scss'],
 })
-export class VineyeardViewPage implements OnInit, OnDestroy {
+export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute) { }
+  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private platform: Platform) { }
 
   public seasons: number[];
 
@@ -32,6 +33,9 @@ export class VineyeardViewPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._destroy = new Subject<boolean>();
+  }
+
+  ngAfterViewInit() {
     this.vineyardService.getVineyards().pipe(
       takeUntil(this._destroy)
     ).subscribe((vineyards: Vineyard[]) => {
@@ -46,6 +50,14 @@ export class VineyeardViewPage implements OnInit, OnDestroy {
     ).subscribe((season: number) => {
       this.activeSeason = season;
     });
+
+    this.platform.ready().then(() => {
+      this.platform.resize.subscribe(() => {
+        console.log("RESIZE");
+        this._map.updateSize();
+      });
+    });
+
   }
 
   setSeason(year: number): void {
@@ -55,7 +67,7 @@ export class VineyeardViewPage implements OnInit, OnDestroy {
 
   private _createMap() {
     if (!this._map) {
-      console.log('Creating map');
+      console.log('Creating map',  document.getElementById('vineyard-map'));
       this._featureLayer =  new VectorLayer({
         source: new VectorSource({
           features: []
