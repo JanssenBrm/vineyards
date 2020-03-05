@@ -1,0 +1,18 @@
+<section id="cd-timeline" class="cd-container">
+    <div *ngFor="let activity of vineyard.actions">
+      <div class="cd-timeline-block">
+        <div class="cd-timeline-icon royal">
+          <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
+        </div>
+        <!-- cd-timeline-img -->
+        <div class="cd-timeline-content royal">
+          <h5 class="marginBottom0 marginTop0 title">{{activity.type | titlecase}}</h5>
+          <p class="marginTop5 cd-author">{{activity.date | date: "dd MMMM yyyy"}}</p>
+          <p class="timelineText">{{activity.description}}</p>
+          <ul class="timelineText" *ngIf="activity.type === 'planting'">
+            <li *ngFor="let variety of activity.varieties"> {{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>

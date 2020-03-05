@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>-->
     <ion-title>{{title}}</ion-title>
-    <ion-select [(ngModel)]="activeSeason" slot="end" placeholder="Season" (ionChange)="updateSeason()">
+    <ion-select *ngIf="seasons" [(ngModel)]="activeSeason" slot="end" placeholder="Season" (ionChange)="updateSeason()">
         <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
       </ion-select>
   </ion-toolbar>

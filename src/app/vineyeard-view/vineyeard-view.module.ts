@@ -1,3 +1,4 @@
+import { ActionsComponent } from './actions/actions.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +21,8 @@ import { InfoComponent } from './info/info.component';
   ],
   declarations: [
     VineyeardViewPage,
-    InfoComponent
+    InfoComponent,
+    ActionsComponent
   ]
 })
 export class VineyeardViewPageModule {}

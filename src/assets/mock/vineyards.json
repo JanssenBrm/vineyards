@@ -32,6 +32,11 @@
         "description": "Wintersnoei eerste vruchten. Warm en zonnig (15 graden)"
       },
       {
+        "type": "growth",
+        "date": "2019-04-06",
+        "description": "Eerste knoppen komen uit bij alle druiven"
+      },
+      {
         "type": "harvest",
         "date": "2019-10-05",
         "description": "5 volle emmers"
