@@ -5,11 +5,11 @@
       <ion-tabs>
           <!-- Tab bar -->
           <ion-tab-bar slot="top">
-            <ion-tab-button [selected]="true">
+            <ion-tab-button (click)="activePage = 'info'" [selected]="activePage === 'info'">
               <ion-icon name="information-circle"></ion-icon>
               <ion-label>Info</ion-label>
             </ion-tab-button>
-            <ion-tab-button>
+            <ion-tab-button (click)="activePage = 'actions'" [selected]="activePage === 'actions'">
               <ion-icon name="time"></ion-icon>
               <ion-label>Actions</ion-label>
             </ion-tab-button>
@@ -17,24 +17,6 @@
         </ion-tabs>
   </div>
   <div class="content">
-    <h3>Info</h3>
-    <div class="row">
-      <div class="col large">
-        <table>
-          <tr>
-            <th>Address</th>
-            <td>{{activeVineyard?.address}}</td>
-          </tr>
-          <tr>
-            <th>Total plants</th>
-            <td>{{vineyardService.getPlantCount(activeVineyard, activeSeason)}}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="col">
-        <div id="vineyard-map"></div>
-      </div>
-    </div>
-
+    <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [season]="activeSeason"></app-info>
   </div>
 </ion-content>

@@ -1,0 +1,57 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap-reverse;
+    min-height: 15rem;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem;
+    flex: 1;
+
+    &.large {
+      flex: 3;
+    }
+  }
+
+
+  table {
+    tr {
+      th, td {
+        padding-right: 1rem;
+        text-align: left;
+        padding-bottom: 1rem;
+
+        ul {
+            li {
+                margin-bottom: .5rem;
+            }
+        }
+      }
+      &.indent{
+        p {
+          padding-left: 1rem;
+        }
+      }
+
+      td {
+        span {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+
+  #vineyard-map {
+    flex: 1;
+  }
+
+  @media only screen and (max-width: 375px) {
+        #vineyard-map {
+            width: 90vw;
+            height: 15rem;
+        }
+  }

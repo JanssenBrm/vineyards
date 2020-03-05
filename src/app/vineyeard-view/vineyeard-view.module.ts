@@ -8,6 +8,7 @@ import { VineyeardViewPageRoutingModule } from './vineyeard-view-routing.module'
 
 import { VineyeardViewPage } from './vineyeard-view.page';
 import { SharedModule } from '../shared/shared.module';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule,
     VineyeardViewPageRoutingModule
   ],
-  declarations: [VineyeardViewPage]
+  declarations: [
+    VineyeardViewPage,
+    InfoComponent
+  ]
 })
 export class VineyeardViewPageModule {}

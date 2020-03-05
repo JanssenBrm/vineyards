@@ -2,48 +2,7 @@
 .content {
     padding: 1rem;
     margin-top: 5.5vh;
-  
-    .row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      flex-wrap: wrap-reverse;
-    }
-    .col {
-      display: flex;
-      flex-direction: column;
-      padding: .5rem;
-      flex: 1;
-
-      &.large {
-        flex: 3;
-      }
-    }
-  
-    table {
-      tr {
-        th, td {
-          padding-right: 1rem;
-          text-align: left;
-          padding-bottom: 1rem;
-        }
-        &.indent{
-          p {
-            padding-left: 1rem;
-          }
-        }
-  
-        td {
-          span {
-            width: 100%;
-          }
-        }
-      }
-    }
   }
   
-  #vineyard-map {
-    width: 15rem;
-    height: 15rem;
-  }
+  
   

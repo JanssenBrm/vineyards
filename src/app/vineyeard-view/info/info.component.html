@@ -1,0 +1,27 @@
+<h3>Info</h3>
+<div class="row">
+  <div class="col large">
+    <table>
+      <tr>
+        <th>Address</th>
+        <td>{{vineyard?.address}}</td>
+      </tr>
+      <tr>
+        <th>Total plants</th>
+        <td>{{vineyardService.getPlantCount(vineyard, season)}}</td>
+      </tr>
+      <tr>
+        <th coslpan="2">Varieties</th>
+      </tr>
+      <tr>
+        <td colspan="2"><ul>
+            <li *ngFor="let variety of vineyardService.getVarieties(vineyard, season)">{{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
+        </ul>
+      </td>
+      </tr>
+    </table>
+  </div>
+  <div class="col">
+    <div id="vineyard-map"></div>
+  </div>
+</div>

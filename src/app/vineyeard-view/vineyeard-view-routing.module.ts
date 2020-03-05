@@ -5,7 +5,7 @@ import { VineyeardViewPage } from './vineyeard-view.page';
 
 const routes: Routes = [
   {
-    path: ':id',
+    path: ':id/:tab',
     component: VineyeardViewPage
   }
 ];

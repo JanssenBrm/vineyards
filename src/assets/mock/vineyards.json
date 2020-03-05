@@ -35,6 +35,16 @@
         "type": "harvest",
         "date": "2019-10-05",
         "description": "5 volle emmers"
+      },
+      {
+        "type": "planting",
+        "date": "2020-03-28",
+        "description": "Aanplanten van de druiven",
+        "varieties":  [{
+          "name": "Leon Millot A",
+          "rows": 2,
+          "platsPerRow": 6
+        }]
       }
     ]
   }

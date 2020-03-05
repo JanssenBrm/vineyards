@@ -149,7 +149,7 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   openVineyard(info: Vineyard): void {
-    this.router.navigate([`/vineyard/view/${info.id}`]);
+    this.router.navigate([`/vineyard/view/${info.id}/info`]);
   }
 
   getVariety(info: Vineyard, season: number): string {
