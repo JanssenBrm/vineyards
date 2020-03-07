@@ -3,7 +3,7 @@ import { StatisticsService } from './../../services/statistics.service';
 import { VineyardService } from './../../services/vineyard.service';
 import { Vineyard } from './../../models/vineyard.model';
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import * as Highcharts from 'highcharts';
+import * as Highcharts from 'highcharts/highstock';
 import { Action } from 'src/app/models/action.model';
 import { TitleCasePipe } from '@angular/common';
 
@@ -43,20 +43,14 @@ export class StatisticsComponent implements OnInit, OnChanges {
   getActionHistory(): any[] {
     return this.seasons.map((s: number) => ({
       name: `Action History - ${s}`,
-      type: 'timeline',
-      color: 'red',
-      dataLabels: {
-        allowOverlap: false,
-        format: '<span style="color:{point.color}">● </span><span style="font-weight: bold;">{point.x: %e %b} {point.name}</span><br/>{point.label}'
-      },
+      type : 'flags',
       marker: {
         symbol: 'circle'
       },
       data: this.vineyardService.getActions(this.vineyard, [s]).map((a: Action) => ({
         x: this.getNormalizedDate(a.date),
-        name: `${s} - ${this.titlecasePipe.transform(a.type)}`,
-        label: a.description,
-        description: a.description
+        title: `${s} - ${this.titlecasePipe.transform(a.type)}`,
+        text: a.description
       }))
     }));
   }
