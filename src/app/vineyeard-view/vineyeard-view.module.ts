@@ -1,7 +1,7 @@
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { ActionsComponent } from './actions/actions.component';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
@@ -19,10 +19,12 @@ declare var require: any;
 const Boost = require('highcharts/modules/boost');
 const noData = require('highcharts/modules/no-data-to-display');
 const More = require('highcharts/highcharts-more');
+const Timeline = require('highcharts/modules/timeline');
 
 Boost(Highcharts);
 noData(Highcharts);
 More(Highcharts);
+Timeline(Highcharts);
 noData(Highcharts);
 
 @NgModule({
@@ -40,7 +42,8 @@ noData(Highcharts);
     StatisticsComponent
   ],
   providers: [
-    PhotoViewer
+    PhotoViewer,
+    TitleCasePipe
   ]
 })
 export class VineyeardViewPageModule {}

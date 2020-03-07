@@ -12,6 +12,9 @@ export let STATS_OPTIONS: any = {
     credits: {
       enabled: false
     },
+    legend: {
+      enabled: true,
+    },
     xAxis: {
       type: 'datetime',
       labels: {
