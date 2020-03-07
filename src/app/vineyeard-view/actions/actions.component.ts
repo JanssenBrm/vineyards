@@ -16,7 +16,7 @@ export class ActionsComponent implements OnInit {
   vineyard: Vineyard;
 
   @Input()
-  season: number;
+  seasons: number[];
 
   constructor(public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform, private router: Router) { }
 
@@ -36,5 +36,7 @@ export class ActionsComponent implements OnInit {
       this.photoViewer.show(url);
     }
   }
+
+  getActions
 
 }

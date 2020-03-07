@@ -8,14 +8,14 @@
       </tr>
       <tr>
         <th>Total plants</th>
-        <td>{{vineyardService.getPlantCount(vineyard, season)}}</td>
+        <td>{{getTotalCount(vineyard, seasons)}}</td>
       </tr>
       <tr>
         <th coslpan="2">Varieties</th>
       </tr>
       <tr>
         <td colspan="2"><ul>
-            <li *ngFor="let variety of vineyardService.getVarieties(vineyard, season)">{{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
+            <li *ngFor="let variety of getVarieties(vineyard, seasons)">{{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
         </ul>
       </td>
       </tr>

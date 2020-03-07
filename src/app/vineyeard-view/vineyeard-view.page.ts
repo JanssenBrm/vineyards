@@ -19,7 +19,7 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
   public seasons: number[];
 
   public activeVineyard: Vineyard;
-  public activeSeason: number;
+  public activeSeasons: number[];
 
   private _destroy: Subject<boolean>;
 
@@ -40,16 +40,17 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
         this.seasons = this.vineyardService.getYears(this.activeVineyard);
       }
     });
-    this.vineyardService.getActiveSeason().pipe(
+    this.vineyardService.getActiveSeasons().pipe(
       takeUntil(this._destroy)
-    ).subscribe((season: number) => {
-      this.activeSeason = season;
+    ).subscribe((seasons: number[]) => {
+      this.activeSeasons = seasons;
+      console.log(this.activeSeasons);
     });
 
   }
 
-  setSeason(year: number): void {
-    this.vineyardService.setActiveSeason(year);
+  setSeasons(years: number[]): void {
+    this.vineyardService.setActiveSeasons(years);
   }
 
   openTab(tab: 'info' | 'actions' | 'stats'): void {

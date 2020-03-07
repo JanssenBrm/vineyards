@@ -16,21 +16,18 @@ export class StatisticsComponent implements OnInit, OnChanges {
   @Input()
   vineyard: Vineyard;
 
-  constructor(private vineyardService: VineyardService, private statService: StatisticsService) { }
-
+  @Input()
   seasons: number[];
-  activeSeasons: number[];
+
+  constructor(private vineyardService: VineyardService, private statService: StatisticsService) { }
 
   private _chart: Highcharts.Chart;
 
   ngOnInit() {
-    this.activeSeasons = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.vineyard && this.vineyard) {
-      this.seasons = this.vineyardService.getYears(this.vineyard);
-      this.activeSeasons = [this.seasons[this.seasons.length - 1]];
+    if ((changes.vineyard) || (changes.seasons) && this.vineyard) {
       this.getStats();
     }
   }
@@ -38,28 +35,25 @@ export class StatisticsComponent implements OnInit, OnChanges {
   getStats(): void {
     console.log('Get stats');
     this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
-    this._chart.addSeries(this.getActionHistory());
+    this.getActionHistory().forEach((s: any) => this._chart.addSeries(s));
   }
 
-  getActionHistory(): any {
-    return {
-      name: 'Action History',
-      data: this.vineyardService.getActions(this.vineyard, this.activeSeasons).map((a: Action) => [new Date(a.date).getTime(), a.type]),
+  getActionHistory(): any[] {
+    return this.seasons.map((s: number) => ({
+      name: `Action History - ${s}`,
+      data: this.vineyardService.getActions(this.vineyard, [s]).map((a: Action) => [this.getNormalizedDate(a.date), 1]),
       tooltip: {
         formatter() {
-          return `${Highcharts.dateFormat('%d %M %y', this.x)}: ${this.y}`;
+          return `${Highcharts.dateFormat('%e %b', this.x)}: ${this.y}`;
         }
-      },
-    };
+      }
+    }));
   }
 
-
-
-  updateSeasons(): void {
-    if (this.activeSeasons.length == 0) {
-      this.activeSeasons = [this.seasons[this.seasons.length - 1]];
-    }
-    this.getStats();
+  getNormalizedDate(date: string): number {
+    const actDate: Date = new Date(date);
+    actDate.setFullYear(2000);
+    return actDate.getTime();
   }
 
 }

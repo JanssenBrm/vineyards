@@ -1,4 +1,4 @@
-<app-header [title]="'My vineyards'" [seasons]="seasons" [activeSeason]="activeSeason" (setSeason)="setSeason($event)" [showBackButton]="false"> </app-header>
+<app-header [title]="'My vineyards'" [seasons]="seasons" [activeSeasons]="activeSeasons" (setSeasons)="setSeasons($event)" [showBackButton]="false"> </app-header>
 <ion-content id="map-content">
   <div id="map"></div>
 </ion-content>
@@ -19,7 +19,7 @@
         <ion-icon name="leaf-outline"></ion-icon>
       </div>
       <div>
-        {{getVariety(activeVineyard, activeSeason)}}
+        {{getVariety(activeVineyard, activeSeasons)}}
       </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
           <ion-icon name="pricetags-outline"></ion-icon>
         </div>
         <div>
-          {{getVarietyCount(activeVineyard, activeSeason)}} plants
+          {{getVarietyCount(activeVineyard, activeSeasons)}} plants
         </div>
       </div>
       <div class="row">

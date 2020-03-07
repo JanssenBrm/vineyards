@@ -15,13 +15,13 @@ export class HeaderComponent implements OnInit, OnChanges {
   seasons: number[];
 
   @Input()
-  activeSeason: number;
+  activeSeasons: number[];
 
   @Input()
-  showBackButton: boolean = true;
+  showBackButton = true;
 
   @Output()
-  setSeason: EventEmitter<number> = new EventEmitter<number>();
+  setSeasons: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   constructor() { }
 
@@ -30,14 +30,17 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.seasons) {
-      if (!this.activeSeason && this.seasons && this.seasons.length > 0) {
-          this.activeSeason = this.seasons[this.seasons.length - 1];
+      if (!this.activeSeasons && this.seasons && this.seasons.length > 0) {
+          this.activeSeasons = [this.seasons[this.seasons.length - 1]];
       }
     }
   }
 
-  updateSeason() {
-    this.setSeason.emit(this.activeSeason);
+  updateSeasons() {
+    if (this.activeSeasons.length === 0) {
+      this.activeSeasons = [this.seasons[this.seasons.length - 1]];
+    }
+    this.setSeasons.emit(this.activeSeasons);
   }
 
 }

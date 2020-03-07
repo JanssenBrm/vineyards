@@ -41,7 +41,7 @@ export class MapPage implements OnInit, AfterViewInit {
   private _destroy: Subject<boolean>;
 
   public activeVineyard: Vineyard;
-  public activeSeason: number;
+  public activeSeasons: number[];
   public seasons: number[];
 
   ngOnInit() {}
@@ -143,28 +143,30 @@ export class MapPage implements OnInit, AfterViewInit {
       }
     });
 
-    this.vineyardService.getActiveSeason().pipe(
+    this.vineyardService.getActiveSeasons().pipe(
       takeUntil(this._destroy)
-    ).subscribe((season: number) => this.activeSeason = season);
+    ).subscribe((seasons: number[]) => {
+      this.activeSeasons = seasons;
+    });
   }
 
   openVineyard(info: Vineyard): void {
     this.router.navigate([`/vineyard/view/${info.id}/info`]);
   }
 
-  getVariety(info: Vineyard, season: number): string {
-    return [...new Set(this.vineyardService.getVarieties(info, season).map((v: Variety) => v.name))].join(', ');
+  getVariety(info: Vineyard, seasons: number[]): string {
+    return seasons && info ? [...new Set(this.vineyardService.getVarieties(info, Math.max(...seasons)).map((v: Variety) => v.name))].join(', ') : '';
   }
 
-  getVarietyCount(info: Vineyard, season: number): number {
-    return this.vineyardService.getPlantCount(info, season);
+  getVarietyCount(info: Vineyard, seasons: number[]): number {
+    return seasons && info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : undefined;
   }
 
   getLastUpdate(info: Vineyard): string {
     return this.vineyardService.getLastUpdate(info);
   }
 
-  setSeason(year: number): void {
-    this.vineyardService.setActiveSeason(year);
+  setSeasons(years: number[]): void {
+    this.vineyardService.setActiveSeasons(years);
   }
 }

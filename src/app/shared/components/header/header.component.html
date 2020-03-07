@@ -4,7 +4,7 @@
           <ion-back-button defaultHref="/"></ion-back-button>
         </ion-buttons>
     <ion-title>{{title}}</ion-title>
-    <ion-select *ngIf="seasons" [(ngModel)]="activeSeason" slot="end" placeholder="Season" (ionChange)="updateSeason()">
+    <ion-select *ngIf="seasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
         <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
       </ion-select>
   </ion-toolbar>

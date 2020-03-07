@@ -1,3 +1,4 @@
+import { Variety } from './../../models/variety.model';
 import { Platform } from '@ionic/angular';
 import { Vineyard } from './../../models/vineyard.model';
 import { VineyardService } from './../../services/vineyard.service';
@@ -9,6 +10,7 @@ import {XYZ} from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
+import { Action } from 'src/app/models/action.model';
 
 @Component({
   selector: 'app-info',
@@ -21,7 +23,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
   vineyard: Vineyard;
 
   @Input()
-  season: number;
+  seasons: number[];
 
   private _map: olMap;
   private _featureLayer: VectorLayer;
@@ -34,6 +36,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
     if (changes.vineyard && this.vineyard) {
       this._createMap();
     }
+    console.log(changes);
   }
 
 
@@ -79,6 +82,14 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
       this._map.updateSize();
       this._map.getView().fit(this.vineyard.location, {size: this._map.getSize(), padding: [10, 10, 10, 10]});
     }, 500);
+  }
+
+  getVarieties(info: Vineyard, seasons: number[]): Variety[] {
+    return info ? this.vineyardService.getVarieties(info, Math.max(...seasons)) : [];
+  }
+
+  getTotalCount(info: Vineyard, seasons: number[]): number {
+    return info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : 0;
   }
 
 }
