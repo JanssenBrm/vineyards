@@ -91,6 +91,11 @@ export class VineyardService {
    return year && actions.length > 0 ? actions.filter((a: Action) => (new Date(a.date).getFullYear() <= year)) : actions;
   }
 
+  getActions(info: Vineyard, years?: number[]): Action[] {
+    const actions = info ? info.actions : [];
+    return years && actions.length > 0 ? actions.filter((a: Action) => (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
+   }
+
   getPlantCount(info: Vineyard, season: number): number {
     const varities = season
       ? this.getVarieties(info, season)
