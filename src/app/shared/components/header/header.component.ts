@@ -17,6 +17,9 @@ export class HeaderComponent implements OnInit, OnChanges {
   @Input()
   activeSeason: number;
 
+  @Input()
+  showBackButton: boolean = true;
+
   @Output()
   setSeason: EventEmitter<number> = new EventEmitter<number>();
 
