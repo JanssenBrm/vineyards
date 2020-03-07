@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, map, take } from 'rxjs/operators';
-import { Action } from '../models/action.model';
+import { Action, ActionType } from '../models/action.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,7 @@ export class VineyardService {
   }
   private readVineyards(): void {
     this.http.get('./assets/mock/vineyards.json').pipe(
-      map((data: Vineyard[]) => data.map((v: Vineyard) => this.utilService.reproject(v, 'EPSG:4326', 'EPSG:3857'))),
+      map((data: Vineyard[]) => data.map((v: Vineyard) => this.utilService.reproject(v, 'EPSG:4326', 'EPSG:3857')))
     ).subscribe((vineyards: Vineyard[]) => {
       this._vineyards.next(vineyards);
     });
@@ -87,7 +87,7 @@ export class VineyardService {
   }
 
   getPlantingActions(info: Vineyard, year?: number): Action[] {
-   const actions = info ? info.actions.filter((a: Action) => a.type === 'planting') : [];
+   const actions = info ? info.actions.filter((a: Action) => a.type === ActionType.Planting) : [];
    return year && actions.length > 0 ? actions.filter((a: Action) => (new Date(a.date).getFullYear() <= year)) : actions;
   }
 

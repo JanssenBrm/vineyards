@@ -1,5 +1,5 @@
 <section id="cd-timeline" class="cd-container">
-    <div *ngFor="let activity of vineyard.actions">
+    <div *ngFor="let activity of vineyard?.actions">
       <div class="cd-timeline-block">
         <div class="cd-timeline-icon royal">
           <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
@@ -12,6 +12,10 @@
           <ul class="timelineText" *ngIf="activity.type === 'planting'">
             <li *ngFor="let variety of activity.varieties"> {{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
           </ul>
+          <div class="pictures" *ngIf="activity.pictures">
+            <a *ngFor="let picture of activity.pictures" (click)="showPicture(picture)"><img [src]="picture"/></a>
+
+          </div>
         </div>
       </div>
     </div>

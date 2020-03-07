@@ -1,3 +1,4 @@
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { ActionsComponent } from './actions/actions.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -23,6 +24,9 @@ import { InfoComponent } from './info/info.component';
     VineyeardViewPage,
     InfoComponent,
     ActionsComponent
+  ],
+  providers: [
+    PhotoViewer
   ]
 })
 export class VineyeardViewPageModule {}

@@ -5,6 +5,7 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import { RouterStateSnapshot, ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -13,7 +14,7 @@ import { RouterStateSnapshot, ActivatedRoute, Router } from '@angular/router';
 })
 export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router) { }
+  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location) { }
 
   public seasons: number[];
 
@@ -53,7 +54,8 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   openTab(tab: 'info' | 'actions'): void {
     if (tab !== this.activePage) {
-      this.router.navigate([`/vineyard/view/${this.activeVineyard.id}/${tab}`]);
+      this.activePage = tab;
+      this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
   }
 

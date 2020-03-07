@@ -291,3 +291,17 @@ Paddings and margins
       font-size: 0.875rem;
     }
   }
+
+
+  .pictures {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    a {
+      margin-left: .5rem;
+      img {
+          height: 7.5rem;
+      }
+    }
+  }

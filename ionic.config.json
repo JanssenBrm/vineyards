@@ -1,7 +1,8 @@
 {
   "name": "winery",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

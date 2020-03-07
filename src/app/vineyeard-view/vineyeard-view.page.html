@@ -5,13 +5,13 @@
       <ion-tabs>
           <!-- Tab bar -->
           <ion-tab-bar slot="top">
-            <ion-tab-button (click)="activePage = 'info'" [selected]="activePage === 'info'">
+            <ion-tab-button (click)="openTab('info')" [selected]="activePage === 'info'">
               <ion-icon name="information-circle"></ion-icon>
               <ion-label>Info</ion-label>
             </ion-tab-button>
-            <ion-tab-button (click)="activePage = 'actions'" [selected]="activePage === 'actions'">
+            <ion-tab-button (click)="openTab('actions')" [selected]="activePage === 'actions'">
               <ion-icon name="time"></ion-icon>
-              <ion-label>Actions</ion-label>
+              <ion-label>History</ion-label>
             </ion-tab-button>
           </ion-tab-bar>
         </ion-tabs>

@@ -42,6 +42,15 @@
         "description": "5 volle emmers"
       },
       {
+        "type": "observation",
+        "date": "2020-03-07",
+        "description": "Status planten na knippen",
+        "pictures": [
+          "./assets/images/observation1.jpg",
+          "./assets/images/observation2.jpg"
+        ]
+      },
+      {
         "type": "planting",
         "date": "2020-03-28",
         "description": "Aanplanten van de druiven",
