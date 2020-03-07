@@ -23,7 +23,7 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   private _destroy: Subject<boolean>;
 
-  public activePage: 'info' | 'actions';
+  public activePage: 'info' | 'actions' | 'stats';
 
   ngOnInit() {
     this._destroy = new Subject<boolean>();
@@ -52,7 +52,7 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.vineyardService.setActiveSeason(year);
   }
 
-  openTab(tab: 'info' | 'actions'): void {
+  openTab(tab: 'info' | 'actions' | 'stats'): void {
     if (tab !== this.activePage) {
       this.activePage = tab;
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);

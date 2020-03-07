@@ -13,11 +13,16 @@
               <ion-icon name="time"></ion-icon>
               <ion-label>History</ion-label>
             </ion-tab-button>
+            <ion-tab-button (click)="openTab('stats')" [selected]="activePage === 'stats'">
+                <ion-icon name="stats-chart"></ion-icon>
+                <ion-label>Statistics</ion-label>
+              </ion-tab-button>
           </ion-tab-bar>
         </ion-tabs>
   </div>
   <div class="content">
     <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [season]="activeSeason"></app-info>
     <app-actions *ngIf="activePage === 'actions'" [vineyard]="activeVineyard" [season]="activeSeason"></app-actions>
+    <app-statistics *ngIf="activePage === 'stats'" [vineyard]="activeVineyard"></app-statistics>
   </div>
 </ion-content>

@@ -11,6 +11,7 @@ import { VineyeardViewPageRoutingModule } from './vineyeard-view-routing.module'
 import { VineyeardViewPage } from './vineyeard-view.page';
 import { SharedModule } from '../shared/shared.module';
 import { InfoComponent } from './info/info.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { InfoComponent } from './info/info.component';
   declarations: [
     VineyeardViewPage,
     InfoComponent,
-    ActionsComponent
+    ActionsComponent,
+    StatisticsComponent
   ],
   providers: [
     PhotoViewer
