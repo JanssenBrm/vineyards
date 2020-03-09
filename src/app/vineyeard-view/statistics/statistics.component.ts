@@ -1,3 +1,4 @@
+import { ActionType } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
 import { StatisticsService } from './../../services/statistics.service';
 import { VineyardService } from './../../services/vineyard.service';
@@ -36,7 +37,9 @@ export class StatisticsComponent implements OnInit, OnChanges {
   getStats(): void {
     console.log('Get stats');
     this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
-    this.getActionHistory().forEach((s: any) => this._chart.addSeries(s));
+    this._chart.addAxis(this.getActionAxis());
+    // this.getActionHistory().forEach((s: any) => this._chart.addSeries(s));
+    this.getActionTimelines().forEach((s: any) => this._chart.addSeries(s));
     console.log(this._chart);
   }
 
@@ -47,11 +50,39 @@ export class StatisticsComponent implements OnInit, OnChanges {
       marker: {
         symbol: 'circle'
       },
-      data: this.vineyardService.getActions(this.vineyard, [s]).map((a: Action) => ({
+      data: this.vineyardService.getActionsByYear(this.vineyard, [s]).map((a: Action) => ({
         x: this.getNormalizedDate(a.date),
         title: `${s} - ${this.titlecasePipe.transform(a.type)}`,
         text: a.description
       }))
+    }));
+  }
+
+  getActionAxis(): any {
+    return {
+      id: 'actions',
+      labels: {
+          format: '{value}',
+      },
+      title: {
+          text: 'Years',
+      },
+      min: Math.min(...this.seasons),
+      max: Math.max(...this.seasons),
+      tickInterval: 1
+    };
+  }
+
+  getActionTimelines(): any[] {
+    return Object.keys(ActionType).map((a: string) => ({
+        name: `${a}`,
+        type: 'scatter',
+        yAxis: 'actions',
+        data: this.vineyardService.getActionsByType(this.vineyard, [ActionType[a]]).map((action: Action) => ({
+          label: `${action.description}`,
+          x: this.getNormalizedDate(action.date),
+          y: new Date(action.date).getFullYear()
+        }))
     }));
   }
 

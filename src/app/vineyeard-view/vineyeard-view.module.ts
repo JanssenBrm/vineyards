@@ -20,12 +20,14 @@ const Boost = require('highcharts/modules/boost');
 const noData = require('highcharts/modules/no-data-to-display');
 const More = require('highcharts/highcharts-more');
 const Timeline = require('highcharts/modules/timeline');
+const theme = require('highcharts/themes/dark-unica');
 
 Boost(Highcharts);
 noData(Highcharts);
 More(Highcharts);
 Timeline(Highcharts);
 noData(Highcharts);
+theme(Highcharts);
 
 @NgModule({
   imports: [
