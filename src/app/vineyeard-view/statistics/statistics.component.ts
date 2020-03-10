@@ -39,6 +39,7 @@ export class StatisticsComponent implements OnInit, OnChanges {
     this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
     this._chart.addAxis(this.getActionAxis());
     // this.getActionHistory().forEach((s: any) => this._chart.addSeries(s));
+    console.log('UPDATING STATS', this.seasons);
     this.getActionTimelines().forEach((s: any) => this._chart.addSeries(s));
     console.log(this._chart);
   }
@@ -67,9 +68,7 @@ export class StatisticsComponent implements OnInit, OnChanges {
       title: {
           text: 'Years',
       },
-      min: Math.min(...this.seasons),
-      max: Math.max(...this.seasons),
-      tickInterval: 1
+      categories: this.seasons,
     };
   }
 
@@ -78,7 +77,17 @@ export class StatisticsComponent implements OnInit, OnChanges {
         name: `${a}`,
         type: 'scatter',
         yAxis: 'actions',
-        data: this.vineyardService.getActionsByType(this.vineyard, [ActionType[a]]).map((action: Action) => ({
+        marker: {
+          symbol: `url(/assets/icon/${a.toLowerCase()}.png)`,
+          width: 16,
+          height: 16,
+          fillColor: '#FFFFFF',
+          lineWidth: 2,
+          lineColor: '#FFFFFF'
+        },
+        data: this.vineyardService.getActionsByType(this.vineyard, [ActionType[a]])
+        .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0)
+        .map((action: Action) => ({
           label: `${action.description}`,
           x: this.getNormalizedDate(action.date),
           y: new Date(action.date).getFullYear()
