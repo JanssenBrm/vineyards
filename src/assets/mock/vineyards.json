@@ -42,6 +42,11 @@
         "description": "5 volle emmers"
       },
       {
+        "type": "prune",
+        "date": "2020-02-19",
+        "description": "Snoeien takken vorig jaar"
+      },
+      {
         "type": "observation",
         "date": "2020-03-07",
         "description": "Status planten na knippen",

@@ -78,9 +78,9 @@ export class StatisticsComponent implements OnInit, OnChanges {
         type: 'scatter',
         yAxis: 'actions',
         marker: {
-          symbol: `url(/assets/icon/${a.toLowerCase()}.png)`,
-          width: 16,
-          height: 16,
+          symbol: `url(/assets/icon/${a.toLowerCase()}_graph.png)`,
+          width: 24,
+          height: 24,
           fillColor: '#FFFFFF',
           lineWidth: 2,
           lineColor: '#FFFFFF'

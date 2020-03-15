@@ -1,5 +1,5 @@
 <section id="cd-timeline" class="cd-container">
-    <div *ngFor="let activity of vineyardService.getActions(vineyard, seasons)">
+    <div *ngFor="let activity of vineyardService.getActionsByYear(vineyard, seasons)">
       <div class="cd-timeline-block">
         <div class="cd-timeline-icon royal">
           <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
