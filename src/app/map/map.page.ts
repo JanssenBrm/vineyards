@@ -17,6 +17,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Select from 'ol/interaction/Select';
+import Modify from 'ol/interaction/Modify';
+import Snap from 'ol/interaction/Snap';
 import Overlay from 'ol/Overlay';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -32,21 +34,30 @@ export class MapPage implements OnInit, AfterViewInit {
     public vineyardService: VineyardService,
     private utilService: UtilService,
     private router: Router
-  ) {}
+  ) {
+    this._init = true;
+  }
 
   private _map: olMap;
   private _featureLayer: VectorLayer;
   private _select: Select;
+  private _modify: Modify;
+  private _snap: Snap;
   private _overlay: Overlay;
   private _destroy: Subject<boolean>;
+
+  private dirty: string[] = [];
+  private _init: boolean;
 
   public activeVineyard: Vineyard;
   public activeSeasons: number[];
   public seasons: number[];
 
+
   ngOnInit() {}
 
   ngAfterViewInit() {
+    this.dirty = [];
     this._destroy = new Subject<boolean>();
     this._featureLayer = this._getFeatureLayer();
 
@@ -67,8 +78,15 @@ export class MapPage implements OnInit, AfterViewInit {
         zoom: 10
       })
     });
+
     this._select = this._getSelectInteraction();
     this._map.addInteraction(this._select);
+
+    this._modify = this._getModifyInteraction();
+    this._map.addInteraction(this._modify);
+    /*this._snap = this._getSnapInteraction();
+    this._map.addInteraction(this._snap);*/
+
     setTimeout(() => {
       this._map.updateSize();
       this._getData();
@@ -96,6 +114,20 @@ export class MapPage implements OnInit, AfterViewInit {
     return select;
   }
 
+  private _getModifyInteraction(): Modify {
+    const modify = new Modify({source: this._featureLayer.getSource()});
+    modify.on('modifyend', (event: any) => {
+      event.features.forEach((f: Feature) => {
+        this.dirty.push(f.get('name'));
+        this.vineyardService.updateLocation(f.get('name'), f.getGeometry());
+      });
+    });
+    return modify;
+  }
+  private _getSnapInteraction(): Snap {
+    return new Snap({source: this._featureLayer.getSource()});
+  }
+
   private _getFeatureLayer(): VectorLayer {
     return new VectorLayer({
       source: new VectorSource({
@@ -114,14 +146,10 @@ export class MapPage implements OnInit, AfterViewInit {
 
   private _getData(): void {
     this.vineyardService
-      .getVineyards()
+      .getVineyardsListener()
       .pipe(takeUntil(this._destroy))
       .subscribe((vineyards: Vineyard[]) => {
-        console.log('VINEYARD', vineyards);
         if (vineyards.length > 0) {
-          const center = this.utilService.getExtent(
-            vineyards.map((v: Vineyard) => v.location)
-          );
           this._featureLayer.getSource().clear();
           this._featureLayer.getSource().addFeatures(
             vineyards.map(
@@ -132,10 +160,16 @@ export class MapPage implements OnInit, AfterViewInit {
                 })
             )
           );
-          this._map
+
+          if (this._init) {
+            const center = this.utilService.getExtent(
+              vineyards.map((v: Vineyard) => v.location)
+            );
+            this._map
             .getView()
             .fit(center, { size: this._map.getSize(), maxZoom: 18 });
-
+            this._init = false;
+          }
           this.seasons = this.vineyardService.getSeasons();
         }
       });
@@ -185,5 +219,14 @@ export class MapPage implements OnInit, AfterViewInit {
 
   setSeasons(years: number[]): void {
     this.vineyardService.setActiveSeasons(years);
+  }
+
+  updateState(save: boolean): void {
+    if (!save) {
+      this.vineyardService.getVineyards();
+    } else {
+      this.vineyardService.saveVineyards(this.dirty);
+    }
+    this.dirty = [];
   }
 }

@@ -1,3 +1,4 @@
+import { Polygon } from 'ol/geom';
 import { VineyardDoc } from './../models/vineyarddoc.model';
 import { Vineyard } from './../models/vineyard.model';
 import { Variety } from './../models/variety.model';
@@ -10,48 +11,47 @@ import { switchMap, map, take } from 'rxjs/operators';
 import { Action, ActionType } from '../models/action.model';
 import { environment } from 'src/environments/environment';
 import {AngularFirestore, DocumentReference, QueryDocumentSnapshot, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
-import { Polygon } from 'ol/geom';
+import { GeoJSON } from 'ol/format';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VineyardService {
 
-  private _vineyards: BehaviorSubject<Vineyard[]>;
-  private _activeVineyard: BehaviorSubject<Vineyard>;
-  private _activeSeasons: BehaviorSubject<number[]>;
-
-
+  private _vineyards$: BehaviorSubject<Vineyard[]>;
+  private _activeVineyard$: BehaviorSubject<Vineyard>;
+  private _activeSeasons$: BehaviorSubject<number[]>;
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
   constructor( private http: HttpClient, private utilService: UtilService, private fireStore: AngularFirestore) {
-      this._vineyards = new BehaviorSubject<Vineyard[]>([]);
-      this._activeVineyard = new BehaviorSubject<Vineyard>(null);
-      this._activeSeasons = new BehaviorSubject<number[]>([(new Date()).getFullYear()]);
+      this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
+      this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
+      this._activeSeasons$ = new BehaviorSubject<number[]>([(new Date()).getFullYear()]);
       this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
-      this.readVineyards();
+      this.getVineyards();
   }
 
-  getVineyards(): Observable<Vineyard[]> {
-    return this._vineyards;
+  getVineyardsListener(): Observable<Vineyard[]> {
+    return this._vineyards$;
   }
 
   setActiveVineyard(id: string): void {
-    this._activeVineyard.next(id ? this._vineyards.getValue().find((v: Vineyard) => v.id === id) : null);
+    this._activeVineyard$.next(id ? this._vineyards$.getValue().find((v: Vineyard) => v.id === id) : null);
   }
 
   getActiveVineyard(): Observable<Vineyard> {
-    return this._activeVineyard;
+    return this._activeVineyard$;
   }
 
   getActiveSeasons(): Observable<number[]> {
-    return this._activeSeasons;
+    return this._activeSeasons$;
   }
 
   setActiveSeasons(seasons: number[]): void {
-    this._activeSeasons.next(seasons);
+    this._activeSeasons$.next(seasons);
   }
-  private readVineyards(): void {
+
+  getVineyards(): void {
     this._vineyardCollection.snapshotChanges().pipe(
         map((data: DocumentChangeAction<VineyardDoc>[]) => data.map((d: DocumentChangeAction<VineyardDoc>) => (
           {
@@ -63,13 +63,13 @@ export class VineyardService {
           location: new Polygon(JSON.parse(d.location).coordinates).transform( 'EPSG:4326', 'EPSG:3857')
         })))
     ).subscribe((vineyards: Vineyard[]) => {
-       this._vineyards.next(vineyards);
+       this._vineyards$.next(vineyards);
     });
 
   }
 
   getInfo(id: string): Vineyard {
-    return this._vineyards.getValue().find((v: Vineyard) => v.id === id);
+    return this._vineyards$.getValue().find((v: Vineyard) => v.id === id);
   }
 
   getLatestVarieties(info: Vineyard): Variety[] {
@@ -90,7 +90,7 @@ export class VineyardService {
   }
 
   getSeasons(): number[] {
-    return [...new Set([].concat(...this._vineyards.getValue().map((v: Vineyard) => this.getYears(v))))];
+    return [...new Set([].concat(...this._vineyards$.getValue().map((v: Vineyard) => this.getYears(v))))];
   }
 
   getFirstPlanting(info: Vineyard): Action {
@@ -128,6 +128,30 @@ export class VineyardService {
   getLastUpdate(info: Vineyard): string {
     const action = info && info.actions.length > 0 ? info.actions[info.actions.length - 1] : undefined;
     return action ? action.date : undefined;
+  }
+
+
+  updateLocation(id: string, geometry: Polygon): void {
+    const polygons = this._vineyards$.getValue().map((v: Vineyard) => v.id === id ? ({
+      ...v,
+      location: geometry
+    }) : v);
+    this._vineyards$.next(polygons);
+  }
+
+  saveVineyards(ids: string[]) {
+    const geoJSON = new GeoJSON();
+    this._vineyards$.getValue()
+    .filter((v: Vineyard) => ids.indexOf(v.id) >= 0)
+    .map((v: Vineyard) => ({
+      ...v,
+      location: new Polygon(v.location.getCoordinates()).transform('EPSG:3857', 'EPSG:4326')
+    }))
+    .map((v: Vineyard) => ({
+      ...v,
+      location: geoJSON.writeGeometry(v.location)
+    })).forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
+
   }
 
 }

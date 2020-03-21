@@ -1,0 +1,12 @@
+:host {
+    position: absolute;
+    top: 1rem;
+    width: 100%;
+}
+
+.toolbar {
+    width: 100%;
+    display: flex;
+    padding: 0 1rem;
+    justify-content: flex-end;
+}
