@@ -53,7 +53,11 @@ export class VineyardService {
   }
   private readVineyards(): void {
     this._vineyardCollection.snapshotChanges().pipe(
-        map((data: DocumentChangeAction<VineyardDoc>[]) => data.map((d: DocumentChangeAction<VineyardDoc>) => d.payload.doc.data())),
+        map((data: DocumentChangeAction<VineyardDoc>[]) => data.map((d: DocumentChangeAction<VineyardDoc>) => (
+          {
+            ...d.payload.doc.data(),
+            id: d.payload.doc.id
+          }))),
         map((docs: VineyardDoc[]) => docs.map((d: VineyardDoc) => ({
             ...d,
           location: new Polygon(JSON.parse(d.location).coordinates).transform( 'EPSG:4326', 'EPSG:3857')

@@ -4,6 +4,7 @@ import { Action } from './action.model';
 
 
 export interface VineyardDoc {
+    id: string;
     name: string;
     address: string;
     location: string;
