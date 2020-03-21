@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "winery-f4d20"
+  },
+  "targets": {
+    "winery-f4d20": {
+      "hosting": {
+        "app": [
+          "winery-f4d20"
+        ]
+      }
+    }
   }
 }

@@ -1,12 +1,16 @@
+import { VineyardDoc } from './../models/vineyarddoc.model';
+import { Vineyard } from './../models/vineyard.model';
 import { Variety } from './../models/variety.model';
 import { Season } from './../models/season.model';
 import { UtilService } from './util.service';
-import { Vineyard } from './../models/vineyard.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, map, take } from 'rxjs/operators';
 import { Action, ActionType } from '../models/action.model';
+import { environment } from 'src/environments/environment';
+import {AngularFirestore, DocumentReference, QueryDocumentSnapshot, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
+import { Polygon } from 'ol/geom';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +21,14 @@ export class VineyardService {
   private _activeVineyard: BehaviorSubject<Vineyard>;
   private _activeSeasons: BehaviorSubject<number[]>;
 
-  constructor( private http: HttpClient, private utilService: UtilService) {
+
+  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
+
+  constructor( private http: HttpClient, private utilService: UtilService, private fireStore: AngularFirestore) {
       this._vineyards = new BehaviorSubject<Vineyard[]>([]);
       this._activeVineyard = new BehaviorSubject<Vineyard>(null);
       this._activeSeasons = new BehaviorSubject<number[]>([(new Date()).getFullYear()]);
+      this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
       this.readVineyards();
   }
 
@@ -44,11 +52,16 @@ export class VineyardService {
     this._activeSeasons.next(seasons);
   }
   private readVineyards(): void {
-    this.http.get('./assets/mock/vineyards.json').pipe(
-      map((data: Vineyard[]) => data.map((v: Vineyard) => this.utilService.reproject(v, 'EPSG:4326', 'EPSG:3857')))
+    this._vineyardCollection.snapshotChanges().pipe(
+        map((data: DocumentChangeAction<VineyardDoc>[]) => data.map((d: DocumentChangeAction<VineyardDoc>) => d.payload.doc.data())),
+        map((docs: VineyardDoc[]) => docs.map((d: VineyardDoc) => ({
+            ...d,
+          location: new Polygon(JSON.parse(d.location).coordinates).transform( 'EPSG:4326', 'EPSG:3857')
+        })))
     ).subscribe((vineyards: Vineyard[]) => {
-      this._vineyards.next(vineyards);
+       this._vineyards.next(vineyards);
     });
+
   }
 
   getInfo(id: string): Vineyard {

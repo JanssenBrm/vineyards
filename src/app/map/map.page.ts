@@ -63,7 +63,7 @@ export class MapPage implements OnInit, AfterViewInit {
       target: document.getElementById('map'),
       overlays: [this._overlay],
       view: new View({
-        center: [0, 0],
+        center: [573381.618724, 6662862.881562],
         zoom: 10
       })
     });
@@ -113,41 +113,48 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   private _getData(): void {
-    this.vineyardService.getVineyards().pipe(
-      takeUntil(this._destroy)
-    ).subscribe((vineyards: Vineyard[]) => {
-      const center = this.utilService.getExtent(
-        vineyards.map((v: Vineyard) => v.location)
-      );
-      this._featureLayer.getSource().addFeatures(
-        vineyards.map(
-          (v: Vineyard) =>
-            new Feature({
-              geometry: v.location,
-              name: v.id
-            })
-        )
-      );
-      this._map
-        .getView()
-        .fit(center, { size: this._map.getSize(), maxZoom: 18 });
+    this.vineyardService
+      .getVineyards()
+      .pipe(takeUntil(this._destroy))
+      .subscribe((vineyards: Vineyard[]) => {
+        console.log('VINEYARD', vineyards);
+        if (vineyards.length > 0) {
+          const center = this.utilService.getExtent(
+            vineyards.map((v: Vineyard) => v.location)
+          );
+          this._featureLayer.getSource().clear();
+          this._featureLayer.getSource().addFeatures(
+            vineyards.map(
+              (v: Vineyard) =>
+                new Feature({
+                  geometry: v.location,
+                  name: v.id
+                })
+            )
+          );
+          this._map
+            .getView()
+            .fit(center, { size: this._map.getSize(), maxZoom: 18 });
 
-      this.seasons = this.vineyardService.getSeasons();
-    });
+          this.seasons = this.vineyardService.getSeasons();
+        }
+      });
 
-    this.vineyardService.getActiveVineyard().pipe(
-      takeUntil(this._destroy)
-    ).subscribe((vineyard: Vineyard) => {
-      if (!vineyard) {
-        this._select.getFeatures().clear();
-      }
-    });
+    this.vineyardService
+      .getActiveVineyard()
+      .pipe(takeUntil(this._destroy))
+      .subscribe((vineyard: Vineyard) => {
+        if (!vineyard) {
+          this._select.getFeatures().clear();
+        }
+      });
 
-    this.vineyardService.getActiveSeasons().pipe(
-      takeUntil(this._destroy)
-    ).subscribe((seasons: number[]) => {
-      this.activeSeasons = seasons;
-    });
+    this.vineyardService
+      .getActiveSeasons()
+      .pipe(takeUntil(this._destroy))
+      .subscribe((seasons: number[]) => {
+        this.activeSeasons = seasons;
+      });
   }
 
   openVineyard(info: Vineyard): void {
@@ -155,11 +162,21 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   getVariety(info: Vineyard, seasons: number[]): string {
-    return seasons && info ? [...new Set(this.vineyardService.getVarieties(info, Math.max(...seasons)).map((v: Variety) => v.name))].join(', ') : '';
+    return seasons && info
+      ? [
+          ...new Set(
+            this.vineyardService
+              .getVarieties(info, Math.max(...seasons))
+              .map((v: Variety) => v.name)
+          )
+        ].join(', ')
+      : '';
   }
 
   getVarietyCount(info: Vineyard, seasons: number[]): number {
-    return seasons && info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : undefined;
+    return seasons && info
+      ? this.vineyardService.getPlantCount(info, Math.max(...seasons))
+      : undefined;
   }
 
   getLastUpdate(info: Vineyard): string {

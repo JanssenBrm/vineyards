@@ -11,5 +11,11 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 
 exports.getVineyards = functions.https.onRequest(async(req, res) => {
-    res.send({});
+    const userId = req.query.userId;
+
+    if (!userId) {
+        res.status(500).send({ error: 'no userid provided'});
+    } else {
+        res.status(200).send({ vineyards: []});
+    }
 });

@@ -49,7 +49,7 @@
     flex: 1;
   }
 
-  @media only screen and (max-width: 375px) {
+  @media only screen and (orientation: portrait) {
         #vineyard-map {
             width: 90vw;
             height: 15rem;
