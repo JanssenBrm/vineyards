@@ -3,7 +3,6 @@ import * as Highcharts from 'highcharts';
 export let STATS_OPTIONS: any = {
     chart: {
       type: 'scatter',
-      height: 700,
       backgroundColor: 'rgba(0,0,0,0)'
     },
     title: {

@@ -1,6 +1,8 @@
 :host {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    width: 100%;
 }
 
 .header {
@@ -9,4 +11,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2.5rem;
+}
+
+.content {
+    flex: 1;
+
+    #graph-container {
+        height: 95%;
+    }
 }

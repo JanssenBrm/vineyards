@@ -1,9 +1,10 @@
+import { Platform } from '@ionic/angular';
 import { ActionType } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
 import { StatisticsService } from './../../services/statistics.service';
 import { VineyardService } from './../../services/vineyard.service';
 import { Vineyard } from './../../models/vineyard.model';
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as Highcharts from 'highcharts/highstock';
 import { Action } from 'src/app/models/action.model';
 import { TitleCasePipe } from '@angular/common';
@@ -13,7 +14,7 @@ import { TitleCasePipe } from '@angular/common';
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss'],
 })
-export class StatisticsComponent implements OnInit, OnChanges {
+export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input()
   vineyard: Vineyard;
@@ -21,7 +22,10 @@ export class StatisticsComponent implements OnInit, OnChanges {
   @Input()
   seasons: number[];
 
-  constructor(private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe) { }
+  @ViewChild('content', {static: false})
+  content: ElementRef;
+
+  constructor(private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) { }
 
   private _chart: Highcharts.Chart;
 
@@ -34,14 +38,26 @@ export class StatisticsComponent implements OnInit, OnChanges {
     }
   }
 
+  ngAfterViewInit() {
+    this.updateChartSize();
+    this.platform.ready().then(() => {
+      this.platform.resize.subscribe(() => {
+        this.updateChartSize();
+      });
+    });
+  }
+
+  updateChartSize() {
+    if (this._chart) {
+      this._chart.redraw();
+      this._chart.reflow();
+    }
+  }
+
   getStats(): void {
-    console.log('Get stats');
     this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
     this._chart.addAxis(this.getActionAxis());
-    // this.getActionHistory().forEach((s: any) => this._chart.addSeries(s));
-    console.log('UPDATING STATS', this.seasons);
     this.getActionTimelines().forEach((s: any) => this._chart.addSeries(s));
-    console.log(this._chart);
   }
 
   getActionHistory(): any[] {

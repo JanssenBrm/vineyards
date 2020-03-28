@@ -3,10 +3,6 @@ import {DocumentReference} from '@angular/fire/firestore';
 import { Action } from './action.model';
 
 
-export interface VineyardDoc {
-    id: string;
-    name: string;
-    address: string;
+export interface VineyardDoc extends Vineyard {
     location: string;
-    actions: Action[];
 }
