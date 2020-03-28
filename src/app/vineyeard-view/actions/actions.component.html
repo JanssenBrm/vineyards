@@ -7,6 +7,7 @@
         <!-- cd-timeline-img -->
         <div class="cd-timeline-content royal">
           <h5 class="marginBottom0 marginTop0 title">{{activity.type | titlecase}}</h5>
+          <span class="remove"><ion-icon name="trash" (click)="removeAction(activity)"></ion-icon></span>
           <p class="marginTop5 cd-author">{{activity.date | date: "dd MMMM yyyy"}}</p>
           <p class="timelineText">{{activity.description}}</p>
           <ul class="timelineText" *ngIf="activity.type === 'planting'">

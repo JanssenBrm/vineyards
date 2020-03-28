@@ -1,4 +1,3 @@
-import { Vineyard } from 'src/app/models/vineyard.model';
 import { Polygon } from 'ol/geom';
 import { VineyardDoc } from './../models/vineyarddoc.model';
 import { Vineyard } from './../models/vineyard.model';
@@ -160,14 +159,10 @@ export class VineyardService {
     })).forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
   }
 
-  addAction(id: string, action: Action): void {
-    const vineyards: Vineyard[] = this._vineyards$.getValue().map((v: Vineyard) => v.id === id ? ({
-      ...v,
-      actions: [...v.actions, action]
-    }) : v);
-    console.log(vineyards);
+  updateVineyard(vineyard: Vineyard): void {
+    const vineyards: Vineyard[] = this._vineyards$.getValue().map((v: Vineyard) => v.id === vineyard.id ? vineyard : v);
     this._vineyards$.next(vineyards);
-    this.saveVineyards([id]);
+    this.saveVineyards([vineyard.id]);
   }
 
 }

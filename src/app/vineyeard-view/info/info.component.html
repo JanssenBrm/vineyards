@@ -33,7 +33,7 @@
                 <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
               </div>
               <div class="text">
-                <span class="title">{{action.date}}</span>
+                <span class="title">{{action.date | date: "dd MMMM yyyy"}}</span>
                 <span class="description">{{action.description}}</span>
               </div>
             </div>

@@ -104,7 +104,8 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
     const data = await modal.onWillDismiss();
     if (data.data.action) {
-      this.vineyardService.addAction(this.vineyard.id, data.data.action);
+      this.vineyard.actions.push(data.data.action);
+      this.vineyardService.updateVineyard(this.vineyard);
     }
 
   }
