@@ -11,7 +11,8 @@ export class LastActionPipe implements PipeTransform {
   constructor(private vineyardService: VineyardService) {}
 
   transform(vineyard: Vineyard, type: ActionType[], seasons: number[]): any {
-    const actions = this.vineyardService.getActionsByTypeAndYear(vineyard, type, seasons);
+    const actions = this.vineyardService.getActionsInYears(vineyard, type, seasons);
+    console.log(actions);
     return actions.length > 0 ? [actions[0]] : [];
   }
 

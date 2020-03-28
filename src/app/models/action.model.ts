@@ -3,9 +3,8 @@ export interface Action {
     type: ActionType;
     date: string;
     description: string;
-    pictures?: string[];
-    varieties?: Variety[];
     bbch?: string;
+    variety?: string;
 }
 
 

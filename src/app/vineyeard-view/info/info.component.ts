@@ -14,6 +14,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import { Action, ActionType } from 'src/app/models/action.model';
+import { ObjectUnsubscribedError } from 'rxjs';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-info',
@@ -105,10 +107,34 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
     const data = await modal.onWillDismiss();
     if (data.data.action) {
-      this.vineyard.actions.push(data.data.action);
-      this.vineyardService.updateVineyard(this.vineyard);
+     this.parseAction(data.data.action);
+    }
+  }
+
+  parseAction(data: any) {
+
+    let id = null;
+
+    if (data.type === 'planting') {
+      id = uuid.v4();
+      this.vineyard.varieties.push({
+        id,
+        plantsPerRow: data.plantsPerRow,
+        name: data.variety,
+        rows: data.rows
+      });
     }
 
+    const action: Action = {
+      type: data.type,
+      date: data.date,
+      description: data.description,
+      bbch: data.bbch,
+      variety: id
+    };
+
+    this.vineyard.actions.push(action);
+    this.vineyardService.updateVineyard(this.vineyard);
   }
 
 }

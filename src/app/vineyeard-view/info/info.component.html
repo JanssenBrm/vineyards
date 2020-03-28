@@ -15,7 +15,7 @@
       </tr>
       <tr>
         <td colspan="2"><ul>
-            <li *ngFor="let variety of getVarieties(vineyard, seasons)">{{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
+            <li *ngFor="let variety of getVarieties(vineyard, seasons)">{{variety.name}} - {{variety.rows * variety.plantsPerRow}} plants</li>
         </ul>
       </td>
       </tr>
@@ -27,7 +27,7 @@
       <tr>
         <td colspan="2">
           <div  *ngIf="vineyard" class="actions-container">
-          <div class="actions" *ngFor="let type of vineyard | activeType">
+          <div class="actions" *ngFor="let type of vineyard | activeType:seasons">
             <div class="action" *ngFor="let action of (vineyard | lastAction:[type]:seasons)">
               <div class="icon">
                 <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
@@ -36,6 +36,7 @@
                 <span class="title">{{action.date | date: "dd MMMM yyyy"}}</span>
                 <span class="description">{{action.description}}</span>
                 <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>
+                <span class="description variety" *ngIf="action.variety">{{vineyardService.getVariety(vineyard, action.variety)?.name}}</span>
               </div>
             </div>
           </div>

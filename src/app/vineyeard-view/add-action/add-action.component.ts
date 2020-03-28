@@ -25,14 +25,24 @@ export class AddActionComponent implements OnInit {
       type: new FormControl('', [Validators.required]),
       date: new FormControl('', [Validators.required]),
       description: new FormControl(''),
-      bbch: new FormControl('')
+      bbch: new FormControl(''),
+      variety: new FormControl(''),
+      rows: new FormControl(''),
+      plantsPerRow: new FormControl(''),
     });
 
     this.actionForm.get('type').valueChanges.subscribe((type: string) => {
       if (type === 'BBCH') {
         this.actionForm.get('bbch').setValidators([Validators.required]);
+      } else if (type === 'Planting') {
+        this.actionForm.get('variety').setValidators([Validators.required]);
+        this.actionForm.get('rows').setValidators([Validators.required]);
+        this.actionForm.get('plantsPerRow').setValidators([Validators.required]);
       } else {
         this.actionForm.get('bbch').setValidators(null);
+        this.actionForm.get('variety').setValidators(null);
+        this.actionForm.get('rows').setValidators(null);
+        this.actionForm.get('plantsPerRow').setValidators(null);
       }
     });
   }

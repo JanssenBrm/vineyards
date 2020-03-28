@@ -76,14 +76,10 @@ export class VineyardService {
     return this._vineyards$.getValue().find((v: Vineyard) => v.id === id);
   }
 
-  getLatestVarieties(info: Vineyard): Variety[] {
-    const plantingActions = this.getLastPlanting(info);
-    return plantingActions ?  plantingActions.varieties : [];
-  }
 
-  getVarieties(info: Vineyard, year: number): Variety[] {
-    const plantingActions = this.getPlantingActions(info, year);
-    return plantingActions.length > 0 ? [].concat(...plantingActions.map((a: Action) => a.varieties)) : [];
+  getVarieties(info: Vineyard, year: number = new Date().getFullYear()): Variety[] {
+    const plantingActions = this.getActions(info, [ActionType.Planting], year);
+    return plantingActions.length > 0 ? [].concat(...plantingActions.map((a: Action) => a.variety)).map((id: string) => info.varieties.find((v: Variety) => v.id === id)) : [];
   }
 
   getYears(info: Vineyard): number[] {
@@ -95,40 +91,35 @@ export class VineyardService {
   }
 
   getFirstPlanting(info: Vineyard): Action {
-    const plantingActions = this.getPlantingActions(info);
+    const plantingActions = this.getActions(info, [ActionType.Planting]);
     return plantingActions.length > 0 ? plantingActions[0] : undefined;
   }
 
   getLastPlanting(info: Vineyard): Action {
-    const plantingActions = this.getPlantingActions(info);
+    const plantingActions = this.getActions(info, [ActionType.Planting]);
     return plantingActions.length > 0 ? plantingActions[plantingActions.length - 1] : undefined;
   }
 
-  getPlantingActions(info: Vineyard, year?: number): Action[] {
-   const actions = info ? info.actions.filter((a: Action) => a.type === ActionType.Planting) : [];
-   return year && actions.length > 0 ? actions.filter((a: Action) => (new Date(a.date).getFullYear() <= year)) : actions;
-  }
-
-  getActionsByYear(info: Vineyard, years?: number[]): Action[] {
-    const actions = info ? info.actions : [];
-    return years && actions.length > 0 ? actions.filter((a: Action) => (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
+   getActions(info: Vineyard, types: ActionType[] = [], maxYear: number = new Date().getFullYear()): Action[] {
+    let actions = info ? info.actions : [];
+    if (types.length > 0) {
+      actions =  actions.filter((a: Action) => (types.indexOf(a.type) >= 0));
+    }
+    return actions.length > 0 ? actions.filter((a: Action) => new Date(a.date).getFullYear() <= maxYear) : actions;
    }
 
-   getActionsByType(info: Vineyard, types?: ActionType[]): Action[] {
-    const actions = info ? info.actions : [];
-    return types && actions.length > 0 ? actions.filter((a: Action) => (types.indexOf(a.type) >= 0)) : actions;
-   }
+   getActionsInYears(info: Vineyard, types: ActionType[], years: number[]): Action[] {
+    let actions = info ? info.actions : [];
 
-   getActionsByTypeAndYear(info: Vineyard, types: ActionType[], years: number[]): Action[] {
-    const actions = info ? info.actions : [];
-    return actions.length > 0 ? actions.filter((a: Action) => (types.indexOf(a.type) >= 0) && (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
+    if (types.length > 0) {
+      actions = actions.filter((a: Action) => (types.indexOf(a.type) >= 0));
+    }
+    return actions.length > 0 ? actions.filter((a: Action) => (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
    }
 
   getPlantCount(info: Vineyard, season: number): number {
-    const varities = season
-      ? this.getVarieties(info, season)
-      : this.getLatestVarieties(info);
-    return varities.length > 0 ? varities.map((v: Variety) => v.platsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
+    const varities = this.getVarieties(info, season);
+    return varities.length > 0 ? varities.map((v: Variety) => v.plantsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
   }
 
   getLastUpdate(info: Vineyard): string {
@@ -163,6 +154,10 @@ export class VineyardService {
     const vineyards: Vineyard[] = this._vineyards$.getValue().map((v: Vineyard) => v.id === vineyard.id ? vineyard : v);
     this._vineyards$.next(vineyards);
     this.saveVineyards([vineyard.id]);
+  }
+
+  getVariety(info: Vineyard, id: string): Variety {
+    return info.varieties.find((v: Variety) => v.id === id);
   }
 
 }

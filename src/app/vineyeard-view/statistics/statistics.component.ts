@@ -61,21 +61,6 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     this.getActionTimelines().forEach((s: any) => this._chart.addSeries(s));
   }
 
-  getActionHistory(): any[] {
-    return this.seasons.map((s: number) => ({
-      name: `Action History - ${s}`,
-      type : 'flags',
-      marker: {
-        symbol: 'circle'
-      },
-      data: this.vineyardService.getActionsByYear(this.vineyard, [s]).map((a: Action) => ({
-        x: this.getNormalizedDate(a.date),
-        title: `${s} - ${this.titlecasePipe.transform(a.type)}`,
-        text: `${a.bbch ? this.utilService.getBBCHDescription(a.bbch) + '<br />' : ''} ${a.description}`
-      }))
-    }));
-  }
-
   getActionAxis(): any {
     return {
       id: 'actions',
@@ -102,7 +87,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
           lineWidth: 2,
           lineColor: '#FFFFFF'
         },
-        data: this.vineyardService.getActionsByType(this.vineyard, [ActionType[a]])
+        data: this.vineyardService.getActions(this.vineyard, [ActionType[a]])
         .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0)
         .map((action: Action) => ({
           label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.description}`,
