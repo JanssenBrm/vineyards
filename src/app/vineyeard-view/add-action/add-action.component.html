@@ -6,16 +6,26 @@
 <ion-content>
   <form [formGroup]="actionForm">
     <ion-list lines="full">
-        <ion-item>
-            <ion-label position="stacked">Type</ion-label>
-            <ion-select required formControlName="type">
-              <ion-select-option *ngFor="let type of actionTypes" [value]="type">{{type}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        <ion-item>
-            <ion-label position="stacked">Date</ion-label>
-            <ion-datetime required formControlName="date"></ion-datetime>
-          </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Type</ion-label>
+        <ion-select required formControlName="type">
+          <ion-select-option *ngFor="let type of actionTypes" [value]="type">{{
+            type
+          }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Date</ion-label>
+        <ion-datetime required formControlName="date"></ion-datetime>
+      </ion-item>
+      <ion-item *ngIf="actionForm.value.type === 'BBCH'">
+        <ion-label position="stacked">BBCH</ion-label>
+        <ion-select required formControlName="bbch" interface="action-sheet">
+          <ion-select-option *ngFor="let stage of bbchCodes" [value]="stage.code">{{stage.code}} - {{
+            stage.description
+          }}</ion-select-option>
+        </ion-select>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
         <ion-textarea formControlName="description"></ion-textarea>
@@ -25,7 +35,13 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-        <ion-button slot="end" color="primary" [disabled]="!actionForm.valid" (click)="save()">Save</ion-button>
-        <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
+    <ion-button
+      slot="end"
+      color="primary"
+      [disabled]="!actionForm.valid"
+      (click)="save()"
+      >Save</ion-button
+    >
+    <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
   </ion-toolbar>
-  </ion-footer>
+</ion-footer>

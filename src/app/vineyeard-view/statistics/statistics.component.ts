@@ -1,3 +1,4 @@
+import { UtilService } from './../../services/util.service';
 import { Platform } from '@ionic/angular';
 import { ActionType } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
@@ -25,7 +26,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('content', {static: false})
   content: ElementRef;
 
-  constructor(private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) { }
+  constructor(private utilService: UtilService, private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) { }
 
   private _chart: Highcharts.Chart;
 
@@ -70,7 +71,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
       data: this.vineyardService.getActionsByYear(this.vineyard, [s]).map((a: Action) => ({
         x: this.getNormalizedDate(a.date),
         title: `${s} - ${this.titlecasePipe.transform(a.type)}`,
-        text: a.description
+        text: `${a.bbch ? this.utilService.getBBCHDescription(a.bbch) + '<br />' : ''} ${a.description}`
       }))
     }));
   }
@@ -104,7 +105,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         data: this.vineyardService.getActionsByType(this.vineyard, [ActionType[a]])
         .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0)
         .map((action: Action) => ({
-          label: `${action.description}`,
+          label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.description}`,
           x: this.getNormalizedDate(action.date),
           y: new Date(action.date).getFullYear()
         }))

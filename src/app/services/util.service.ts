@@ -1,7 +1,9 @@
+import { BBCH_STAGES } from './../conf/bbch.config';
 import { Vineyard } from './../models/vineyard.model';
 import { Injectable } from '@angular/core';
 import { createEmpty, extend } from 'ol/extent';
 import Polygon from 'ol/geom/Polygon';
+import { BBCH } from '../models/bbch.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +25,10 @@ export class UtilService {
       ...v,
       location: new Polygon(v.location.coordinates).transform(from, to)
     };
+  }
+
+  getBBCHDescription(code: string): string {
+    const stage: BBCH = BBCH_STAGES.find((s: BBCH) => s.code === code);
+    return stage ? stage.description : '';
   }
 }

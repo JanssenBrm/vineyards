@@ -10,6 +10,7 @@
           <span class="remove"><ion-icon name="trash" (click)="removeAction(activity)"></ion-icon></span>
           <p class="marginTop5 cd-author">{{activity.date | date: "dd MMMM yyyy"}}</p>
           <p class="timelineText">{{activity.description}}</p>
+          <p class="timelineText" *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
           <ul class="timelineText" *ngIf="activity.type === 'planting'">
             <li *ngFor="let variety of activity.varieties"> {{variety.name}} - {{variety.rows * variety.platsPerRow}} plants</li>
           </ul>

@@ -35,6 +35,7 @@
               <div class="text">
                 <span class="title">{{action.date | date: "dd MMMM yyyy"}}</span>
                 <span class="description">{{action.description}}</span>
+                <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>
               </div>
             </div>
           </div>

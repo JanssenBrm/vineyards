@@ -1,3 +1,4 @@
+import { UtilService } from './../../services/util.service';
 import { Modify } from 'ol/interaction/Modify';
 import { AddActionComponent } from './../add-action/add-action.component';
 import { Variety } from './../../models/variety.model';
@@ -32,7 +33,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   private actionTypes: string[] = Object.keys(ActionType);
 
-  constructor(public vineyardService: VineyardService, private platform: Platform, private modalController: ModalController) { }
+  constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform, private modalController: ModalController) { }
 
   ngOnInit() {}
 

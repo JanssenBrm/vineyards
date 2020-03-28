@@ -1,3 +1,4 @@
+import { UtilService } from './../../services/util.service';
 import { Action } from 'src/app/models/action.model';
 import { Platform } from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
@@ -19,7 +20,7 @@ export class ActionsComponent implements OnInit {
   @Input()
   seasons: number[];
 
-  constructor(public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform, private router: Router) { }
+  constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform, private router: Router) { }
 
   ngOnInit() {}
 
