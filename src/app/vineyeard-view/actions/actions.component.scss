@@ -51,6 +51,8 @@ Paddings and margins
   
   .timelineText {
     color: black;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
   
   .timelineIcon {
@@ -58,8 +60,20 @@ Paddings and margins
     color: var(--ion-color-primary);
   }
   
-  .cd-author {
+
+  .cd-author, .variety {
     color: gray;
+    margin-top: 0 !important;
+    margin-bottom: 0!important;
+  }
+
+  .variety {
+    margin-top: 1rem !important;
+  }
+
+
+  .cd-author {
+    font-size: smaller !important;
   }
   
   #cd-timeline {
@@ -159,14 +173,6 @@ Paddings and margins
   
   .cd-timeline-content h2 {
     color: #303e49;
-  }
-  
-  .cd-timeline-content p,
-  .cd-timeline-content ul li,
-  .cd-timeline-content .cd-read-more,
-  .cd-timeline-content .cd-date {
-    font-size: 13px;
-    font-size: 0.8125rem;
   }
   
   .cd-timeline-content .cd-read-more,

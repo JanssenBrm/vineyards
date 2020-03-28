@@ -101,7 +101,10 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   async openAddActionModal() {
     const modal = await this.modalController.create({
-      component: AddActionComponent
+      component: AddActionComponent,
+      componentProps: {
+        vineyard: this.vineyard
+      }
     });
     modal.present();
 
@@ -130,7 +133,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
       date: data.date,
       description: data.description,
       bbch: data.bbch,
-      variety: id
+      variety: id ? id : data.varietyId
     };
 
     this.vineyard.actions.push(action);

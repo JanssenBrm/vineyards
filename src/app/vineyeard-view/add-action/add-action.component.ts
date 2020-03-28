@@ -1,6 +1,7 @@
+import { Vineyard } from 'src/app/models/vineyard.model';
 import { BBCH_STAGES } from './../../conf/bbch.config';
 import { ActionType } from 'src/app/models/action.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
@@ -12,6 +13,9 @@ import { BBCH } from 'src/app/models/bbch.model';
 })
 export class AddActionComponent implements OnInit {
 
+  @Input()
+  vineyard: Vineyard;
+  
   constructor(private modalController: ModalController) { }
 
   public actionForm: FormGroup;
@@ -26,6 +30,7 @@ export class AddActionComponent implements OnInit {
       date: new FormControl('', [Validators.required]),
       description: new FormControl(''),
       bbch: new FormControl(''),
+      varietyId: new FormControl(''),
       variety: new FormControl(''),
       rows: new FormControl(''),
       plantsPerRow: new FormControl(''),
@@ -34,6 +39,7 @@ export class AddActionComponent implements OnInit {
     this.actionForm.get('type').valueChanges.subscribe((type: string) => {
       if (type === 'BBCH') {
         this.actionForm.get('bbch').setValidators([Validators.required]);
+        this.actionForm.get('varietyId').setValidators([Validators.required]);
       } else if (type === 'Planting') {
         this.actionForm.get('variety').setValidators([Validators.required]);
         this.actionForm.get('rows').setValidators([Validators.required]);
@@ -43,6 +49,7 @@ export class AddActionComponent implements OnInit {
         this.actionForm.get('variety').setValidators(null);
         this.actionForm.get('rows').setValidators(null);
         this.actionForm.get('plantsPerRow').setValidators(null);
+        this.actionForm.get('varietyId').setValidators([Validators.required]);
       }
     });
   }
