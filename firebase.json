@@ -7,22 +7,8 @@
   },
   "hosting": [
     {
-      "public": "public",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
       "target": "app",
-      "public": "www",
+      "public": "public",
       "ignore": [
         "firebase.json",
         "**/.*",
