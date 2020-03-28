@@ -1,3 +1,4 @@
+import { MapMode } from './../models/mapmode.model';
 import { Season } from './../models/season.model';
 import { Variety } from './../models/variety.model';
 import { Polygon } from 'ol/geom/Polygon';
@@ -52,6 +53,7 @@ export class MapPage implements OnInit, AfterViewInit {
   public activeVineyard: Vineyard;
   public activeSeasons: number[];
   public seasons: number[];
+  public mapMode: MapMode;
 
 
   ngOnInit() {}
@@ -83,7 +85,6 @@ export class MapPage implements OnInit, AfterViewInit {
     this._map.addInteraction(this._select);
 
     this._modify = this._getModifyInteraction();
-    this._map.addInteraction(this._modify);
     /*this._snap = this._getSnapInteraction();
     this._map.addInteraction(this._snap);*/
 
@@ -228,5 +229,16 @@ export class MapPage implements OnInit, AfterViewInit {
       this.vineyardService.saveVineyards(this.dirty);
     }
     this.dirty = [];
+    this.setMapMode(undefined);
+  }
+
+  setMapMode(mode: MapMode) {
+    this.mapMode = mode;
+
+    if (this.mapMode === MapMode.Edit) {
+      this._map.addInteraction(this._modify);
+    } else {
+      this._map.removeInteraction(this._modify);
+    }
   }
 }

@@ -1,4 +1,5 @@
 <div class="toolbar">
-  <ion-button color="primary" *ngIf="dirty" (click)="save()">Save</ion-button>
-  <ion-button color="light" *ngIf="dirty" (click)="discard()">Cancel</ion-button>
+  <ion-button  *ngIf="mapMode === undefined" (click)="setMapMode(mapModes.Edit)"><ion-icon slot="start" name="pencil-outline"></ion-icon>Edit</ion-button>
+  <ion-button color="primary" *ngIf="dirty && mapMode !== undefined" (click)="save()"><ion-icon slot="start" name="save-outline"></ion-icon> Save</ion-button>
+  <ion-button color="light" *ngIf="mapMode !== undefined" (click)="discard()">Cancel</ion-button>
 </div>
