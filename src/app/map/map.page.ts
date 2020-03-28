@@ -46,7 +46,7 @@ export class MapPage implements OnInit, AfterViewInit {
   private _overlay: Overlay;
   private _destroy: Subject<boolean>;
 
-  private dirty: string[] = [];
+  public dirty: string[] = [];
   private _init: boolean;
 
   public activeVineyard: Vineyard;
