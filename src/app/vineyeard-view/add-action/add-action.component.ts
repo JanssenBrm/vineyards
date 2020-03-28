@@ -24,13 +24,14 @@ export class AddActionComponent implements OnInit {
 
   ngOnInit() {
     this.actionTypes = Object.keys(ActionType);
+    console.log(this.actionTypes);
     this.bbchCodes = BBCH_STAGES;
     this.actionForm = new FormGroup({
       type: new FormControl('', [Validators.required]),
       date: new FormControl('', [Validators.required]),
       description: new FormControl(''),
       bbch: new FormControl(''),
-      varietyId: new FormControl(''),
+      varietyId: new FormControl([]),
       variety: new FormControl(''),
       rows: new FormControl(''),
       plantsPerRow: new FormControl(''),

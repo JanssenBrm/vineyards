@@ -156,8 +156,12 @@ export class VineyardService {
     this.saveVineyards([vineyard.id]);
   }
 
-  getVariety(info: Vineyard, id: string): Variety {
-    return info.varieties.find((v: Variety) => v.id === id);
+  getVariety(info: Vineyard, ids: string[]): Variety[] {
+    return info.varieties.filter((v: Variety) => ids.indexOf(v.id) >= 0);
+  }
+
+  getVarietiesLabel(info: Vineyard, action: Action): string {
+    return this.getVariety(info, action.variety).map((v: Variety) => v.name).join(', ');
   }
 
 }

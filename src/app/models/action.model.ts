@@ -4,7 +4,7 @@ export interface Action {
     date: string;
     description: string;
     bbch?: string;
-    variety?: string;
+    variety?: string[];
 }
 
 

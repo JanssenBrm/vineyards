@@ -133,7 +133,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
       date: data.date,
       description: data.description,
       bbch: data.bbch,
-      variety: id ? id : data.varietyId
+      variety: id ? [id] : data.varietyId
     };
 
     this.vineyard.actions.push(action);
