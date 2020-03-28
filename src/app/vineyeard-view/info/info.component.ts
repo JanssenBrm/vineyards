@@ -10,7 +10,7 @@ import {XYZ} from 'ol/source';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
-import { Action } from 'src/app/models/action.model';
+import { Action, ActionType } from 'src/app/models/action.model';
 
 @Component({
   selector: 'app-info',
@@ -27,6 +27,8 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   private _map: olMap;
   private _featureLayer: VectorLayer;
+
+  private actionTypes: string[] = Object.keys(ActionType);
 
   constructor(public vineyardService: VineyardService, private platform: Platform) { }
 

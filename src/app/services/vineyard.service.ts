@@ -1,3 +1,4 @@
+import { Vineyard } from 'src/app/models/vineyard.model';
 import { Polygon } from 'ol/geom';
 import { VineyardDoc } from './../models/vineyarddoc.model';
 import { Vineyard } from './../models/vineyard.model';
@@ -61,6 +62,10 @@ export class VineyardService {
         map((docs: VineyardDoc[]) => docs.map((d: VineyardDoc) => ({
             ...d,
           location: new Polygon(JSON.parse(d.location).coordinates).transform( 'EPSG:4326', 'EPSG:3857')
+        }))),
+        map((vineyards: Vineyard[]) => vineyards.map((v: Vineyard) => ({
+          ...v,
+          actions: v.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1)
         })))
     ).subscribe((vineyards: Vineyard[]) => {
        this._vineyards$.next(vineyards);
@@ -83,10 +88,7 @@ export class VineyardService {
   }
 
   getYears(info: Vineyard): number[] {
-    const currYear = (new Date()).getFullYear();
-    const plantAction = this.getFirstPlanting(info);
-    const startYear = plantAction ? new Date(plantAction.date).getFullYear() : currYear;
-    return [... new Array(currYear - startYear + 1).fill(1)].map((val: number, idx: number) => startYear + idx);
+    return [...new Set(info.actions.map((a: Action) => (new Date(a.date).getFullYear())))];
   }
 
   getSeasons(): number[] {
@@ -116,6 +118,11 @@ export class VineyardService {
    getActionsByType(info: Vineyard, types?: ActionType[]): Action[] {
     const actions = info ? info.actions : [];
     return types && actions.length > 0 ? actions.filter((a: Action) => (types.indexOf(a.type) >= 0)) : actions;
+   }
+
+   getActionsByTypeAndYear(info: Vineyard, types: ActionType[], years: number[]): Action[] {
+    const actions = info ? info.actions : [];
+    return actions.length > 0 ? actions.filter((a: Action) => (types.indexOf(a.type) >= 0) && (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
    }
 
   getPlantCount(info: Vineyard, season: number): number {

@@ -5,13 +5,17 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { HttpClientModule } from '@angular/common/http';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { LastActionPipe } from './pipes/last-action.pipe';
+import { ActiveTypePipe } from './pipes/active-type.pipe';
 
 
 
 @NgModule({
   declarations: [
     HeaderComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    LastActionPipe,
+    ActiveTypePipe
   ],
   imports: [
     CommonModule,
@@ -21,7 +25,9 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
   ],
   exports: [
     HeaderComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    LastActionPipe,
+    ActiveTypePipe
   ]
 })
 export class SharedModule { }

@@ -49,6 +49,48 @@
     flex: 1;
   }
 
+  .actions-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+
+    .actions { 
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 45%;
+      margin-right: 5%;
+      margin-bottom: 1rem;
+
+      .action {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+
+        .icon {
+          img {
+            height: 1rem;
+          }
+          margin-right: 1rem;
+        }
+        .text {
+          display: flex;
+          flex-direction: column;
+        
+          .title{
+            font-weight: bold;
+          }
+
+          .description{
+            font-size: smaller;
+          }
+        }
+      }
+    }
+}
+
   @media only screen and (orientation: portrait) {
         #vineyard-map {
             width: 90vw;

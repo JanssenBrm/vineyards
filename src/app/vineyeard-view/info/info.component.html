@@ -19,9 +19,39 @@
         </ul>
       </td>
       </tr>
+      <tr>
+        <th colspan="2">
+          Actions:
+        </th>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div  *ngIf="vineyard" class="actions-container">
+          <div class="actions" *ngFor="let type of vineyard | activeType">
+            <div class="action" *ngFor="let action of (vineyard | lastAction:[type]:seasons)">
+              <div class="icon">
+                <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
+              </div>
+              <div class="text">
+                <span class="title">{{action.date}}</span>
+                <span class="description">{{action.description}}</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
   <div class="col">
     <div id="vineyard-map"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+
+  </div>
+  <div class="col">
+    <ion-button><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add action</ion-label></ion-button>
   </div>
 </div>

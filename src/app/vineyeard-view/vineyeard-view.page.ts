@@ -29,7 +29,7 @@ export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this._destroy = new Subject<boolean>();
     this.activePage = 'info';
   }
-
+  
   ngAfterViewInit() {
     this.activePage = this.activeRoute.snapshot.params.tab;
     this.vineyardService.getVineyardsListener().pipe(

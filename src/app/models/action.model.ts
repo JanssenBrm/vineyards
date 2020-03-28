@@ -11,9 +11,9 @@ export interface Action {
 export enum ActionType {
     Planting = 'planting',
     Fertilizing = 'fertilizing',
-    Harvest = 'harvest',
-    Prune = 'prune',
     Observation = 'observation',
     BBCH = 'bbch',
-    Damage = 'damage'
+    Damage = 'damage',
+    Prune = 'prune',
+    Harvest = 'harvest',
 }
