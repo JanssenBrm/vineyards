@@ -5,6 +5,7 @@ export interface Action {
     description: string;
     pictures?: string[];
     varieties?: Variety[];
+    bbch?: string;
 }
 
 

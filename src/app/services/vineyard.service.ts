@@ -158,7 +158,16 @@ export class VineyardService {
       ...v,
       location: geoJSON.writeGeometry(v.location)
     })).forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
+  }
 
+  addAction(id: string, action: Action): void {
+    const vineyards: Vineyard[] = this._vineyards$.getValue().map((v: Vineyard) => v.id === id ? ({
+      ...v,
+      actions: [...v.actions, action]
+    }) : v);
+    console.log(vineyards);
+    this._vineyards$.next(vineyards);
+    this.saveVineyards([id]);
   }
 
 }

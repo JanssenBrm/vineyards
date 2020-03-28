@@ -1,5 +1,7 @@
+import { Modify } from 'ol/interaction/Modify';
+import { AddActionComponent } from './../add-action/add-action.component';
 import { Variety } from './../../models/variety.model';
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { Vineyard } from './../../models/vineyard.model';
 import { VineyardService } from './../../services/vineyard.service';
 import { Component, OnInit, Input, OnDestroy, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
@@ -30,7 +32,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   private actionTypes: string[] = Object.keys(ActionType);
 
-  constructor(public vineyardService: VineyardService, private platform: Platform) { }
+  constructor(public vineyardService: VineyardService, private platform: Platform, private modalController: ModalController) { }
 
   ngOnInit() {}
 
@@ -92,6 +94,19 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   getTotalCount(info: Vineyard, seasons: number[]): number {
     return info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : 0;
+  }
+
+  async openAddActionModal() {
+    const modal = await this.modalController.create({
+      component: AddActionComponent
+    });
+    modal.present();
+
+    const data = await modal.onWillDismiss();
+    if (data.data.action) {
+      this.vineyardService.addAction(this.vineyard.id, data.data.action);
+    }
+
   }
 
 }

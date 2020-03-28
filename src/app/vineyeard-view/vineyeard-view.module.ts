@@ -1,8 +1,9 @@
+import { AddActionComponent } from './add-action/add-action.component';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { ActionsComponent } from './actions/actions.component';
 import { NgModule } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -33,6 +34,7 @@ theme(Highcharts);
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     SharedModule,
     VineyeardViewPageRoutingModule
@@ -41,11 +43,15 @@ theme(Highcharts);
     VineyeardViewPage,
     InfoComponent,
     ActionsComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    AddActionComponent
   ],
   providers: [
     PhotoViewer,
     TitleCasePipe
+  ],
+  entryComponents: [
+    AddActionComponent
   ]
 })
 export class VineyeardViewPageModule {}
