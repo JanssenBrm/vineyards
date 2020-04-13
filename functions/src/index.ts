@@ -1,6 +1,8 @@
 import * as functions from 'firebase-functions';
 import {getVineyard, getVineyardLocation} from './services/utils.service';
 import {Vineyard} from './models/vineyard.model';
+import {Stats} from './models/stats.model';
+import {getMeteo} from './services/meteo.service';
 
 
 exports.getVineyards = functions.https.onRequest(async(req, res) => {
@@ -20,7 +22,11 @@ exports.updateTemp = functions.https.onRequest(async(req, res) => {
     } else {
         getVineyard(vineyardId).then((v: Vineyard) => {
             const location = getVineyardLocation(v);
-            res.status(200).send({ vineyards: location});
+            getMeteo(location[1], location[0], '20200101', '20200110')
+                .then((stats: Stats[]) => {
+                    res.status(200).send(stats);
+                });
+            ;//moment().format('YYYYMMDD'))
         }).catch((error) => {
             console.log(error);
             res.status(500).send({ error: 'Something went wrong when lookup of vineyard'});

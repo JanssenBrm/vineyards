@@ -21,7 +21,8 @@ export const getVineyard = (id: string): Promise<Vineyard> => {
                         varieties: data.varieties,
                         location: JSON.parse(data.location),
                         actions: data.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1),
-                        id: value.id
+                        id: value.id,
+                        stats: data.stats
                     });
                 }
 
@@ -30,9 +31,9 @@ export const getVineyard = (id: string): Promise<Vineyard> => {
     });
 };
 
-export const getVineyardLocation = (v: Vineyard): number[] | undefined => {
+export const getVineyardLocation = (v: Vineyard): number[] => {
     const center = turf.center(turf.polygon(v.location.coordinates));
-    return center.geometry ? center.geometry.coordinates : undefined;
+    return center.geometry ? center.geometry.coordinates : [];
 }
 
 

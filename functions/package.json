@@ -18,6 +18,8 @@
     "@turf/turf": "^5.1.6",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
+    "moment": "^2.24.0",
+    "rxjs": "^6.5.5",
     "turf": "^3.0.14"
   },
   "devDependencies": {
