@@ -1,4 +1,6 @@
+import {Moment} from 'moment';
+
 export interface Stats{
     type: string;
-    data: {date: string, value: number}[];
+    data: {date: Moment, value: number}[];
 }

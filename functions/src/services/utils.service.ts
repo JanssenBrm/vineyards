@@ -3,6 +3,8 @@ import {Action} from '../models/action.model';
 
 import * as admin from 'firebase-admin';
 import * as turf from '@turf/turf';
+import {Moment} from 'moment';
+import {Stats} from '../models/stats.model';
 
 admin.initializeApp();
 export const db = admin.firestore();
@@ -36,4 +38,12 @@ export const getVineyardLocation = (v: Vineyard): number[] => {
     return center.geometry ? center.geometry.coordinates : [];
 }
 
-
+export const getMissingStats = (stat: Stats, start: Moment, end: Moment): Moment[] => {
+    const missing: Moment[] = [];
+    for(const day = start; day.isSameOrBefore(end); day.add(1, 'days')){
+        if(!stat.data.find(s => s.date.isSame(day))){
+            missing.push(day);
+        }
+    }
+    return missing;
+}
