@@ -58,9 +58,11 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getStats(): void {
-        this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
-        [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
-        [...this.getActionTimelines(), ...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+        this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
+        if (this.vineyard) {
+            [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
+            [...this.getActionTimelines(), ...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+        }
     }
 
     getActionAxis(): any {
@@ -73,6 +75,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 text: 'Years',
             },
             categories: this.seasons,
+            opposite: false
         };
     }
 
@@ -85,7 +88,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
                 title: {
                     text: 'Temperature',
-                }
+                },
+                opposite: false
             },
             {
                 id: 'precipitation',
@@ -94,7 +98,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
                 title: {
                     text: 'Precipitation',
-                }
+                },
+                opposite: false
             }];
     }
 
@@ -107,7 +112,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
                 title: {
                     text: 'Degree days',
-                }
+                },
+                opposite: true,
             }];
     }
 
@@ -137,10 +143,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     getMeteoTimelines(): any[] {
         const years = this.vineyardService.getMeteoYears(this.vineyard);
         return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
+            id: `Temperature ${y}`,
             name: `Temperature ${y}`,
             type: 'spline',
             yAxis: 'temperature',
             color: 'red',
+            showInNavigator: true,
             tooltip: {
                 formatter(point) {
                     return `<span style="color:${point.color}">●</span>  <b>Temperature ${y}</b>: ${point.y} °C`;
@@ -152,10 +160,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             }))
         },
             {
+                id: `Precipitation ${y}`,
                 name: `Precipitation ${y}`,
                 type: 'bar',
                 yAxis: 'precipitation',
                 color: 'lightblue',
+                showInNavigator: true,
                 tooltip: {
                     formatter(point) {
                         return `<span style="color:${point.color}">●</span>  <b>Precipitation ${y}</b>: ${point.y.toFixed(2)} mm`;
@@ -173,10 +183,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         const years = this.vineyardService.getMeteoYears(this.vineyard);
         let degreeDaysSum = 0;
         return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
+            id: `Degree days ${y}`,
             name: `Degree days ${y}`,
-            type: 'spline',
+            type: 'line',
             yAxis: 'degreedays',
             color: 'darkred',
+            showInNavigator: true,
             tooltip: {
                 formatter(point) {
                     return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(2)} GGD`;

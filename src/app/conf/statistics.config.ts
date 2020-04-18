@@ -5,6 +5,10 @@ export let STATS_OPTIONS: any = {
       type: 'scatter',
       backgroundColor: 'rgba(0,0,0,0)'
     },
+    navigator: {
+        enabled: true,
+    },
+
     title: {
       text: null
     },
@@ -25,7 +29,6 @@ export let STATS_OPTIONS: any = {
     tooltip: {
       shared: true,
       formatter() {
-          console.log(this);
           return this.points ?
             `${Highcharts.dateFormat('%e %B', this.x)}<br/>${this.points.map(p => p.series.tooltipOptions.formatter(p)).join('<br/>')}`
             : `<b> ${Highcharts.dateFormat('%e %B', this.x)} - ${this.series.name}</b><br />${this.point.label}`;
