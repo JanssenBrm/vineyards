@@ -22,7 +22,7 @@ export const getVineyard = (id: string): Promise<Vineyard> => {
                         location: JSON.parse(data.location),
                         actions: data.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1),
                         id: value.id,
-                        meteo: data.mteo
+                        meteo: data.meteo
                     });
                 }
 

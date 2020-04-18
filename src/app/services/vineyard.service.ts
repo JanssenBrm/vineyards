@@ -6,8 +6,8 @@ import { Season } from './../models/season.model';
 import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap, map, take } from 'rxjs/operators';
+import {Observable, BehaviorSubject, of, forkJoin} from 'rxjs';
+import {switchMap, map, take, catchError, tap} from 'rxjs/operators';
 import { Action, ActionType } from '../models/action.model';
 import { environment } from 'src/environments/environment';
 import {AngularFirestore, DocumentReference, QueryDocumentSnapshot, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
@@ -22,6 +22,8 @@ export class VineyardService {
   private _activeVineyard$: BehaviorSubject<Vineyard>;
   private _activeSeasons$: BehaviorSubject<number[]>;
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
+
+  private _API: string = 'https://us-central1-winery-f4d20.cloudfunctions.net';
 
   constructor( private http: HttpClient, private utilService: UtilService, private fireStore: AngularFirestore) {
       this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
@@ -62,6 +64,7 @@ export class VineyardService {
             ...d,
           location: new Polygon(JSON.parse(d.location).coordinates).transform( 'EPSG:4326', 'EPSG:3857')
         }))),
+        tap((vineyards: Vineyard[]) => forkJoin(vineyards.map((v: Vineyard) => this.updateTempStats(v))).subscribe()),
         map((vineyards: Vineyard[]) => vineyards.map((v: Vineyard) => ({
           ...v,
           actions: v.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1)
@@ -74,6 +77,15 @@ export class VineyardService {
 
   getInfo(id: string): Vineyard {
     return this._vineyards$.getValue().find((v: Vineyard) => v.id === id);
+  }
+
+  updateTempStats(v: Vineyard): Observable<boolean> {
+      return this.http.get(`${this._API}/updateTemp?vineyardId=${v.id}`)
+          .pipe(
+              switchMap((data) => of(true)),
+              catchError((error) => of(false))
+          );
+
   }
 
 

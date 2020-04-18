@@ -12,8 +12,10 @@ export const getMeteo = (lat: number, lon: number, startdate: string, enddate: s
         const end = moment(enddate);
         const promisses: Promise<{date: string, temp: number, precip: number}> [] = [];
 
-        for (const day = start; day.isSameOrBefore(end); day.add(1, 'days')) {
-            promisses.push(getMeteoInfo(lat, lon, day.unix()))
+        if (!start.isSame(end)) {
+            for (const day = start; day.isSameOrBefore(end); day.add(1, 'days')) {
+                promisses.push(getMeteoInfo(lat, lon, day.unix()))
+            }
         }
         Promise.all(promisses).then((data: {date: string, temp: number, precip: number}[]) => {
             resolve({
@@ -28,7 +30,7 @@ export const getMeteoDates = (v: Vineyard) : { start: string, end: string} => {
     return {
         start: stat && stat.data ? stat.data[stat.data.length - 1].date : moment().year() + '0101',
         end:  moment().format('YYYYMMDD')
-    }
+    };
 }
 
 const getMeteoInfo = (lat: number, lon: number, date: number): Promise<{date: string, temp: number, precip: number}> => {
