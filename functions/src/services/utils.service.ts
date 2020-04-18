@@ -24,10 +24,23 @@ export const getVineyard = (id: string): Promise<Vineyard> => {
                         location: JSON.parse(data.location),
                         actions: data.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1),
                         id: value.id,
-                        stats: data.stats
+                        meteo: data.stats
                     });
                 }
 
+            })
+            .catch((reason: any) => reject(reason));
+    });
+};
+
+export const saveVineyard = (id: string, v:Vineyard): Promise<boolean> => {
+    return new Promise<boolean>((resolve, reject) => {
+        db.collection('vineyards').doc(id).set({
+            ...v,
+            location: JSON.stringify(v.location)
+        })
+            .then((value) => {
+               resolve(true);
             })
             .catch((reason: any) => reject(reason));
     });

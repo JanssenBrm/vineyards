@@ -1,6 +1,3 @@
-import {Moment} from 'moment';
-
-export interface Stats{
-    type: string;
-    data: {date: Moment, value: number}[];
+export interface MeteoStats{
+    data: {date: string, temp: number, precip: number}[];
 }
