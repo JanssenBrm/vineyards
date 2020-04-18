@@ -7,6 +7,9 @@ export let STATS_OPTIONS: any = {
     },
     navigator: {
         enabled: true,
+        series: {
+            type: 'spline',
+        }
     },
 
     title: {

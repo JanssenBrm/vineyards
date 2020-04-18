@@ -1,5 +1,10 @@
 <div class="header">
   <h1>Statistics</h1>
+  <div>
+    <ion-select multiple="true" [(ngModel)]="activeVarieties" (ionChange)="setVarieties()" *ngIf="vineyard">
+      <ion-select-option *ngFor="let variety of vineyard.varieties" [value]="variety.id">{{variety.name}}</ion-select-option>
+    </ion-select>
+  </div>
 </div>
   <div class="content" #content>
     <div id="graph-container">

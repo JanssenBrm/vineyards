@@ -10,6 +10,7 @@ import * as Highcharts from 'highcharts/highstock';
 import {Action} from 'src/app/models/action.model';
 import {TitleCasePipe} from '@angular/common';
 import * as moment from 'moment';
+import {Variety} from '../../models/variety.model';
 
 @Component({
     selector: 'app-statistics',
@@ -27,6 +28,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild('content', {static: false})
     content: ElementRef;
 
+    public activeVarieties: string[];
+
     constructor(private utilService: UtilService, private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) {
     }
 
@@ -36,8 +39,11 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if ((changes.vineyard) || (changes.seasons) && this.vineyard) {
-            this.getStats();
+        if ((changes.vineyard) || (changes.seasons)) {
+            if (this.vineyard) {
+                this.activeVarieties = this.vineyard.varieties.map((v: Variety) => v.id);
+                this.getStats();
+            }
         }
     }
 
@@ -58,11 +64,21 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getStats(): void {
-        this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
         if (this.vineyard) {
-            [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
-            [...this.getActionTimelines(), ...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+            if (this._chart) {
+                this._chart.series.forEach(s => s.remove(false));
+            } else {
+                this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
+                [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
+            }
+            [...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+            this.updateActionStats();
         }
+    }
+
+    updateActionStats() {
+        this._chart.series.filter(s => s.type === 'scatter').forEach(s => s.remove(false));
+        [...this.getActionTimelines()].forEach((s: any) => this._chart.addSeries(s));
     }
 
     getActionAxis(): any {
@@ -131,7 +147,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 lineColor: '#FFFFFF'
             },
             data: this.vineyardService.getActions(this.vineyard, [ActionType[a]])
-                .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0)
+                .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 && this.activeVarieties.filter(v => action.variety.indexOf(v) >= 0).length > 0)
                 .map((action: Action) => ({
                     label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.description}`,
                     x: this.getNormalizedDate(action.date),
@@ -185,7 +201,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
             id: `Degree days ${y}`,
             name: `Degree days ${y}`,
-            type: 'line',
+            type: 'spline',
             yAxis: 'degreedays',
             color: 'darkred',
             showInNavigator: true,
@@ -211,6 +227,10 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         const actDate: Date = new Date(date);
         actDate.setFullYear(2000);
         return actDate.getTime();
+    }
+
+    setVarieties() {
+        this.updateActionStats();
     }
 
 }
