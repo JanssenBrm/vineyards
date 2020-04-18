@@ -59,11 +59,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
 
     getStats(): void {
         this._chart = Highcharts.chart('graph-container', STATS_OPTIONS);
-        [this.getActionAxis(), ...this.getMeteoAxis()].forEach((a: any) => this._chart.addAxis(a));
-        [...this.getActionTimelines(), ...this.getMeteoTimelines()].forEach((s: any) => {
-            console.log(s);
-            this._chart.addSeries(s);
-        });
+        [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
+        [...this.getActionTimelines(), ...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
     }
 
     getActionAxis(): any {
@@ -101,6 +98,19 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             }];
     }
 
+    getAgriAxis(): any[] {
+        return [
+            {
+                id: 'degreedays',
+                labels: {
+                    format: '{value} GGD',
+                },
+                title: {
+                    text: 'Degree days',
+                }
+            }];
+    }
+
     getActionTimelines(): any[] {
         return Object.keys(ActionType).map((a: string) => ({
             name: `${a}`,
@@ -126,7 +136,6 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
 
     getMeteoTimelines(): any[] {
         const years = this.vineyardService.getMeteoYears(this.vineyard);
-        console.log(years);
         return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
             name: `Temperature ${y}`,
             type: 'spline',
@@ -157,6 +166,33 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                     y: e.precip
                 }))
             }])));
+    }
+
+    getAgriTimelines(): any[] {
+        const baseTemp = 10.0;
+        const years = this.vineyardService.getMeteoYears(this.vineyard);
+        let degreeDaysSum = 0;
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
+            name: `Degree days ${y}`,
+            type: 'spline',
+            yAxis: 'degreedays',
+            color: 'darkred',
+            tooltip: {
+                formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(2)} GGD`;
+                },
+            },
+            data: this.vineyardService.getMeteoByYears(this.vineyard, [y]).filter((e: MeteoStatEntry) => e.temp >= baseTemp).map((e: MeteoStatEntry, idx: number, array: MeteoStatEntry[]) => ({
+                date: e.date,
+                value: Math.ceil((e.temp - baseTemp) * 100) / 100
+            })).map((e: { date: string, value: number }, idx: number, results: ({ date: string, value: number })[]) => {
+                degreeDaysSum += e.value;
+                return {
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    y: degreeDaysSum
+                };
+            })
+        }])));
     }
 
     getNormalizedDate(date: string): number {
