@@ -25,7 +25,10 @@ export let STATS_OPTIONS: any = {
     tooltip: {
       shared: true,
       formatter() {
-        return `<b> ${Highcharts.dateFormat('%e %B', this.x)} - ${this.series.name}</b><br />${this.point.label}`;
+          console.log(this);
+          return this.points ?
+            `${Highcharts.dateFormat('%e %B', this.x)}<br/>${this.points.map(p => p.series.tooltipOptions.formatter(p)).join('<br/>')}`
+            : `<b> ${Highcharts.dateFormat('%e %B', this.x)} - ${this.series.name}</b><br />${this.point.label}`;
       },
   },
     series: []

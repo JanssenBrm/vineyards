@@ -1,6 +1,6 @@
 import { Polygon } from 'ol/geom';
 import { VineyardDoc } from './../models/vineyarddoc.model';
-import { Vineyard } from './../models/vineyard.model';
+import {MeteoStatEntry, Vineyard} from './../models/vineyard.model';
 import { Variety } from './../models/variety.model';
 import { Season } from './../models/season.model';
 import { UtilService } from './util.service';
@@ -12,6 +12,7 @@ import { Action, ActionType } from '../models/action.model';
 import { environment } from 'src/environments/environment';
 import {AngularFirestore, DocumentReference, QueryDocumentSnapshot, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
 import { GeoJSON } from 'ol/format';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -176,4 +177,11 @@ export class VineyardService {
     return this.getVariety(info, action.variety).map((v: Variety) => v.name).join(', ');
   }
 
+  getMeteoYears(info: Vineyard): number[] {
+      return info && info.meteo && info.meteo.data ? [...new Set(info.meteo.data.map((e: MeteoStatEntry) => moment(e.date).year()))] : [];
+  }
+
+  getMeteoByYears(info: Vineyard, years: number[]): MeteoStatEntry[] {
+      return info && info.meteo && info.meteo.data ? info.meteo.data.filter((e: MeteoStatEntry) => years.indexOf(moment(e.date).year()) >= 0) : [];
+  }
 }
