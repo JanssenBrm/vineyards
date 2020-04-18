@@ -78,6 +78,7 @@
         .text {
           display: flex;
           flex-direction: column;
+          justify-content: flex-start;
         
           .title{
             font-weight: bold;
