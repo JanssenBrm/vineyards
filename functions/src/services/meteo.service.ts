@@ -66,14 +66,14 @@ export const updateMeteoStats = (v: Vineyard, meteo: MeteoStats): Vineyard => {
     const stat = v.meteo && v.meteo.data ? v.meteo : { data: [] };
     // If the stat already exists, replace existing and add new
     meteo.data.forEach((entry: {date: string, temp: number, precip: number}) => {
-        const existing = stat!.data.find((sV) => sV.date === entry.date);
+        const existing = stat.data.find((sV) => sV.date === entry.date);
         if (existing) {
             // Replace the value if the date already exists
             existing.temp = entry.temp;
             existing.precip = entry.precip;
         } else {
             // Add the value when the date is new
-            stat!.data.push(entry);
+            stat.data.push(entry);
         }
     });
     v.meteo = stat;

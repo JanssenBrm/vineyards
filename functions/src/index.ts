@@ -35,6 +35,10 @@ exports.updateTemp = functions.https.onRequest(async(req, res) => {
                             res.status(500).send({ error: 'Something went wrong when saving vineyard'})
                         })
 
+                })
+                .catch((error) => {
+                    console.error(error);
+                    res.status(500).send({ error: 'Something went wrong when retrieving meteo stats'})
                 });
             ;
         }).catch((error) => {
