@@ -15,6 +15,7 @@ import { InfoComponent } from './info/info.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 
 import * as Highcharts from 'highcharts';
+import {VintagesComponent} from './vintages/vintages.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -44,7 +45,8 @@ theme(Highcharts);
     InfoComponent,
     ActionsComponent,
     StatisticsComponent,
-    AddActionComponent
+    AddActionComponent,
+      VintagesComponent
   ],
   providers: [
     PhotoViewer,

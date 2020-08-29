@@ -13,6 +13,10 @@
               <ion-icon name="time"></ion-icon>
               <ion-label>History</ion-label>
             </ion-tab-button>
+              <ion-tab-button (click)="openTab('vintages')" [selected]="activePage === 'vintages'">
+                  <ion-icon name="wine-outline"></ion-icon>
+                  <ion-label>Vintage</ion-label>
+              </ion-tab-button>
             <ion-tab-button (click)="openTab('stats')" [selected]="activePage === 'stats'">
                 <ion-icon name="stats-chart"></ion-icon>
                 <ion-label>Statistics</ion-label>
@@ -24,5 +28,6 @@
     <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-info>
     <app-actions *ngIf="activePage === 'actions'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-actions>
     <app-statistics *ngIf="activePage === 'stats'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-statistics>
+      <app-vintages *ngIf="activePage === 'vintages'" ></app-vintages>
   </div>
 </ion-content>
