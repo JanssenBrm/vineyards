@@ -35,6 +35,7 @@ export class AddActionComponent implements OnInit {
       variety: new FormControl(''),
       rows: new FormControl(''),
       plantsPerRow: new FormControl(''),
+      value: new FormControl('')
     });
 
     this.actionForm.get('type').valueChanges.subscribe((type: string) => {
@@ -45,11 +46,14 @@ export class AddActionComponent implements OnInit {
         this.actionForm.get('variety').setValidators([Validators.required]);
         this.actionForm.get('rows').setValidators([Validators.required]);
         this.actionForm.get('plantsPerRow').setValidators([Validators.required]);
+      }  else if (type === 'Brix') {
+        this.actionForm.get('value').setValidators([Validators.required]);
       } else {
         this.actionForm.get('bbch').setValidators(null);
         this.actionForm.get('variety').setValidators(null);
         this.actionForm.get('rows').setValidators(null);
         this.actionForm.get('plantsPerRow').setValidators(null);
+        this.actionForm.get('value').setValidators(null);
         this.actionForm.get('varietyId').setValidators([Validators.required]);
       }
     });

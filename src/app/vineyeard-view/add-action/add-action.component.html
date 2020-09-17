@@ -46,6 +46,10 @@
         <ion-label position="stacked">Plants per row</ion-label>
         <ion-input type="number" required formControlName="plantsPerRow"></ion-input>
       </ion-item>
+      <ion-item  *ngIf="actionForm.value.type === 'Brix'" class="col">
+        <ion-label position="stacked">Brix</ion-label>
+        <ion-input type="number" required formControlName="value"></ion-input>
+      </ion-item>
       <ion-item>
         <ion-label position="stacked">Description</ion-label>
         <ion-textarea formControlName="description"></ion-textarea>

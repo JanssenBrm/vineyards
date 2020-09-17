@@ -10,6 +10,7 @@
           <span class="remove"><ion-icon name="trash" (click)="removeAction(activity)"></ion-icon></span>
           <p class="marginTop5 cd-author">{{activity.date | date: "dd MMMM yyyy"}}</p>
           <p class="variety" *ngIf="activity.variety">{{ vineyardService.getVarietiesLabel(vineyard, activity)}}</p>
+          <p class="timelineText"  *ngIf="activity.type === 'brix'">{{activity.value}} degrees ({{activity.value | brixToAlcohol }}%)</p>
           <p class="timelineText"  *ngIf="activity.description">{{activity.description}}</p>
           <p class="timelineText" *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
           <p class="timelineText" *ngIf="activity.type === 'planting'">

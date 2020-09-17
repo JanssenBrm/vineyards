@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { VineyeardViewPage } from './vineyeard-view.page';
+import {BrixToAlcoholPipe} from '../pipes/brix-to-alcohol.pipe';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  declarations: [BrixToAlcoholPipe],
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule, BrixToAlcoholPipe],
 })
 export class VineyeardViewPageRoutingModule {}

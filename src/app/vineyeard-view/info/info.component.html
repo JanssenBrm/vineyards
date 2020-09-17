@@ -36,6 +36,7 @@
                 <span class="title">{{action.date | date: "dd MMMM yyyy"}}</span>
                 <span class="description">{{action.description}}</span>
                 <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>
+                <span class="description" *ngIf="action.type === 'brix'">{{action.value}} ({{action.value | brixToAlcohol}}%)</span>
                 <span class="description" *ngIf="action.type === 'planting'">{{vineyardService.getVariety(vineyard, action.variety)[0].rows * vineyardService.getVariety(vineyard, action.variety)[0].plantsPerRow}} plants</span>
                 <span class="description variety" *ngIf="action.variety">
                     {{vineyardService.getVarietiesLabel(vineyard, action)}}

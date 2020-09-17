@@ -5,6 +5,7 @@ export interface Action {
     description: string;
     bbch?: string;
     variety?: string[];
+    value?: number;
 }
 
 
@@ -16,4 +17,5 @@ export enum ActionType {
     Damage = 'damage',
     Prune = 'prune',
     Harvest = 'harvest',
+    Brix = 'brix'
 }
