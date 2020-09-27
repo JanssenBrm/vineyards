@@ -1,6 +1,6 @@
 
 export interface Vintage {
     year: number;
-    name?: string;
+    name: string;
     varieties: string[];
 }

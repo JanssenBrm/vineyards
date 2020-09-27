@@ -25,7 +25,7 @@ export class AddVintageComponent implements OnInit {
     this.vintageForm = new FormGroup({
       year: new FormControl('', [Validators.required]),
       name: new FormControl(''),
-      varietyId: new FormControl([]),
+      varieties: new FormControl([]),
     });
 
   }

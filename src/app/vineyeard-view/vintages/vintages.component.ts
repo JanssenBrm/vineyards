@@ -1,25 +1,38 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {AddActionComponent} from '../add-action/add-action.component';
 import {ModalController} from '@ionic/angular';
 import {Vineyard} from '../../models/vineyard.model';
 import {AddVintageComponent} from '../add-vintage/add-vintage.component';
 import {Vintage} from '../../models/vintage.model';
+import {VintageService} from '../../services/vintage.service';
+import {BehaviorSubject} from 'rxjs';
+import {VineyardService} from '../../services/vineyard.service';
 
 @Component({
   selector: 'app-vintages',
   templateUrl: './vintages.component.html',
   styleUrls: ['./vintages.component.scss'],
 })
-export class VintagesComponent implements OnInit {
+export class VintagesComponent implements OnChanges {
 
   @Input()
   vineyard: Vineyard;
 
-  constructor(
-      private modalController: ModalController
-  ) { }
+  public vintages$: BehaviorSubject<Vintage[]> = null;
 
-  ngOnInit() {}
+  constructor(
+      private modalController: ModalController,
+      public vintageService: VintageService,
+      public vineyardService: VineyardService
+  ) {
+    this.vintages$ = this.vintageService.getVintageListener();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.vineyard && this.vineyard) {
+      this.vintageService.getVintages(this.vineyard);
+    }
+  }
 
   async openAddVintageModal() {
     const modal = await this.modalController.create({
@@ -37,7 +50,7 @@ export class VintagesComponent implements OnInit {
   }
 
   private parseVintage(vintage: Vintage) {
-    console.log("PARSING VINTAGE", vintage);
+    this.vintageService.addVintage(this.vineyard, vintage);
   }
 
 }

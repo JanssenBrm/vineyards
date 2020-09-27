@@ -1,7 +1,15 @@
 <div class="container">
   <div class="sidebar">
     <div class="list">
-
+      <ion-list>
+        <ion-item *ngFor="let vintage of (vintages$ | async)">
+          <ion-label>
+            <div class="title">{{vintage.name}}</div>
+            <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{vintage.year}}</div>
+            <div class="variety"><img class="icon" src="assets/icon/grape.png" />{{vineyardService.getVintageVarietiesLabel(vineyard, vintage)}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </div>
     <div class="footer">
       <ion-button (click)="openAddVintageModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add vintage</ion-label></ion-button>
