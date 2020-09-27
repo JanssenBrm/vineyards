@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add vintage</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="vintageForm">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label position="stacked">Name</ion-label>
+        <ion-input type="text" required formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Year</ion-label>
+        <ion-datetime required formControlName="year" displayFormat="YYYY" pickerFormat="YYYY"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Variety</ion-label>
+        <ion-select required  multiple="true"  formControlName="varietyId">
+          <ion-select-option *ngFor="let variety of vineyard.varieties" [value]="variety.id">{{
+            variety.name
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+            slot="end"
+            color="primary"
+            [disabled]="!vintageForm.valid"
+            (click)="save()"
+    >Save</ion-button
+    >
+    <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
+  </ion-toolbar>
+</ion-footer>

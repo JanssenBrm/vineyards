@@ -28,6 +28,6 @@
     <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-info>
     <app-actions *ngIf="activePage === 'actions'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-actions>
     <app-statistics *ngIf="activePage === 'stats'" [vineyard]="activeVineyard" [seasons]="activeSeasons"></app-statistics>
-      <app-vintages *ngIf="activePage === 'vintages'" ></app-vintages>
+      <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" ></app-vintages>
   </div>
 </ion-content>

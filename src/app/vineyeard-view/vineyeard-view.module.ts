@@ -1,21 +1,22 @@
-import { AddActionComponent } from './add-action/add-action.component';
-import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
-import { ActionsComponent } from './actions/actions.component';
-import { NgModule } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {AddActionComponent} from './add-action/add-action.component';
+import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
+import {ActionsComponent} from './actions/actions.component';
+import {NgModule} from '@angular/core';
+import {CommonModule, TitleCasePipe} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { VineyeardViewPageRoutingModule } from './vineyeard-view-routing.module';
+import {VineyeardViewPageRoutingModule} from './vineyeard-view-routing.module';
 
-import { VineyeardViewPage } from './vineyeard-view.page';
-import { SharedModule } from '../shared/shared.module';
-import { InfoComponent } from './info/info.component';
-import { StatisticsComponent } from './statistics/statistics.component';
+import {VineyeardViewPage} from './vineyeard-view.page';
+import {SharedModule} from '../shared/shared.module';
+import {InfoComponent} from './info/info.component';
+import {StatisticsComponent} from './statistics/statistics.component';
 
 import * as Highcharts from 'highcharts';
 import {VintagesComponent} from './vintages/vintages.component';
+import {AddVintageComponent} from './add-vintage/add-vintage.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -46,14 +47,17 @@ theme(Highcharts);
     ActionsComponent,
     StatisticsComponent,
     AddActionComponent,
-      VintagesComponent
+    AddVintageComponent,
+    VintagesComponent
   ],
   providers: [
     PhotoViewer,
     TitleCasePipe
   ],
   entryComponents: [
-    AddActionComponent
+    AddActionComponent,
+    AddVintageComponent
   ]
 })
-export class VineyeardViewPageModule {}
+export class VineyeardViewPageModule {
+}
