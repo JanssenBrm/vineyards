@@ -30,8 +30,6 @@ Paddings and margins
   
   .cd-container {
     /* this class is used to give a max-width to the element it is applied to, and center it horizontally when it reaches that max-width */
-    width: 93%;
-    max-width: 1170px;
     margin: 0 auto;
   }
   
@@ -65,14 +63,22 @@ Paddings and margins
     color: gray;
     margin-top: 0 !important;
     margin-bottom: 0!important;
+    display: flex;
+    align-items: end;
+
+    .icon {
+      height: 16px;
+      width: 16px;
+      margin-right: .5rem;
+    }
   }
 
   .variety {
-    margin-top: 1rem !important;
+    margin-bottom: .5rem !important;
   }
 
 
-  .cd-author {
+  .cd-author, .variety {
     font-size: smaller !important;
   }
   
@@ -120,7 +126,7 @@ Paddings and margins
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border-color: #4a87ee;
+    border-color: #606060;
     border-style: solid;
     border-width: 2px;
     padding-top: 5px;
@@ -129,7 +135,7 @@ Paddings and margins
   }
   
   .cd-timeline-icon i {
-    color: #4a87ee;
+    color: #606060;
   }
   
   .cd-timeline-picture {
@@ -139,7 +145,7 @@ Paddings and margins
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border-color: #4a87ee;
+    border-color: #606060;
     border-style: solid;
     border-width: 2px;
     background: white;
@@ -160,7 +166,7 @@ Paddings and margins
     border-radius: 0.25em;
     border-color: #BDDFB3;
     border-style: solid;
-    border-width: 2px;
+    border-width: 0px;
     margin-bottom: 10px;
     padding: 10px;
   }
@@ -258,18 +264,20 @@ Paddings and margins
   /*ROYAL*/
   
   .royal {
-    border-color: var(--ion-color-primary);
+    border-color: #606060;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   }
   
   .royal img {
-    color: var(--ion-color-primary);
+    color: #606060;
     height: 24px;
   }
 
   .title {
-      color: var(--ion-color-primary);
+      color: #606060;
       font-weight: bold;
+    font-variant: all-small-caps;
+    margin-bottom: .25rem;
   }
   
   
