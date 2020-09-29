@@ -7,6 +7,8 @@ import {map, switchMap, tap} from 'rxjs/operators';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {Action} from '../models/action.model';
 
+export const VINTAGE_COLLECTION = 'vintages';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +16,6 @@ export class VintageService {
 
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
   private _vintages: BehaviorSubject<Vintage[]>;
-  private  VINTAGE_COLLECTION = 'vintages';
 
   constructor(private fireStore: AngularFirestore) {
     this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
@@ -26,13 +27,14 @@ export class VintageService {
   }
 
   public addVintage(vineyard: Vineyard, vintage: Vintage): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(this.VINTAGE_COLLECTION).add(vintage);
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).add(vintage);
   }
 
   public getVintages(vineyard: Vineyard): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(this.VINTAGE_COLLECTION).snapshotChanges().pipe(
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).snapshotChanges().pipe(
         map((data: DocumentChangeAction<Vintage>[]) => data.map((d: DocumentChangeAction<Vintage>) => (
             {
+              id: d.payload.doc.id,
               ...d.payload.doc.data()
             })))
     ).subscribe((vintages: Vintage[]) => this._vintages.next(vintages));

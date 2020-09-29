@@ -17,6 +17,7 @@ import {StatisticsComponent} from './statistics/statistics.component';
 import * as Highcharts from 'highcharts';
 import {VintagesComponent} from './vintages/vintages.component';
 import {AddVintageComponent} from './add-vintage/add-vintage.component';
+import {AddNoteComponent} from './add-note/add-note.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -33,31 +34,33 @@ noData(Highcharts);
 theme(Highcharts);
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    SharedModule,
-    VineyeardViewPageRoutingModule
-  ],
-  declarations: [
-    VineyeardViewPage,
-    InfoComponent,
-    ActionsComponent,
-    StatisticsComponent,
-    AddActionComponent,
-    AddVintageComponent,
-    VintagesComponent
-  ],
-  providers: [
-    PhotoViewer,
-    TitleCasePipe
-  ],
-  entryComponents: [
-    AddActionComponent,
-    AddVintageComponent
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        SharedModule,
+        VineyeardViewPageRoutingModule
+    ],
+    declarations: [
+        VineyeardViewPage,
+        InfoComponent,
+        ActionsComponent,
+        StatisticsComponent,
+        AddActionComponent,
+        AddVintageComponent,
+        VintagesComponent,
+        AddNoteComponent
+    ],
+    providers: [
+        PhotoViewer,
+        TitleCasePipe
+    ],
+    entryComponents: [
+        AddActionComponent,
+        AddVintageComponent,
+        AddNoteComponent
+    ]
 })
 export class VineyeardViewPageModule {
 }

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add note</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="noteForm">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label position="stacked">Date</ion-label>
+        <ion-datetime required formControlName="date"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Stage</ion-label>
+        <ion-select required  formControlName="stage">
+          <ion-select-option *ngFor="let stage of STAGES" [value]="stage">{{
+            VINTAGE_STAGES[stage]
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea formControlName="description"></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+            slot="end"
+            color="primary"
+            [disabled]="!noteForm.valid"
+            (click)="save()"
+    >Save</ion-button
+    >
+    <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -7,6 +7,10 @@ import {Vintage} from '../../models/vintage.model';
 import {VintageService} from '../../services/vintage.service';
 import {BehaviorSubject} from 'rxjs';
 import {VineyardService} from '../../services/vineyard.service';
+import {Note} from '../../models/note.model';
+import {NotesService} from '../../services/notes.service';
+import {AddNoteComponent} from '../add-note/add-note.component';
+import {VintageStage} from '../../models/stage.model';
 
 @Component({
   selector: 'app-vintages',
@@ -18,14 +22,21 @@ export class VintagesComponent implements OnChanges {
   @Input()
   vineyard: Vineyard;
 
+  vintage: Vintage;
+
   public vintages$: BehaviorSubject<Vintage[]> = null;
+  public notes$: BehaviorSubject<Note[]> = null;
+
+  STAGE = VintageStage;
 
   constructor(
       private modalController: ModalController,
       public vintageService: VintageService,
-      public vineyardService: VineyardService
+      public vineyardService: VineyardService,
+      public notesService: NotesService
   ) {
     this.vintages$ = this.vintageService.getVintageListener();
+    this.notes$ = this.notesService.getNotesListener();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -51,6 +62,28 @@ export class VintagesComponent implements OnChanges {
 
   private parseVintage(vintage: Vintage) {
     this.vintageService.addVintage(this.vineyard, vintage);
+  }
+
+  async openAddNoteModal() {
+    const modal = await this.modalController.create({
+      component: AddNoteComponent,
+      componentProps: {}
+    });
+    modal.present();
+
+    const data = await modal.onWillDismiss();
+    if (data.data.note) {
+      this.parseNote(data.data.note);
+    }
+  }
+
+  private parseNote(note: Note) {
+    this.notesService.addNote(this.vineyard, this.vintage, note);
+  }
+
+  setVintage(vintage: Vintage) {
+    this.vintage = vintage;
+    this.notesService.getNotes(this.vineyard, this.vintage);
   }
 
 }
