@@ -24,7 +24,7 @@ export class UploadService {
     const task = ref.put(file);
     return task.snapshotChanges().pipe(
         skipWhile((change: UploadTaskSnapshot) => change.bytesTransferred !== change.totalBytes),
-        delay(100),
+        delay(1000),
         switchMap( (change: UploadTaskSnapshot) => ref.getDownloadURL())
     );
   }

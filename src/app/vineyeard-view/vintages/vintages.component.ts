@@ -64,12 +64,13 @@ export class VintagesComponent implements OnChanges {
     this.vintageService.addVintage(this.vineyard, vintage);
   }
 
-  async openAddNoteModal() {
+  async openAddNoteModal(note?: Note) {
     const modal = await this.modalController.create({
       component: AddNoteComponent,
       componentProps: {
         vineyard: this.vineyard,
-        vintage: this.vintage
+        vintage: this.vintage,
+        note
       }
     });
     modal.present();
@@ -81,7 +82,7 @@ export class VintagesComponent implements OnChanges {
   }
 
   private parseNote(note: Note) {
-    this.notesService.addNote(this.vineyard, this.vintage, note);
+    note.id ?  this.notesService.updateNote(this.vineyard, this.vintage, note) : this.notesService.addNote(this.vineyard, this.vintage, note);
   }
 
   setVintage(vintage: Vintage) {
@@ -91,6 +92,10 @@ export class VintagesComponent implements OnChanges {
 
   deleteNote(note: Note) {
     this.notesService.removeNote(this.vineyard, this.vintage, note);
+  }
+
+  editNote(note: Note) {
+    this.openAddNoteModal(note);
   }
 
 }

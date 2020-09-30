@@ -8,6 +8,7 @@ import {mergeAll, mergeMap, switchMap} from 'rxjs/operators';
 import {Vineyard} from '../../models/vineyard.model';
 import {Vintage} from '../../models/vintage.model';
 import {forkJoin, merge, of} from 'rxjs';
+import {Note} from '../../models/note.model';
 
 @Component({
   selector: 'app-add-note',
@@ -21,6 +22,9 @@ export class AddNoteComponent implements OnInit {
 
   @Input()
   vintage: Vintage;
+
+  @Input()
+  note: Note;
 
   public VINTAGE_STAGES = VintageStage;
   public STAGES = Object.keys(VintageStage);
@@ -38,12 +42,22 @@ export class AddNoteComponent implements OnInit {
 
   ngOnInit() {
     this._files = [];
-    this.noteForm = new FormGroup({
-      date: new FormControl('', [Validators.required]),
-      stage: new FormControl(''),
-      description: new FormControl('', [Validators.required]),
-      files: new FormControl([], )
-    });
+
+    if (this.note) {
+      this.noteForm = new FormGroup({
+        date: new FormControl(this.note.date, [Validators.required]),
+        stage: new FormControl(this.note.stage),
+        description: new FormControl(this.note.description, [Validators.required]),
+        files: new FormControl([this.note.files])
+      });
+    } else {
+      this.noteForm = new FormGroup({
+        date: new FormControl('', [Validators.required]),
+        stage: new FormControl(''),
+        description: new FormControl('', [Validators.required]),
+        files: new FormControl([])
+      });
+    }
   }
 
   readFile(filelist: FileList) {
@@ -60,7 +74,11 @@ export class AddNoteComponent implements OnInit {
         this.closeDialog(urls);
       });
     } else {
-      this.closeDialog([]);
+      if (this.note) {
+        this.closeDialog(this.note.files);
+      } else {
+        this.closeDialog([]);
+      }
     }
   }
 
@@ -78,10 +96,10 @@ export class AddNoteComponent implements OnInit {
   closeDialog(files: string[]) {
     this.modalController.dismiss({
       note: {
-        id: undefined,
+        id: this.note ? this.note.id : '',
         ...this.noteForm.value,
         date: this.noteForm.value.date.split('T')[0],
-        files: files
+        files
       }});
   }
 

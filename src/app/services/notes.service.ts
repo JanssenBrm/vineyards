@@ -31,6 +31,10 @@ export class NotesService {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).add(note);
   }
 
+  public updateNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).doc(note.id).set(note);
+  }
+
   public removeNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).doc(note.id).delete();
   }
@@ -39,8 +43,8 @@ export class NotesService {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).snapshotChanges().pipe(
         map((data: DocumentChangeAction<Note>[]) => data.map((d: DocumentChangeAction<Note>) => (
             {
+              ...d.payload.doc.data(),
               id: d.payload.doc.id,
-              ...d.payload.doc.data()
             })))
     ).subscribe((notes: Note[]) => this._notes.next(notes));
   }
