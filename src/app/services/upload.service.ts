@@ -3,7 +3,7 @@ import {FormControl} from '@angular/forms';
 import {Observable, of} from 'rxjs';
 import {FileChangeEvent} from '@angular/compiler-cli/src/perform_watch';
 import {AngularFireStorage} from '@angular/fire/storage';
-import {finalize, skipWhile, switchMap, tap} from 'rxjs/operators';
+import {delay, finalize, skipWhile, switchMap, tap} from 'rxjs/operators';
 import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
 
 @Injectable({
@@ -24,6 +24,7 @@ export class UploadService {
     const task = ref.put(file);
     return task.snapshotChanges().pipe(
         skipWhile((change: UploadTaskSnapshot) => change.bytesTransferred !== change.totalBytes),
+        delay(100),
         switchMap( (change: UploadTaskSnapshot) => ref.getDownloadURL())
     );
   }

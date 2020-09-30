@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {VintageStage} from '../../models/stage.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
-import {ModalController} from '@ionic/angular';
+import {LoadingController, ModalController} from '@ionic/angular';
 import {UploadService} from '../../services/upload.service';
 import {mergeAll, mergeMap, switchMap} from 'rxjs/operators';
 import {Vineyard} from '../../models/vineyard.model';
@@ -28,10 +28,12 @@ export class AddNoteComponent implements OnInit {
   public noteForm: FormGroup;
 
   private _files: File[];
+  private _loading: HTMLIonLoadingElement;
 
   constructor(
       private modalController: ModalController,
-      private uploadService: UploadService
+      private uploadService: UploadService,
+      private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -50,14 +52,27 @@ export class AddNoteComponent implements OnInit {
 
   save() {
     if (this._files.length > 0) {
+      this.presentLoading();
       forkJoin(
           this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/${this.vintage.id}/notes/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
       ).subscribe((urls: string[]) => {
+        this.hideLoading();
         this.closeDialog(urls);
       });
     } else {
       this.closeDialog([]);
     }
+  }
+
+  async presentLoading() {
+    this._loading = await this.loadingController.create({
+      message: 'Creating note...',
+    });
+    this._loading.present();
+  }
+
+  async hideLoading() {
+    this._loading.dismiss();
   }
 
   closeDialog(files: string[]) {
