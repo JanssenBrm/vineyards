@@ -2,6 +2,7 @@ import {VintageStage} from './stage.model';
 
 export interface Note {
     date: string;
-    stage?: VintageStage;
+    stage: VintageStage;
     description: string;
+    files: string[];
 }

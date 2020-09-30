@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {VintageStage} from '../../models/stage.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import {ModalController} from '@ionic/angular';
+import {UploadService} from '../../services/upload.service';
+import {mergeAll, mergeMap, switchMap} from 'rxjs/operators';
+import {Vineyard} from '../../models/vineyard.model';
+import {Vintage} from '../../models/vintage.model';
+import {forkJoin, merge, of} from 'rxjs';
 
 @Component({
   selector: 'app-add-note',
@@ -11,28 +16,56 @@ import {ModalController} from '@ionic/angular';
 })
 export class AddNoteComponent implements OnInit {
 
+  @Input()
+  vineyard: Vineyard;
+
+  @Input()
+  vintage: Vintage;
+
   public VINTAGE_STAGES = VintageStage;
   public STAGES = Object.keys(VintageStage);
 
   public noteForm: FormGroup;
 
+  private _files: File[];
+
   constructor(
-      private modalController: ModalController
+      private modalController: ModalController,
+      private uploadService: UploadService
   ) { }
 
   ngOnInit() {
+    this._files = [];
     this.noteForm = new FormGroup({
       date: new FormControl('', [Validators.required]),
       stage: new FormControl(''),
       description: new FormControl('', [Validators.required]),
+      files: new FormControl([], )
     });
   }
 
+  readFile(filelist: FileList) {
+    this._files = this.uploadService.readFileList(filelist);
+  }
+
   save() {
+    if (this._files.length > 0) {
+      forkJoin(
+          this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/${this.vintage.id}/notes/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
+      ).subscribe((urls: string[]) => {
+        this.closeDialog(urls);
+      });
+    } else {
+      this.closeDialog([]);
+    }
+  }
+
+  closeDialog(files: string[]) {
     this.modalController.dismiss({
       note: {
         ...this.noteForm.value,
         date: this.noteForm.value.date.split('T')[0],
+        files: files
       }});
   }
 

@@ -67,7 +67,10 @@ export class VintagesComponent implements OnChanges {
   async openAddNoteModal() {
     const modal = await this.modalController.create({
       component: AddNoteComponent,
-      componentProps: {}
+      componentProps: {
+        vineyard: this.vineyard,
+        vintage: this.vintage
+      }
     });
     modal.present();
 

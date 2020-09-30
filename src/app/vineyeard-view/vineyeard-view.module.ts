@@ -18,6 +18,8 @@ import * as Highcharts from 'highcharts';
 import {VintagesComponent} from './vintages/vintages.component';
 import {AddVintageComponent} from './add-vintage/add-vintage.component';
 import {AddNoteComponent} from './add-note/add-note.component';
+import {UploadService} from '../services/upload.service';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -40,7 +42,7 @@ theme(Highcharts);
         ReactiveFormsModule,
         IonicModule,
         SharedModule,
-        VineyeardViewPageRoutingModule
+        VineyeardViewPageRoutingModule,
     ],
     declarations: [
         VineyeardViewPage,
@@ -54,7 +56,8 @@ theme(Highcharts);
     ],
     providers: [
         PhotoViewer,
-        TitleCasePipe
+        TitleCasePipe,
+        UploadService
     ],
     entryComponents: [
         AddActionComponent,
