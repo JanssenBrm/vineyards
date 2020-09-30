@@ -78,6 +78,7 @@ export class AddNoteComponent implements OnInit {
   closeDialog(files: string[]) {
     this.modalController.dismiss({
       note: {
+        id: undefined,
         ...this.noteForm.value,
         date: this.noteForm.value.date.split('T')[0],
         files: files

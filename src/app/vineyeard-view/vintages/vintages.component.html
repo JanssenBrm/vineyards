@@ -19,7 +19,7 @@
     <div *ngIf="vintage">
       <h1>Notes</h1>
       <div *ngFor="let note of (notes$ | async)" class="note">
-        <div class="title">{{note.date | date}}</div>
+        <div class="title"><span>{{note.date | date}}</span><span><ion-icon name="trash-outline"  (click)="deleteNote(note)"></ion-icon></span></div>
         <div class="stage">{{STAGE[note.stage]}}</div>
         <div class="description">{{note.description}}</div>
       </div>

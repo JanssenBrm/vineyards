@@ -89,4 +89,8 @@ export class VintagesComponent implements OnChanges {
     this.notesService.getNotes(this.vineyard, this.vintage);
   }
 
+  deleteNote(note: Note) {
+    this.notesService.removeNote(this.vineyard, this.vintage, note);
+  }
+
 }

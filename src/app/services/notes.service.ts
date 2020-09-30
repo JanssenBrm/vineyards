@@ -31,10 +31,15 @@ export class NotesService {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).add(note);
   }
 
+  public removeNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).doc(note.id).delete();
+  }
+
   public getNotes(vineyard: Vineyard, vintage: Vintage): void {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).collection<Note>(NOTE_COLLECTION).snapshotChanges().pipe(
         map((data: DocumentChangeAction<Note>[]) => data.map((d: DocumentChangeAction<Note>) => (
             {
+              id: d.payload.doc.id,
               ...d.payload.doc.data()
             })))
     ).subscribe((notes: Note[]) => this._notes.next(notes));
