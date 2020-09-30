@@ -31,6 +31,21 @@
   font-size: x-large;
 }
 
+.footer {
+  display: flex;
+  flex-direction: column;
+
+  .description {
+    width: 100%;
+  }
+  .files {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
 .year, .variety {
   font-size: smaller !important;
   color: gray;
