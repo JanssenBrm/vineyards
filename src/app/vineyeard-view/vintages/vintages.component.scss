@@ -1,13 +1,17 @@
+:host {
+  height: 100%;
+  display: flex;
+}
+
 .container {
   display: flex;
   width: 100%;
-  height: 94%;
 
   .sidebar{
     width: 30%;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    overflow: hidden;
 
     .list {
       flex: 1;
