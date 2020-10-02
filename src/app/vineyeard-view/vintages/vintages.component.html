@@ -17,21 +17,7 @@
   </div>
   <div class="content">
     <div *ngIf="vintage">
-      <h1>Notes</h1>
-      <div *ngFor="let note of (notes$ | async)" class="note">
-        <div class="title"><span>{{note.date | date}}</span><span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span></div>
-        <div class="stage">{{STAGE[note.stage]}}</div>
-        <div class="footer">
-          <div class="description">{{note.description}}</div>
-          <div class="files">
-            <div class="file" *ngFor="let file of note.files">
-              <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <ion-button (click)="openAddNoteModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add note</ion-label></ion-button>
+      <app-notes [vineyard]="vineyard" [vintage]="vintage"></app-notes>
     </div>
   </div>
 </div>

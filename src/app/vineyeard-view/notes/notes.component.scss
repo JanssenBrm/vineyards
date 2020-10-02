@@ -1,0 +1,21 @@
+.note {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  .title {
+    font-weight: bold;
+    font-size: larger;
+    margin-bottom: .5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .stage {
+    margin-top: 0px;
+    color: gray;
+    font-size: smaller;
+    margin-bottom: .5rem;
+  }
+}

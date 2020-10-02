@@ -20,6 +20,7 @@ import {AddVintageComponent} from './add-vintage/add-vintage.component';
 import {AddNoteComponent} from './add-note/add-note.component';
 import {UploadService} from '../services/upload.service';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {NotesComponent} from './notes/notes.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -52,7 +53,8 @@ theme(Highcharts);
         AddActionComponent,
         AddVintageComponent,
         VintagesComponent,
-        AddNoteComponent
+        AddNoteComponent,
+        NotesComponent
     ],
     providers: [
         PhotoViewer,

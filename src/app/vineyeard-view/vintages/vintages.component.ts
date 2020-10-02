@@ -25,18 +25,13 @@ export class VintagesComponent implements OnChanges {
   vintage: Vintage;
 
   public vintages$: BehaviorSubject<Vintage[]> = null;
-  public notes$: BehaviorSubject<Note[]> = null;
-
-  STAGE = VintageStage;
 
   constructor(
       private modalController: ModalController,
       public vintageService: VintageService,
       public vineyardService: VineyardService,
-      public notesService: NotesService
   ) {
     this.vintages$ = this.vintageService.getVintageListener();
-    this.notes$ = this.notesService.getNotesListener();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -64,38 +59,9 @@ export class VintagesComponent implements OnChanges {
     this.vintageService.addVintage(this.vineyard, vintage);
   }
 
-  async openAddNoteModal(note?: Note) {
-    const modal = await this.modalController.create({
-      component: AddNoteComponent,
-      componentProps: {
-        vineyard: this.vineyard,
-        vintage: this.vintage,
-        note
-      }
-    });
-    modal.present();
-
-    const data = await modal.onWillDismiss();
-    if (data.data.note) {
-      this.parseNote(data.data.note);
-    }
-  }
-
-  private parseNote(note: Note) {
-    note.id ?  this.notesService.updateNote(this.vineyard, this.vintage, note) : this.notesService.addNote(this.vineyard, this.vintage, note);
-  }
-
   setVintage(vintage: Vintage) {
     this.vintage = vintage;
-    this.notesService.getNotes(this.vineyard, this.vintage);
   }
 
-  deleteNote(note: Note) {
-    this.notesService.removeNote(this.vineyard, this.vintage, note);
-  }
-
-  editNote(note: Note) {
-    this.openAddNoteModal(note);
-  }
 
 }
