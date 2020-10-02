@@ -17,6 +17,7 @@
   </div>
   <div class="content">
     <div *ngIf="vintage">
+      <app-timeline [vineyard]="vineyard" [vintage]="vintage"></app-timeline>
       <app-notes [vineyard]="vineyard" [vintage]="vintage"></app-notes>
     </div>
   </div>
