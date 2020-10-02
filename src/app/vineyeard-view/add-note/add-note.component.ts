@@ -99,7 +99,7 @@ export class AddNoteComponent implements OnInit {
         id: this.note ? this.note.id : '',
         ...this.noteForm.value,
         date: this.noteForm.value.date.split('T')[0],
-        files
+        files: files !== undefined ? files : []
       }});
   }
 
