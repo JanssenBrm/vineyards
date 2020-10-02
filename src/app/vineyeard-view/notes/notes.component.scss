@@ -1,21 +1,26 @@
-.note {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
 
-  .title {
-    font-weight: bold;
-    font-size: larger;
-    margin-bottom: .5rem;
+  .subtitle {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    ion-icon {
+      margin-left: .5rem;
+    }
   }
 
-  .stage {
-    margin-top: 0px;
-    color: gray;
-    font-size: smaller;
-    margin-bottom: .5rem;
+  .cover {
+    width: 100%;
+    height: 7.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+
+    img {
+      width: 100%;
+      margin-top: -50%;
+    }
   }
-}
+
+  .files {
+    margin-top: 1rem;
+  }

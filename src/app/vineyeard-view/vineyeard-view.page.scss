@@ -1,9 +1,29 @@
 
-.content {
+
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .content {
     padding: 1rem;
-    margin-top: 5.5vh;
-    height: 100%;
+    flex: 1
   }
-  
+
+  .nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: .5rem;
+    height: auto;
+
+    .tab-selected {
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
   
   

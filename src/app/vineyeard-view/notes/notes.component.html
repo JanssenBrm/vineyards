@@ -1,15 +1,24 @@
 <h1>Notes</h1>
-<div *ngFor="let note of (notes$ | async)" class="note">
-  <div class="title"><span>{{note.date | date}}</span><span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span></div>
-  <div class="stage">{{STAGE[note.stage]}}</div>
-  <div class="footer">
+<ion-card *ngFor="let note of (notes$ | async)">
+  <ion-card-header >
+    <div class="cover" *ngIf="note.files && note.files.length > 0">
+      <img [src]="note.files[0]"/>
+    </div>
+    <ion-card-subtitle>
+      <div class="subtitle">
+        <span>{{note.date | date}}</span>
+        <span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span>
+      </div>
+    </ion-card-subtitle>
+    <ion-card-title>{{STAGE[note.stage]}}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
     <div class="description">{{note.description}}</div>
     <div class="files">
       <div class="file" *ngFor="let file of note.files">
         <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
       </div>
     </div>
-
-  </div>
-</div>
+  </ion-card-content>
+</ion-card>
 <ion-button (click)="openAddNoteModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add note</ion-label></ion-button>
