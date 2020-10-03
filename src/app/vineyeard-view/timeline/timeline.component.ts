@@ -58,8 +58,6 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             })));
             this.chart = new Chart(this.timelineChart.nativeElement, {
                 type: 'scatter',
-                responsive: true,
-                maintainAspectRatio: false,
                 data: {
                     datasets: entries.map((e: VinetageTimeLineEntry, idx: number) => ({
                         data: [{
@@ -81,6 +79,8 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                     }))
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     tooltips: {
                         callbacks: {
                             label: (tooltipItem, data) => `${tooltipItem.value} - ${moment(new Date(tooltipItem.xLabel)).format('DD MMM YYYY')}`
@@ -97,10 +97,11 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                         xAxes: [{
                             type: 'time',
                             time: {
+                                unit: 'day',
                                 displayFormats: {
-                                    quarter: 'MMM YYYY'
+                                    day: 'DD MMM YYYY'
                                 }
-                            }
+                            },
                         }]
                     }
                 }
