@@ -64,7 +64,6 @@
 .year, .variety {
   font-size: smaller !important;
   color: gray;
-  margin-top: 0 !important;
   margin-bottom: 0!important;
   display: flex;
   align-items: end;
@@ -74,4 +73,12 @@
     width: 16px;
     margin-right: .5rem;
   }
+}
+
+.year {
+  margin-top: 0 !important;
+}
+
+.variety {
+  margin-top: .25rem !important;
 }
