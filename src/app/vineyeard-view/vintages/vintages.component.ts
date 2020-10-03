@@ -41,7 +41,7 @@ export class VintagesComponent implements OnChanges {
     }
   }
 
-  async openAddVintageModal(vintage: Vintage) {
+  async openAddVintageModal(vintage?: Vintage) {
     const modal = await this.modalController.create({
       component: AddVintageComponent,
       componentProps: {
