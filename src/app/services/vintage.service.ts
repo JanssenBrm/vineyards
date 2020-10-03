@@ -6,6 +6,8 @@ import {VineyardDoc} from '../models/vineyarddoc.model';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {Action} from '../models/action.model';
+import {Note} from '../models/note.model';
+import {NOTE_COLLECTION} from './notes.service';
 
 export const VINTAGE_COLLECTION = 'vintages';
 
@@ -28,6 +30,10 @@ export class VintageService {
 
   public addVintage(vineyard: Vineyard, vintage: Vintage): void {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).add(vintage);
+  }
+
+  public updateVintage(vineyard: Vineyard, vintage: Vintage): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).set(vintage);
   }
 
   public getVintages(vineyard: Vineyard): void {

@@ -15,6 +15,14 @@
         <ion-datetime required formControlName="year" displayFormat="YYYY" pickerFormat="YYYY"></ion-datetime>
       </ion-item>
       <ion-item>
+        <ion-label position="stacked">Color</ion-label>
+        <ion-select required formControlName="color">
+          <ion-select-option *ngFor="let color of colors" [value]="color">{{
+            color | titlecase
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label position="stacked">Variety</ion-label>
         <ion-select required  multiple="true"  formControlName="varieties">
           <ion-select-option *ngFor="let variety of vineyard.varieties" [value]="variety.id">{{

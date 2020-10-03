@@ -40,11 +40,12 @@ export class VintagesComponent implements OnChanges {
     }
   }
 
-  async openAddVintageModal() {
+  async openAddVintageModal(vintage: Vintage) {
     const modal = await this.modalController.create({
       component: AddVintageComponent,
       componentProps: {
-        vineyard: this.vineyard
+        vineyard: this.vineyard,
+        vintage: vintage
       }
     });
     modal.present();
@@ -56,12 +57,15 @@ export class VintagesComponent implements OnChanges {
   }
 
   private parseVintage(vintage: Vintage) {
-    this.vintageService.addVintage(this.vineyard, vintage);
+    vintage.id ? this.vintageService.updateVintage(this.vineyard, vintage) : this.vintageService.addVintage(this.vineyard, vintage);
   }
 
   setVintage(vintage: Vintage) {
     this.vintage = vintage;
   }
 
+  editVintage(vintage: Vintage) {
+    this.openAddVintageModal(vintage);
+  }
 
 }

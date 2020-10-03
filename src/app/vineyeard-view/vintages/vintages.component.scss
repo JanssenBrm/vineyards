@@ -33,6 +33,9 @@
   font-variant: all-small-caps;
   margin-bottom: 0.25rem;
   font-size: x-large;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .footer {
