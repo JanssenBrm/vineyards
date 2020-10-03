@@ -83,7 +83,15 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                     maintainAspectRatio: false,
                     tooltips: {
                         callbacks: {
-                            label: (tooltipItem, data) => `${tooltipItem.value} - ${moment(new Date(tooltipItem.xLabel)).format('DD MMM YYYY')}`
+                            label: (tooltipItem, data) => {
+                                const points = data.datasets[tooltipItem.datasetIndex].data;
+                                const start = moment(new Date(points[0].x));
+                                const end = moment(new Date(points[1].x));
+                                const duration = end.diff(start, 'days');
+                                return duration > 1 ?
+                                    `${tooltipItem.value} (${duration} days): ${start.format('DD MMM YYYY')} - ${end.format('DD MMM YYYY')}` :
+                                    `${tooltipItem.value}: ${start.format('DD MMM YYYY')}`
+                            }
                         }
                     },
                     legend: {
