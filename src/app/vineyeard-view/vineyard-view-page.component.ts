@@ -9,10 +9,10 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-vineyeard-view',
-  templateUrl: './vineyeard-view.page.html',
-  styleUrls: ['./vineyeard-view.page.scss'],
+  templateUrl: './vineyard-view-page.component.html',
+  styleUrls: ['./vineyard-view-page.component.scss'],
 })
-export class VineyeardViewPage implements OnInit, OnDestroy, AfterViewInit {
+export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location) { }
 

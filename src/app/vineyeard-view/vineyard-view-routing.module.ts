@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { VineyeardViewPage } from './vineyeard-view.page';
+import { VineyardViewPage } from './vineyard-view-page.component';
 import {BrixToAlcoholPipe} from '../pipes/brix-to-alcohol.pipe';
 
 const routes: Routes = [
   {
     path: ':id/:tab',
-    component: VineyeardViewPage
+    component: VineyardViewPage
   }
 ];
 
@@ -16,4 +16,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule, BrixToAlcoholPipe],
 })
-export class VineyeardViewPageRoutingModule {}
+export class VineyardViewPageRoutingModule {}

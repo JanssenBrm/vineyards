@@ -8,7 +8,7 @@ const routes: Routes = [
   },
   {
     path: 'vineyard/view',
-    loadChildren: () => import('./vineyeard-view/vineyeard-view.module').then( m => m.VineyeardViewPageModule)
+    loadChildren: () => import('./vineyeard-view/vineyard-view.module').then(m => m.VineyardViewPageModule)
   }
 ];
 @NgModule({

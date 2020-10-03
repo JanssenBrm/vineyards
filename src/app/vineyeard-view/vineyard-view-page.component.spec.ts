@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { VineyeardViewPage } from './vineyeard-view.page';
+import { VineyardViewPage } from './vineyard-view-page.component';
 
 describe('VineyeardViewPage', () => {
-  let component: VineyeardViewPage;
-  let fixture: ComponentFixture<VineyeardViewPage>;
+  let component: VineyardViewPage;
+  let fixture: ComponentFixture<VineyardViewPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VineyeardViewPage ],
+      declarations: [ VineyardViewPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(VineyeardViewPage);
+    fixture = TestBed.createComponent(VineyardViewPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

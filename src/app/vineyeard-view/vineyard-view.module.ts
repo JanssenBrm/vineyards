@@ -7,9 +7,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {IonicModule} from '@ionic/angular';
 
-import {VineyeardViewPageRoutingModule} from './vineyeard-view-routing.module';
+import {VineyardViewPageRoutingModule} from './vineyard-view-routing.module';
 
-import {VineyeardViewPage} from './vineyeard-view.page';
+import {VineyardViewPage} from './vineyard-view-page.component';
 import {SharedModule} from '../shared/shared.module';
 import {InfoComponent} from './info/info.component';
 import {StatisticsComponent} from './statistics/statistics.component';
@@ -45,10 +45,10 @@ theme(Highcharts);
         ReactiveFormsModule,
         IonicModule,
         SharedModule,
-        VineyeardViewPageRoutingModule,
+        VineyardViewPageRoutingModule,
     ],
     declarations: [
-        VineyeardViewPage,
+        VineyardViewPage,
         InfoComponent,
         ActionsComponent,
         StatisticsComponent,
@@ -71,5 +71,5 @@ theme(Highcharts);
         AddNoteComponent
     ]
 })
-export class VineyeardViewPageModule {
+export class VineyardViewPageModule {
 }
