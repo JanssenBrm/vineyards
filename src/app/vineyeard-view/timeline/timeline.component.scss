@@ -1,5 +1,10 @@
 :host {
   height: 10rem !important;
+  display: flex;
+
+  .chart-container {
+    height: 10rem;
+  }
 }
 
 

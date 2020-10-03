@@ -9,14 +9,14 @@ import {ModalController} from '@ionic/angular';
 import {switchMap} from 'rxjs/operators';
 import {VinetageTimeLineEntry} from '../../models/vintagetimelineentry.model';
 import * as moment from 'moment';
-import { Chart } from 'chart.js';
+import {Chart} from 'chart.js';
 
 @Component({
     selector: 'app-timeline',
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
 })
-export class TimelineComponent implements AfterViewInit, OnChanges{
+export class TimelineComponent implements AfterViewInit, OnChanges {
 
     @ViewChild('timelineChart', {static: false}) timelineChart;
 
@@ -36,31 +36,76 @@ export class TimelineComponent implements AfterViewInit, OnChanges{
     ) {
     }
 
-    createChart() {
-        if (!this.chart) {
-            console.log(this.timelineChart);
-            this.chart = new Chart(this.timelineChart.nativeElement, {
-                type: 'bar',
-                data: {
-                    labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-                    datasets: [{
-                        label: 'Viewers in millions',
-                        data: [2.5, 3.8, 5, 6.9, 6.9, 7.5, 10, 17],
-                        backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
-                        borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
-                        borderWidth: 1
+    createChart(entries: VinetageTimeLineEntry[]) {
+        const colors = [
+            'rgb(255, 205, 86)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 99, 132)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)'
+        ];
+        if (entries.length > 0) {
+            console.log(entries, entries.map((e: VinetageTimeLineEntry) => ({
+                data: [{
+                    x: e.start.toDate(),
+                    y: e.stage
+                },
+                    {
+                        x: e.end.toDate(),
+                        y: e.stage
                     }]
+            })));
+            this.chart = new Chart(this.timelineChart.nativeElement, {
+                type: 'scatter',
+                responsive: true,
+                maintainAspectRatio: false,
+                data: {
+                    datasets: entries.map((e: VinetageTimeLineEntry, idx: number) => ({
+                        data: [{
+                            x: e.start.toDate(),
+                            y: this.STAGE[e.stage]
+                        }, {
+                            x: e.end.toDate(),
+                            y: this.STAGE[e.stage]
+                        }],
+                        borderColor: colors[idx],
+                        borderWidth: 10,
+                        pointBackgroundColor: colors[idx],
+                        pointBorderColor: colors[idx],
+                        pointRadius: 1,
+                        pointHoverRadius: 1,
+                        fill: false,
+                        tension: 0,
+                        showLine: true,
+                    }))
                 },
                 options: {
+                    tooltips: {
+                        callbacks: {
+                            label: (tooltipItem, data) => `${tooltipItem.value} - ${moment(new Date(tooltipItem.xLabel)).format('DD MMM YYYY')}`
+                        }
+                    },
+                    legend: {
+                        display: false,
+                    },
                     scales: {
                         yAxes: [{
-                            ticks: {
-                                beginAtZero: true
+                            type: 'category',
+                            labels: ['', ...entries.map((e: VinetageTimeLineEntry) => this.STAGE[e.stage]), '']
+                        }],
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    quarter: 'MMM YYYY'
+                                }
                             }
                         }]
                     }
                 }
             });
+            this.chart.resize();
         }
     }
 
@@ -90,8 +135,8 @@ export class TimelineComponent implements AfterViewInit, OnChanges{
                     }))
                     .filter((entry: VinetageTimeLineEntry, idx: number, array: VinetageTimeLineEntry[]) => array.findIndex((search: VinetageTimeLineEntry) => search.stage === entry.stage) === idx)
                 ))).subscribe((entries: VinetageTimeLineEntry[]) => {
-            console.log("ENTRIES", entries);
-            this.createChart();
+            console.log('ENTRIES', entries);
+            this.createChart(entries);
         });
     }
 
@@ -100,7 +145,6 @@ export class TimelineComponent implements AfterViewInit, OnChanges{
             this.notesService.getNotes(this.vineyard, this.vintage);
         }
     }
-
 
 
 }
