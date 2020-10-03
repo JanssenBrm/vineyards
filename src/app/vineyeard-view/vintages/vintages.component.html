@@ -6,7 +6,7 @@
           <ion-label>
             <div class="title"><span>{{vintage.name}}</span><ion-icon name="create-outline" (click)="editVintage(vintage)"></ion-icon></div>
             <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{vintage.year}}</div>
-            <div class="variety"><img class="icon" src="assets/icon/grape.png" />{{vineyardService.getVintageVarietiesLabel(vineyard, vintage)}}</div>
+            <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'" />{{vineyardService.getVintageVarietiesLabel(vineyard, vintage)}}</div>
           </ion-label>
         </ion-item>
       </ion-list>
