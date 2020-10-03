@@ -7,7 +7,7 @@ import {VintageStage} from '../../models/stage.model';
 import {NotesService} from '../../services/notes.service';
 import {ModalController} from '@ionic/angular';
 import {switchMap} from 'rxjs/operators';
-import {VinetageTimeLineEntry} from '../../models/vintagetimelineentry.model';
+import {VintageTimeLineEntry} from '../../models/vintagetimelineentry.model';
 import * as moment from 'moment';
 import {Chart} from 'chart.js';
 
@@ -36,7 +36,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
     ) {
     }
 
-    createChart(entries: VinetageTimeLineEntry[]) {
+    createChart(entries: VintageTimeLineEntry[]) {
         const colors = [
             'rgb(255, 205, 86)',
             'rgb(255, 159, 64)',
@@ -46,7 +46,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             'rgb(153, 102, 255)'
         ];
         if (entries.length > 0) {
-            console.log(entries, entries.map((e: VinetageTimeLineEntry) => ({
+            console.log(entries, entries.map((e: VintageTimeLineEntry) => ({
                 data: [{
                     x: e.start.toDate(),
                     y: e.stage
@@ -59,7 +59,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             this.chart = new Chart(this.timelineChart.nativeElement, {
                 type: 'scatter',
                 data: {
-                    datasets: entries.map((e: VinetageTimeLineEntry, idx: number) => ({
+                    datasets: entries.map((e: VintageTimeLineEntry, idx: number) => ({
                         data: [{
                             x: e.start.toDate(),
                             y: this.STAGE[e.stage]
@@ -92,7 +92,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                     scales: {
                         yAxes: [{
                             type: 'category',
-                            labels: ['', ...entries.map((e: VinetageTimeLineEntry) => this.STAGE[e.stage]), '']
+                            labels: ['', ...entries.map((e: VintageTimeLineEntry) => this.STAGE[e.stage]), '']
                         }],
                         xAxes: [{
                             type: 'time',
@@ -134,8 +134,8 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                         start: this.getMinDate(notes, note.stage),
                         end: this.getMaxDate(notes, note.stage),
                     }))
-                    .filter((entry: VinetageTimeLineEntry, idx: number, array: VinetageTimeLineEntry[]) => array.findIndex((search: VinetageTimeLineEntry) => search.stage === entry.stage) === idx)
-                ))).subscribe((entries: VinetageTimeLineEntry[]) => {
+                    .filter((entry: VintageTimeLineEntry, idx: number, array: VintageTimeLineEntry[]) => array.findIndex((search: VintageTimeLineEntry) => search.stage === entry.stage) === idx)
+                ))).subscribe((entries: VintageTimeLineEntry[]) => {
             console.log('ENTRIES', entries);
             this.createChart(entries);
         });
