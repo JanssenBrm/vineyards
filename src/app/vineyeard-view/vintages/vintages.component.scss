@@ -1,6 +1,7 @@
 :host {
   height: 100%;
   display: flex;
+  width: 100%;
 }
 
 .container {
@@ -12,6 +13,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin-right: 1rem;
 
     .list {
       flex: 1;
@@ -25,6 +27,19 @@
 
   .content {
     flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    app-timeline {
+      height: auto
+    }
+
+    app-notes {
+      flex: 1;
+      overflow: auto;
+      margin-top: 1rem;
+    }
   }
 }
 

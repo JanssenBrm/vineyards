@@ -8,7 +8,9 @@
 
   .content {
     padding: 1rem;
-    flex: 1
+    flex: 1;
+    overflow: auto;
+    display: flex;
   }
 
   .nav {

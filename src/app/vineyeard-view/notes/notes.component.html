@@ -1,26 +1,28 @@
-<h1>Notes</h1>
-<ion-card *ngFor="let note of (notes$ | async) | orderBy:{key: 'date', type: 'dateString', desc: true} ">
-  <ion-card-header >
-    <div class="cover" *ngIf="note.files && note.files.length > 0">
-      <img [src]="note.files[0]"/>
-    </div>
-    <ion-card-subtitle>{{STAGE[note.stage]}}</ion-card-subtitle>
-    <ion-card-title>
-      <div class="subtitle">
-        <span>{{note.date | date:'dd MMMM yyyy'}}</span>
-        <span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span>
-      </div>
-    </ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    <div class="description">{{note.description}}</div>
-    <div class="files">
-      <div class="file" *ngFor="let file of note.files">
-        <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
-      </div>
-    </div>
-  </ion-card-content>
-</ion-card>
 <ion-toolbar>
+  <h1>Notes</h1>
   <ion-button slot="end" (click)="openAddNoteModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add note</ion-label></ion-button>
 </ion-toolbar>
+<div class="list">
+  <ion-card *ngFor="let note of (notes$ | async) | orderBy:{key: 'date', type: 'dateString', desc: true} ">
+    <ion-card-header >
+      <div class="cover" *ngIf="note.files && note.files.length > 0">
+        <img [src]="note.files[0]"/>
+      </div>
+      <ion-card-subtitle>{{STAGE[note.stage]}}</ion-card-subtitle>
+      <ion-card-title>
+        <div class="subtitle">
+          <span>{{note.date | date:'dd MMMM yyyy'}}</span>
+          <span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span>
+        </div>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="description">{{note.description}}</div>
+      <div class="files">
+        <div class="file" *ngFor="let file of note.files">
+          <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</div>

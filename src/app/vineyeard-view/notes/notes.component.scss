@@ -1,4 +1,12 @@
+:host {
+  display: flex;
+  flex-direction: column;
 
+  .list {
+    flex: 1;
+    overflow: auto;
+  }
+}
   .subtitle {
     display: flex;
     flex-direction: row;
