@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {AddActionComponent} from '../add-action/add-action.component';
-import {ModalController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
 import {Vineyard} from '../../models/vineyard.model';
 import {AddVintageComponent} from '../add-vintage/add-vintage.component';
 import {Vintage} from '../../models/vintage.model';
@@ -30,6 +30,7 @@ export class VintagesComponent implements OnChanges {
       private modalController: ModalController,
       public vintageService: VintageService,
       public vineyardService: VineyardService,
+      private alertController: AlertController
   ) {
     this.vintages$ = this.vintageService.getVintageListener();
   }
@@ -56,6 +57,29 @@ export class VintagesComponent implements OnChanges {
     }
   }
 
+  async openDeleteConfirm(vintage: Vintage) {
+    const alert = await this.alertController.create({
+      header: 'Are you sure?',
+      message: `Do want to delete vintage ${vintage.name}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.vintageService.removeVintage(this.vineyard, vintage);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   private parseVintage(vintage: Vintage) {
     vintage.id ? this.vintageService.updateVintage(this.vineyard, vintage) : this.vintageService.addVintage(this.vineyard, vintage);
   }
@@ -66,6 +90,10 @@ export class VintagesComponent implements OnChanges {
 
   editVintage(vintage: Vintage) {
     this.openAddVintageModal(vintage);
+  }
+
+  deleteVintage(vintage: Vintage) {
+    this.openDeleteConfirm(vintage);
   }
 
 }

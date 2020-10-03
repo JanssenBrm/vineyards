@@ -36,12 +36,16 @@ export class VintageService {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).set(vintage);
   }
 
+  public removeVintage(vineyard: Vineyard, vintage: Vintage): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).delete();
+  }
+
   public getVintages(vineyard: Vineyard): void {
     this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).snapshotChanges().pipe(
         map((data: DocumentChangeAction<Vintage>[]) => data.map((d: DocumentChangeAction<Vintage>) => (
             {
+              ...d.payload.doc.data(),
               id: d.payload.doc.id,
-              ...d.payload.doc.data()
             })))
     ).subscribe((vintages: Vintage[]) => this._vintages.next(vintages));
   }
