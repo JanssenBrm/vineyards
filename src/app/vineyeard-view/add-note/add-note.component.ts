@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {VintageStage} from '../../models/stage.model';
+import {VintageEvent} from '../../models/vintageevent.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import {LoadingController, ModalController} from '@ionic/angular';
@@ -26,8 +26,8 @@ export class AddNoteComponent implements OnInit {
   @Input()
   note: Note;
 
-  public VINTAGE_STAGES = VintageStage;
-  public STAGES = Object.keys(VintageStage);
+  public VINTAGE_STAGES = VintageEvent;
+  public STAGES = Object.keys(VintageEvent);
 
   public noteForm: FormGroup;
 

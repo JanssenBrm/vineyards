@@ -6,7 +6,7 @@ import {Vintage} from '../../models/vintage.model';
 import {AddNoteComponent} from '../add-note/add-note.component';
 import {ModalController} from '@ionic/angular';
 import {BehaviorSubject} from 'rxjs';
-import {VintageStage} from '../../models/stage.model';
+import {VintageEvent} from '../../models/vintageevent.model';
 
 @Component({
   selector: 'app-notes',
@@ -22,7 +22,7 @@ export class NotesComponent implements OnInit, OnChanges {
   vintage: Vintage;
 
   public notes$: BehaviorSubject<Note[]> = null;
-  public  STAGE = VintageStage;
+  public  STAGE = VintageEvent;
 
   constructor(
       private notesService: NotesService,

@@ -10,7 +10,7 @@ import {VineyardService} from '../../services/vineyard.service';
 import {Note} from '../../models/note.model';
 import {NotesService} from '../../services/notes.service';
 import {AddNoteComponent} from '../add-note/add-note.component';
-import {VintageStage} from '../../models/stage.model';
+import {VintageEvent} from '../../models/vintageevent.model';
 
 @Component({
   selector: 'app-vintages',

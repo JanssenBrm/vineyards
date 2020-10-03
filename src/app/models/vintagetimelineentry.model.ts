@@ -1,8 +1,8 @@
-import {VintageStage} from './stage.model';
+import {VintageEvent} from './vintageevent.model';
 import * as moment from 'moment';
 
 export interface VintageTimeLineEntry {
-    stage: VintageStage;
+    stage: VintageEvent;
     start: moment.Moment;
     end: moment.Moment;
 };

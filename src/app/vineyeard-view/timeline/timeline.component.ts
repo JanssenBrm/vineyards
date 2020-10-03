@@ -3,7 +3,7 @@ import {Vineyard} from '../../models/vineyard.model';
 import {Vintage} from '../../models/vintage.model';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {Note} from '../../models/note.model';
-import {VintageStage} from '../../models/stage.model';
+import {VintageEvent} from '../../models/vintageevent.model';
 import {NotesService} from '../../services/notes.service';
 import {ModalController} from '@ionic/angular';
 import {switchMap} from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
     @Input()
     vintage: Vintage;
 
-    public STAGE = VintageStage;
+    public STAGE = VintageEvent;
 
     private chart: Chart;
 
@@ -118,16 +118,16 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    getMaxDate(notes: Note[], stage: VintageStage): moment.Moment {
+    getMaxDate(notes: Note[], stage: VintageEvent): moment.Moment {
         const dates = this.getStageDates(notes, stage);
         return dates[dates.length - 1];
     }
 
-    getMinDate(notes: Note[], stage: VintageStage): moment.Moment {
+    getMinDate(notes: Note[], stage: VintageEvent): moment.Moment {
         return this.getStageDates(notes, stage)[0];
     }
 
-    getStageDates(notes: Note[], stage: VintageStage): moment.Moment[] {
+    getStageDates(notes: Note[], stage: VintageEvent): moment.Moment[] {
         return notes
             .filter((n: Note) => n.stage === stage).map((n: Note) => moment(n.date))
             .sort((d1: moment.Moment, d2: moment.Moment) => d1.isSameOrBefore(d2) ? -1 : 1);

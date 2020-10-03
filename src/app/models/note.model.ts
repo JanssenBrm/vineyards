@@ -1,9 +1,9 @@
-import {VintageStage} from './stage.model';
+import {VintageEvent} from './vintageevent.model';
 
 export interface Note {
     id: string;
     date: string;
-    stage: VintageStage;
+    stage: VintageEvent;
     description: string;
     files: string[];
 }
