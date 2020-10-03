@@ -82,3 +82,25 @@
 .variety {
   margin-top: .25rem !important;
 }
+
+.cover {
+  background-size: 100% auto !important;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+
+  .title {
+    font-size: xx-large;
+    color: black;
+    margin-bottom: 0;
+  }
+  .year{
+    margin-top: 0;
+    font-size: large !important;
+    color: black;
+  }
+}

@@ -17,6 +17,10 @@
   </div>
   <div class="content">
     <div *ngIf="vintage">
+      <div class="cover" [style.background]="vintage.cover ? 'url(' + vintage.cover + ')' : 'url(/assets/images/vintage.jpg)'">
+        <span class="title">{{vintage.name}}</span>
+        <span class="year">{{vintage.year}}</span>
+      </div>
       <app-timeline [vineyard]="vineyard" [vintage]="vintage"></app-timeline>
       <app-notes [vineyard]="vineyard" [vintage]="vintage"></app-notes>
     </div>

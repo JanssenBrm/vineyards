@@ -6,4 +6,5 @@ export interface Vintage {
     name: string;
     color: VintageColor;
     varieties: string[];
+    cover?: string;
 }

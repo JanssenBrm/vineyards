@@ -30,6 +30,10 @@
             }}</ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Cover image</ion-label>
+        <ion-input type="file" formControlName="cover" (change)="readFile($event.target.files)"></ion-input>
+      </ion-item>
     </ion-list>
   </form>
 </ion-content>
