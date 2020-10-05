@@ -31,4 +31,8 @@
 
   .files {
     margin-top: 1rem;
+    display: flex;
+    .file {
+      margin-right: .5rem;
+    }
   }
