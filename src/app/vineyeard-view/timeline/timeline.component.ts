@@ -3,7 +3,7 @@ import {Vineyard} from '../../models/vineyard.model';
 import {Vintage} from '../../models/vintage.model';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {Note} from '../../models/note.model';
-import {VintageEvent} from '../../models/vintageevent.model';
+import {SINGLE_DATES, VintageEvent} from '../../models/vintageevent.model';
 import {NotesService} from '../../services/notes.service';
 import {ModalController} from '@ionic/angular';
 import {switchMap} from 'rxjs/operators';
@@ -36,7 +36,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
     ) {
     }
 
-    createChart(entries: VintageTimeLineEntry[]) {
+    createChart(notes: Note[]) {
         const colors = [
             'rgb(255, 205, 86)',
             'rgb(255, 159, 64)',
@@ -45,52 +45,64 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             'rgb(54, 162, 235)',
             'rgb(153, 102, 255)'
         ];
-        if (entries.length > 0) {
-            console.log(entries, entries.map((e: VintageTimeLineEntry) => ({
-                data: [{
-                    x: e.start.toDate(),
-                    y: e.stage
-                },
-                    {
-                        x: e.end.toDate(),
-                        y: e.stage
-                    }]
-            })));
+        if (notes.length > 0) {
+            console.log(Object.keys(this.STAGE)
+                .filter((stage: string) => notes.filter((n: Note) => n.stage === stage).length > 0)
+                .map((stage: string, idx: number) => ({
+                    label: this.STAGE[stage],
+                    data: notes
+                        .filter((n: Note) => n.stage === stage)
+                        .map((n: Note) => ({
+                            x: moment(n.date),
+                            y: this.STAGE[stage]
+                        })),
+                    /* borderColor: colors[idx],
+                     borderWidth: 10,*/
+                    pointBackgroundColor: colors[idx],
+                    pointBorderColor: colors[idx],
+                    pointRadius: 1,
+                    pointHoverRadius: 1,
+                })));
+
             this.chart = new Chart(this.timelineChart.nativeElement, {
                 type: 'scatter',
                 data: {
-                    datasets: entries.map((e: VintageTimeLineEntry, idx: number) => ({
-                        data: [{
-                            x: e.start.toDate(),
-                            y: this.STAGE[e.stage]
-                        }, {
-                            x: e.end.toDate(),
-                            y: this.STAGE[e.stage]
-                        }],
-                        borderColor: colors[idx],
-                        borderWidth: 10,
-                        pointBackgroundColor: colors[idx],
-                        pointBorderColor: colors[idx],
-                        pointRadius: 1,
-                        pointHoverRadius: 1,
-                        fill: false,
-                        tension: 0,
-                        showLine: true,
-                    }))
+                    datasets: Object.keys(this.STAGE)
+                        .filter((stage: string) => notes.filter((n: Note) => n.stage === stage).length > 0)
+                        .map((stage: string, idx: number) => ({
+                            label: this.STAGE[stage],
+                            data: notes
+                                .filter((n: Note) => n.stage === stage)
+                                .map((n: Note) => ({
+                                    x: moment(n.date),
+                                    y: this.STAGE[stage],
+                                    description: n.description
+                                })),
+                            borderColor: colors[idx],
+                            borderWidth: 10,
+                            pointBackgroundColor: colors[idx],
+                            pointBorderColor: colors[idx],
+                            pointRadius: 1,
+                            pointHoverRadius: 1,
+                            fill: false,
+                            tension: 0,
+                            showLine: !SINGLE_DATES.includes(this.STAGE[stage]),
+                        }))
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     tooltips: {
+                        titleFontStyle: 'bold',
                         callbacks: {
+                            title: (tooltipItem, data) => {
+                                return tooltipItem[0].value;
+                            },
                             label: (tooltipItem, data) => {
                                 const points = data.datasets[tooltipItem.datasetIndex].data;
-                                const start = moment(new Date(points[0].x));
-                                const end = moment(new Date(points[1].x));
-                                const duration = end.diff(start, 'days');
-                                return duration > 1 ?
-                                    `${tooltipItem.value} (${duration} days): ${start.format('DD MMM YYYY')} - ${end.format('DD MMM YYYY')}` :
-                                    `${tooltipItem.value}: ${start.format('DD MMM YYYY')}`
+                                console.log(points[tooltipItem.index]);
+                                const start = moment(new Date(points[tooltipItem.index].x));
+                                return `${start.format('DD MMM YYYY')} - ${points[tooltipItem.index].description.substring(0, 50)}...`;
                             }
                         }
                     },
@@ -100,7 +112,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                     scales: {
                         yAxes: [{
                             type: 'category',
-                            labels: ['', ...entries.map((e: VintageTimeLineEntry) => this.STAGE[e.stage]), '']
+                            labels: ['', ...Object.keys(this.STAGE).map((stage: string) => this.STAGE[stage]), '']
                         }],
                         xAxes: [{
                             type: 'time',
@@ -134,7 +146,7 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
     }
 
     ngAfterViewInit() {
-        this.notesService.getNotesListener().pipe(
+        this.notesService.getNotesListener()/*.pipe(
             switchMap((notes: Note[]) =>
                 of(notes
                     .map((note: Note) => ({
@@ -143,9 +155,8 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                         end: this.getMaxDate(notes, note.stage),
                     }))
                     .filter((entry: VintageTimeLineEntry, idx: number, array: VintageTimeLineEntry[]) => array.findIndex((search: VintageTimeLineEntry) => search.stage === entry.stage) === idx)
-                ))).subscribe((entries: VintageTimeLineEntry[]) => {
-            console.log('ENTRIES', entries);
-            this.createChart(entries);
+                )))*/.subscribe((notes: Note[]) => {
+            this.createChart(notes);
         });
     }
 
