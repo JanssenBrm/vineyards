@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LastActionPipe } from './pipes/last-action.pipe';
 import { ActiveTypePipe } from './pipes/active-type.pipe';
+import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive';
 
 
 
@@ -15,7 +16,8 @@ import { ActiveTypePipe } from './pipes/active-type.pipe';
     HeaderComponent,
     ToolbarComponent,
     LastActionPipe,
-    ActiveTypePipe
+    ActiveTypePipe,
+    HideOnPlatformDirective
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,8 @@ import { ActiveTypePipe } from './pipes/active-type.pipe';
     HeaderComponent,
     ToolbarComponent,
     LastActionPipe,
-    ActiveTypePipe
+    ActiveTypePipe,
+    HideOnPlatformDirective
   ]
 })
 export class SharedModule { }

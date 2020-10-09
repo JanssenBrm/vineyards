@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="sidebar">
+  <div class="sidebar" *appHideOnPlatform="['mobile']">
     <div class="list">
       <ion-list>
         <ion-item *ngFor="let vintage of (vintages$ | async)" (click)="setVintage(vintage)">

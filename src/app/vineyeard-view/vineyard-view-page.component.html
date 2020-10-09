@@ -21,7 +21,7 @@
                 <ion-icon name="wine-outline" slot="start"></ion-icon>
                 <ion-label>Vintage</ion-label>
             </ion-item>
-            <ion-item button (click)="openTab('stats')"   [class.selected]="activePage === 'stats'">
+            <ion-item button (click)="openTab('stats')"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
                 <ion-icon name="stats-chart" slot="start"></ion-icon>
                 <ion-label>Statistics</ion-label>
             </ion-item>
