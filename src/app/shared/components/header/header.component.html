@@ -2,7 +2,9 @@
   <ion-toolbar>
       <ion-buttons *ngIf="showBackButton" slot="start">
           <ion-back-button defaultHref="/"></ion-back-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
+      <ion-menu-toggle menu="'menu1"></ion-menu-toggle>
     <ion-title>{{title}}</ion-title>
     <ion-select *ngIf="seasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
         <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>

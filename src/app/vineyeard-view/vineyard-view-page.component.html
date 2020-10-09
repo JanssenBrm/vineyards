@@ -1,10 +1,37 @@
 <app-header (setSeasons)="setSeasons($event)" [activeSeasons]="activeSeasons"
-            [seasons]="seasons" [title]="activeVineyard ? activeVineyard.name : 'My vineyards'"></app-header>
+            [seasons]="seasons" [title]="activeVineyard ? activeVineyard.name : 'My vineyards'" [menuId]="'menu1'"></app-header>
 
-<ion-content>
+<ion-menu side="start" content-id="main-content">
+    <ion-header>
+        <ion-toolbar translucent>
+            <ion-title>Menu</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            <ion-item button (click)="openTab('info')"  [class.selected]="activePage === 'info'">
+                <ion-icon name="information-circle" slot="start"></ion-icon>
+                <ion-label>Info</ion-label>
+            </ion-item>
+            <ion-item button (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
+                <ion-icon name="time" slot="start"></ion-icon>
+                <ion-label>History</ion-label>
+            </ion-item>
+            <ion-item button (click)="openTab('vintages')"  [class.selected]="activePage === 'vintages'" >
+                <ion-icon name="wine-outline" slot="start"></ion-icon>
+                <ion-label>Vintage</ion-label>
+            </ion-item>
+            <ion-item button (click)="openTab('stats')"   [class.selected]="activePage === 'stats'">
+                <ion-icon name="stats-chart" slot="start"></ion-icon>
+                <ion-label>Statistics</ion-label>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-menu>
+
+<ion-content id="main-content">
     <div class="container">
-        <div class="nav">
-            <!-- Tab bar -->
+      <!--  <div class="nav">
             <ion-tab-button (click)="openTab('info')" [selected]="activePage === 'info'">
                 <ion-icon name="information-circle"></ion-icon>
                 <ion-label>Info</ion-label>
@@ -21,7 +48,7 @@
                 <ion-icon name="stats-chart"></ion-icon>
                 <ion-label>Statistics</ion-label>
             </ion-tab-button>
-        </div>
+        </div>-->
         <div class="content">
             <app-info *ngIf="activePage === 'info'" [seasons]="activeSeasons" [vineyard]="activeVineyard"></app-info>
             <app-actions *ngIf="activePage === 'actions'" [seasons]="activeSeasons"

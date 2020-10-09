@@ -47,3 +47,13 @@ ion-toolbar {
 h1 { 
     margin-top: 0px;
 }
+
+ion-item {
+    &.selected {
+        font-weight: bold;
+
+        ion-label, ion-icon {
+            color: var(--ion-color-primary,#3880ff) !important;
+        }
+    }
+}

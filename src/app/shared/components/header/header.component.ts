@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Season } from 'src/app/models/season.model';
+import {MenuController} from '@ionic/angular';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,9 @@ export class HeaderComponent implements OnInit, OnChanges {
 
   @Input()
   title: string;
+
+  @Input()
+  menuId: string;
 
   @Input()
   seasons: number[];
@@ -23,7 +27,10 @@ export class HeaderComponent implements OnInit, OnChanges {
   @Output()
   setSeasons: EventEmitter<number[]> = new EventEmitter<number[]>();
 
-  constructor() { }
+  constructor(
+      private menuController: MenuController
+
+  ) { }
 
   ngOnInit() {
   }
@@ -41,6 +48,10 @@ export class HeaderComponent implements OnInit, OnChanges {
       this.activeSeasons = [this.seasons[this.seasons.length - 1]];
     }
     this.setSeasons.emit(this.activeSeasons);
+  }
+
+  async toggleMenu(id: string) {
+      await this.menuController.open();
   }
 
 }
