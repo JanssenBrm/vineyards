@@ -73,3 +73,9 @@ ion-item, ion-tab-button {
         }
     }
 }
+
+@media only screen and (orientation: portrait) {
+    h1, .header {
+        padding-left: 1rem;
+    }
+}

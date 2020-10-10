@@ -36,5 +36,10 @@
   width: 16px;
 }
 
+@media only screen and (orientation: portrait) {
+  .content {
+    padding: 0rem !important;
+  }
+}
   
   

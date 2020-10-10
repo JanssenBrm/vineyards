@@ -35,6 +35,7 @@ Paddings and margins
   .cd-container {
     /* this class is used to give a max-width to the element it is applied to, and center it horizontally when it reaches that max-width */
     margin: 0 auto;
+    padding-right: 1rem;
   }
   
   .cd-container::after {

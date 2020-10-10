@@ -114,9 +114,14 @@ export class TimelineComponent implements OnInit, OnChanges {
                             time: {
                                 unit: 'day',
                                 displayFormats: {
-                                    day: 'DD MMM YYYY'
+                                    day: 'DD MMM'
                                 }
                             },
+                            ticks: {
+                                autoSkip: true,
+                                maxRotation: 90,
+                                minRotation: 90
+                            }
                         }]
                     }
                 }
