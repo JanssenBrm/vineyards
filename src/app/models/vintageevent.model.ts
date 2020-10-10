@@ -9,4 +9,4 @@ export enum VintageEvent {
    'TASTING' = 'Tasted'
 }
 
-export const SINGLE_DATES = [VintageEvent.PRESSING, VintageEvent.RACKING, VintageEvent.BOTTLING, VintageEvent.TASTING];
+export const SINGLE_DATES = [VintageEvent.PRESSING, VintageEvent.RACKING, VintageEvent.BOTTLING, VintageEvent.TASTING, VintageEvent.TESTING];

@@ -1,3 +1,9 @@
+<div class="legend">
+    <div class="legend-item" *ngFor="let item of legend">
+        <div class="color" [style.backgroundColor]="item.color"></div>
+        <div class="label">{{item.label}}</div>
+    </div>
+</div>
 <div class="chart-container">
     <canvas #timelineChart></canvas>
 </div>

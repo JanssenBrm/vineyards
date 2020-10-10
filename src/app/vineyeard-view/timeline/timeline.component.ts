@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Vineyard} from '../../models/vineyard.model';
 import {Vintage} from '../../models/vintage.model';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, combineLatest, concat, Observable, of} from 'rxjs';
 import {Note} from '../../models/note.model';
 import {SINGLE_DATES, VintageEvent} from '../../models/vintageevent.model';
 import {NotesService} from '../../services/notes.service';
 import {ModalController} from '@ionic/angular';
-import {switchMap} from 'rxjs/operators';
+import {skipWhile, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {VintageTimeLineEntry} from '../../models/vintagetimelineentry.model';
 import * as moment from 'moment';
 import {Chart} from 'chart.js';
@@ -26,9 +26,13 @@ export class TimelineComponent implements OnInit, OnChanges {
     @Input()
     vintage: Vintage;
 
+    legend: { color: string, label: string }[] = [];
+
     public STAGE = VintageEvent;
 
     private chart: Chart;
+
+    private containerReady: BehaviorSubject<boolean>;
 
     constructor(
         private notesService: NotesService,
@@ -52,12 +56,12 @@ export class TimelineComponent implements OnInit, OnChanges {
                     datasets: Object.keys(this.STAGE)
                         .filter((stage: string) => notes.filter((n: Note) => n.stage === stage).length > 0)
                         .map((stage: string, idx: number) => ({
-                            label: this.STAGE[stage],
+                            label: stage,
                             data: notes
                                 .filter((n: Note) => n.stage === stage)
                                 .map((n: Note) => ({
                                     x: moment(n.date),
-                                    y: this.STAGE[stage],
+                                    y: stage,
                                     description: n.description
                                 })),
                             borderColor: colors[idx],
@@ -78,14 +82,21 @@ export class TimelineComponent implements OnInit, OnChanges {
                         titleFontStyle: 'bold',
                         callbacks: {
                             title: (tooltipItem, data) => {
-                                return tooltipItem[0].value;
+                                const points = data.datasets[tooltipItem[0].datasetIndex].data;
+                                const start = moment(new Date(points[tooltipItem[0].index].x));
+                                return `${this.STAGE[tooltipItem[0].value]} - ${start.format('DD MMM YYYY')}`;
                             },
                             label: (tooltipItem, data) => {
                                 const points = data.datasets[tooltipItem.datasetIndex].data;
-                                const start = moment(new Date(points[tooltipItem.index].x));
-                                return `${start.format('DD MMM YYYY')} - ${points[tooltipItem.index].description.substring(0, 50)}...`;
+                                return `${points[tooltipItem.index].description.substring(0, 50)}...`;
                             }
                         }
+                    },
+                    legendCallback: (chart) => {
+                        return chart.data.datasets.map(d => ({
+                            color: d.borderColor,
+                            label: SINGLE_DATES.includes(this.STAGE[d.label]) ? this.STAGE[d.label] : `${this.STAGE[d.label]} (${this.getMaxDate(notes, d.label).diff(this.getMinDate(notes, d.label), 'days')} days) `
+                        }));
                     },
                     legend: {
                         display: false,
@@ -93,7 +104,10 @@ export class TimelineComponent implements OnInit, OnChanges {
                     scales: {
                         yAxes: [{
                             type: 'category',
-                            labels: ['', ...Object.keys(this.STAGE).map((stage: string) => this.STAGE[stage]), '']
+                            labels: ['', ...Object.keys(this.STAGE).map((stage: string) => stage), ''],
+                            ticks: {
+                                display: false
+                            }
                         }],
                         xAxes: [{
                             type: 'time',
@@ -108,6 +122,7 @@ export class TimelineComponent implements OnInit, OnChanges {
                 }
             });
             this.chart.resize();
+            this.legend = this.chart.generateLegend();
         }
     }
 
@@ -127,14 +142,32 @@ export class TimelineComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.notesService.getNotesListener().subscribe((notes: Note[]) => {
-            this.createChart(notes);
+        this.containerReady = new BehaviorSubject<boolean>(false);
+        this.checkContainerReady();
+
+        combineLatest(
+            this.containerReady.pipe(
+                skipWhile((value) => !value)
+            ),
+            this.notesService.getNotesListener()
+        ).subscribe((value) => {
+            this.createChart(value[1]);
         });
     }
 
     ngOnChanges(changes: SimpleChanges) {
         this.notesService.getNotes(this.vineyard, this.vintage);
     }
+
+    checkContainerReady() {
+        this.containerReady.next(!!this.timelineChart);
+        if (!this.timelineChart) {
+            setTimeout(() => {
+                this.checkContainerReady();
+            }, 500);
+        }
+    }
+
 
 
 }

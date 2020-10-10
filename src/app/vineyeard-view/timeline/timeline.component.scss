@@ -5,6 +5,34 @@
   justify-content: center;
   align-items: center;
 
+  .legend {
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .legend-item {
+      margin-right: 1rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .color {
+        width: 16px;
+        height: 16px;
+        margin-right: .5rem;
+      }
+
+      .label {
+        font-family: var(--ion-font-family,inherit);
+        color: var(--color);
+        font-size: small;
+      }
+    }
+  }
+
   .chart-container {
     flex: 1;
     width: 99%;
