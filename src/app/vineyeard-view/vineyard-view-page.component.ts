@@ -50,7 +50,6 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
       takeUntil(this._destroy)
     ).subscribe((seasons: number[]) => {
       this.activeSeasons = seasons;
-      console.log(this.activeSeasons);
     });
 
   }

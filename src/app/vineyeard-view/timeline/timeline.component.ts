@@ -46,24 +46,6 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             'rgb(153, 102, 255)'
         ];
         if (notes.length > 0) {
-            console.log(Object.keys(this.STAGE)
-                .filter((stage: string) => notes.filter((n: Note) => n.stage === stage).length > 0)
-                .map((stage: string, idx: number) => ({
-                    label: this.STAGE[stage],
-                    data: notes
-                        .filter((n: Note) => n.stage === stage)
-                        .map((n: Note) => ({
-                            x: moment(n.date),
-                            y: this.STAGE[stage]
-                        })),
-                    /* borderColor: colors[idx],
-                     borderWidth: 10,*/
-                    pointBackgroundColor: colors[idx],
-                    pointBorderColor: colors[idx],
-                    pointRadius: 1,
-                    pointHoverRadius: 1,
-                })));
-
             this.chart = new Chart(this.timelineChart.nativeElement, {
                 type: 'scatter',
                 data: {
@@ -100,7 +82,6 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
                             },
                             label: (tooltipItem, data) => {
                                 const points = data.datasets[tooltipItem.datasetIndex].data;
-                                console.log(points[tooltipItem.index]);
                                 const start = moment(new Date(points[tooltipItem.index].x));
                                 return `${start.format('DD MMM YYYY')} - ${points[tooltipItem.index].description.substring(0, 50)}...`;
                             }

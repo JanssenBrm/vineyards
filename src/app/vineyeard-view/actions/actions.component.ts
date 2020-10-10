@@ -29,12 +29,9 @@ export class ActionsComponent implements OnInit {
   }
 
   showPicture(url: string) {
-    console.log(this.platform);
     if (!this.platform.is('cordova')) {
-      console.log('opening url');
       window.location.href =  url;
     } else {
-      console.log('opening photoviewer');
       this.photoViewer.show(url);
     }
   }

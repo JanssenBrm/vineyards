@@ -27,7 +27,6 @@ export class ToolbarComponent implements OnInit, OnChanges {
   ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
   }
 
   save(): void {

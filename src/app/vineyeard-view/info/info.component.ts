@@ -43,14 +43,12 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
     if (changes.vineyard && this.vineyard) {
       this._createMap();
     }
-    console.log(changes);
   }
 
 
   ngAfterViewInit() {
     this.platform.ready().then(() => {
       this.platform.resize.subscribe(() => {
-        console.log('RESIZE');
         if (this._map) {
           this._map.updateSize();
         }
@@ -60,8 +58,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   private _createMap() {
     if (!this._map) {
-      console.log('Creating map',  document.getElementById('vineyard-map'));
-      this._featureLayer =  new VectorLayer({
+       this._featureLayer =  new VectorLayer({
         source: new VectorSource({
           features: []
         })

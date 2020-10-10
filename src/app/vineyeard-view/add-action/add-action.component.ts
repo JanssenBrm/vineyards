@@ -24,7 +24,6 @@ export class AddActionComponent implements OnInit {
 
   ngOnInit() {
     this.actionTypes = Object.keys(ActionType);
-    console.log(this.actionTypes);
     this.bbchCodes = BBCH_STAGES;
     this.actionForm = new FormGroup({
       type: new FormControl('', [Validators.required]),
