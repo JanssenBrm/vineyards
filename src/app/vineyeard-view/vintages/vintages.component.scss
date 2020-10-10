@@ -33,7 +33,7 @@ h1 {
           font-weight: normal !important;
         }
         .title {
-          color: var(--ion-color-primary,#3880ff) !important;
+          font-weight: bold;
         }
       }
     }
@@ -62,7 +62,6 @@ h1 {
 }
 
 .title {
-  font-weight: bold;
   font-variant: all-small-caps;
   margin-bottom: 0.25rem;
   font-size: x-large;
