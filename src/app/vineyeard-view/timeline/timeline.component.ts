@@ -16,7 +16,7 @@ import {Chart} from 'chart.js';
     templateUrl: './timeline.component.html',
     styleUrls: ['./timeline.component.scss'],
 })
-export class TimelineComponent implements AfterViewInit, OnChanges {
+export class TimelineComponent implements OnInit, OnChanges {
 
     @ViewChild('timelineChart', {static: false}) timelineChart;
 
@@ -126,25 +126,14 @@ export class TimelineComponent implements AfterViewInit, OnChanges {
             .sort((d1: moment.Moment, d2: moment.Moment) => d1.isSameOrBefore(d2) ? -1 : 1);
     }
 
-    ngAfterViewInit() {
-        this.notesService.getNotesListener()/*.pipe(
-            switchMap((notes: Note[]) =>
-                of(notes
-                    .map((note: Note) => ({
-                        stage: note.stage,
-                        start: this.getMinDate(notes, note.stage),
-                        end: this.getMaxDate(notes, note.stage),
-                    }))
-                    .filter((entry: VintageTimeLineEntry, idx: number, array: VintageTimeLineEntry[]) => array.findIndex((search: VintageTimeLineEntry) => search.stage === entry.stage) === idx)
-                )))*/.subscribe((notes: Note[]) => {
+    ngOnInit() {
+        this.notesService.getNotesListener().subscribe((notes: Note[]) => {
             this.createChart(notes);
         });
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (this.timelineChart) {
-            this.notesService.getNotes(this.vineyard, this.vintage);
-        }
+        this.notesService.getNotes(this.vineyard, this.vintage);
     }
 
 
