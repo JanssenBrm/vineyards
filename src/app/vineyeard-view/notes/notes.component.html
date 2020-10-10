@@ -1,7 +1,3 @@
-<ion-toolbar>
-  <h1>Notes</h1>
-  <ion-button slot="end" (click)="openAddNoteModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add note</ion-label></ion-button>
-</ion-toolbar>
 <div class="list">
   <ion-card *ngFor="let note of (notes$ | async) | orderBy:{key: 'date', type: 'dateString', desc: true} ">
     <ion-card-header >
@@ -26,3 +22,8 @@
     </ion-card-content>
   </ion-card>
 </div>
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="openAddNoteModal()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
