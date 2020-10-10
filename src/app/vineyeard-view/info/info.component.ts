@@ -84,7 +84,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
     this._featureLayer.getSource().addFeature(new Feature(this.vineyard.location));
     setTimeout(() => {
       this._map.updateSize();
-      this._map.getView().fit(this.vineyard.location, {size: this._map.getSize(), padding: [10, 10, 10, 10]});
+      this._map.getView().fit(this.vineyard.location, {size: this._map.getSize(), padding: [20, 20, 20, 20]});
     }, 500);
   }
 
