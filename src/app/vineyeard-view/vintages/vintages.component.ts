@@ -39,7 +39,6 @@ export class VintagesComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.vintages && !this.vintage) {
-      console.log("SELECTING DEFAULT");
       this.setVintage(this.vintages[0]);
     }
   }

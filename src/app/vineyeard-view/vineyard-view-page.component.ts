@@ -29,6 +29,10 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   public activePage: 'info' | 'actions' | 'stats' | 'vintages';
 
+  public activeVintage: Vintage;
+
+  public activeSubMenus: string[] = [];
+
   ngOnInit() {
     this._destroy = new Subject<boolean>();
     this.vintages$ = this.vintageService.getVintageListener();
@@ -61,9 +65,9 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
     if (tab !== this.activePage) {
       this.activePage = tab;
-      this.menuController.close();
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
+    this.menuController.close();
   }
 
   openOverview() {
@@ -72,6 +76,19 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this._destroy.next(true);
+  }
+
+  toggleSubmenu(menu: string) {
+    if (this.activeSubMenus.includes(menu)) {
+      this.activeSubMenus = this.activeSubMenus.filter((m: string) => m != menu);
+    } else {
+      this.activeSubMenus.push(menu);
+    }
+  }
+
+  openVintage(vintage: Vintage) {
+    this.activeVintage = vintage;
+    this.openTab('vintages');
   }
 
 }
