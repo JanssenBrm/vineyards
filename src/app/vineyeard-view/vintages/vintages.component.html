@@ -3,11 +3,11 @@
   <div class="sidebar" *appHideOnPlatform="['mobile']">
     <div class="list">
       <ion-list>
-        <ion-item button *ngFor="let vintage of vintages" (click)="setVintage(vintage)">
+        <ion-item button *ngFor="let v of vintages" (click)="setVintage(v)" [class.selected]="v === vintage">
           <ion-label>
-            <div class="title"><span>{{vintage.name}}</span><span class="actions"><ion-icon name="create-outline" (click)="editVintage(vintage)"></ion-icon><ion-icon name="trash-outline" (click)="deleteVintage(vintage)"></ion-icon></span></div>
-            <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{vintage.year}}</div>
-            <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'" />{{vineyardService.getVintageVarietiesLabel(vineyard, vintage)}}</div>
+            <div class="title"><span>{{v.name}}</span><span class="actions"><ion-icon name="create-outline" (click)="editVintage(v)"></ion-icon><ion-icon name="trash-outline" (click)="deleteVintage(v)"></ion-icon></span></div>
+            <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{v.year}}</div>
+            <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + v.color.toLowerCase() +'.png'" />{{vineyardService.getVintageVarietiesLabel(vineyard, v)}}</div>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -18,8 +18,10 @@
   </div>
   <div class="content" *ngIf="vintage">
       <div class="cover" [style.background]="vintage.cover ? 'url(' + vintage.cover + ')' : 'url(/assets/images/vintage.jpg)'">
-        <span class="title">{{vintage.name}}</span>
-        <span class="year">{{vintage.year}}</span>
+        <div class="text">
+          <span class="title">{{vintage.name}}</span>
+          <span class="year">{{vintage.year}}</span>
+        </div>
       </div>
       <app-timeline [vineyard]="vineyard" [vintage]="vintage"></app-timeline>
       <app-notes [vineyard]="vineyard" [vintage]="vintage"></app-notes>
