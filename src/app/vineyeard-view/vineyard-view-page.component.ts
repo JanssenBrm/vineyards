@@ -68,7 +68,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openOverview() {
-    this.navController.back();
+    this.navController.navigateBack('/');
   }
 
   ngOnDestroy(): void {
