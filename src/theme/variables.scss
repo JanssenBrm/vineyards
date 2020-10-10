@@ -76,6 +76,19 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
+.ios {
+  ion-toolbar, ion-item {
+    min-height: 56px;
+    padding:0;
+    display: flex;
+  }
+}
+
+ion-tab-bar {
+  border-top: 0;
+  margin-bottom: 1rem;
+}
+
 @media (prefers-color-scheme: light) {
   /*
    * Dark Colors
@@ -184,6 +197,7 @@
     --ion-item-background: #1c1c1c;
     --ion-item-background-activated: #313131;*/
   }
+
 
 
   /*
