@@ -28,7 +28,7 @@ export class VintagesComponent implements OnChanges {
   @Input()
   vintage: Vintage;
 
-  tab: 'info' | 'notes' = 'info';
+  tab: 'timeline' | 'notes';
 
 
   constructor(
@@ -90,7 +90,7 @@ export class VintagesComponent implements OnChanges {
 
   setVintage(vintage: Vintage) {
     this.vintage = vintage;
-    this.setTab('info');
+    this.setTab('timeline');
   }
 
   editVintage(vintage: Vintage) {
@@ -101,7 +101,7 @@ export class VintagesComponent implements OnChanges {
     this.openDeleteConfirm(vintage);
   }
 
-  setTab(tab: 'info' | 'notes') {
+  setTab(tab: 'timeline' | 'notes') {
     this.tab = tab;
   }
 

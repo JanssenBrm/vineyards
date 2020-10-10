@@ -1,4 +1,4 @@
-<h1><ion-icon name="wine-outline" slot="start"></ion-icon>Vintages</h1>
+<h1 *appHideOnPlatform="['mobile']"><ion-icon name="wine-outline" slot="start"></ion-icon>Vintages</h1>
 <div class="container">
   <div class="sidebar" *appHideOnPlatform="['mobile']">
     <div class="list">
@@ -23,18 +23,18 @@
           <span class="year">{{vintage.year}}</span>
         </div>
       </div>
+    <ion-tab-bar>
+      <ion-tab-button (click)="setTab('timeline')" [class.selected]="tab === 'timeline'">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <ion-label>Timeline</ion-label>
+      </ion-tab-button>
+      <ion-tab-button  (click)="setTab('notes')" [class.selected]="tab === 'notes'">
+        <ion-icon name="create-outline"></ion-icon>
+        <ion-label>Notes</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
       <div class="info">
-          <ion-tab-bar>
-            <ion-tab-button (click)="setTab('info')" [class.selected]="tab === 'info'">
-              <ion-icon name="information-circle"></ion-icon>
-              <ion-label>Information</ion-label>
-            </ion-tab-button>
-            <ion-tab-button  (click)="setTab('notes')" [class.selected]="tab === 'notes'">
-              <ion-icon name="create-outline"></ion-icon>
-              <ion-label>Notes</ion-label>
-            </ion-tab-button>
-          </ion-tab-bar>
-        <app-timeline [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'info'"></app-timeline>
+        <app-timeline [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'timeline'"></app-timeline>
         <app-notes [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'notes'"></app-notes>
       </div>
 
