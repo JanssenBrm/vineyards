@@ -95,7 +95,7 @@ export class TimelineComponent implements OnInit, OnChanges {
                     legendCallback: (chart) => {
                         return chart.data.datasets.map(d => ({
                             color: d.borderColor,
-                            label: SINGLE_DATES.includes(this.STAGE[d.label]) ? this.STAGE[d.label] : `${this.STAGE[d.label]} (${this.getMaxDate(notes, d.label).diff(this.getMinDate(notes, d.label), 'days')} days) `
+                            label: SINGLE_DATES.includes((this.STAGE[d.label] as VintageEvent)) ? this.STAGE[d.label] : `${this.STAGE[d.label]} (${this.getMaxDate(notes, d.label).diff(this.getMinDate(notes, d.label), 'days')} days) `
                         }));
                     },
                     legend: {
