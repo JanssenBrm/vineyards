@@ -66,10 +66,8 @@ h1, .header {
     }
 }
 
-ion-item {
+ion-item, ion-tab-button {
     &.selected {
-        font-weight: bold;
-
         ion-label, ion-icon {
             color: var(--ion-color-primary,#3880ff) !important;
         }

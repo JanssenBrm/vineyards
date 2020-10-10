@@ -28,6 +28,8 @@ export class VintagesComponent implements OnChanges {
   @Input()
   vintage: Vintage;
 
+  tab: 'info' | 'notes' = 'info';
+
 
   constructor(
       private modalController: ModalController,
@@ -88,6 +90,7 @@ export class VintagesComponent implements OnChanges {
 
   setVintage(vintage: Vintage) {
     this.vintage = vintage;
+    this.setTab('info');
   }
 
   editVintage(vintage: Vintage) {
@@ -96,6 +99,10 @@ export class VintagesComponent implements OnChanges {
 
   deleteVintage(vintage: Vintage) {
     this.openDeleteConfirm(vintage);
+  }
+
+  setTab(tab: 'info' | 'notes') {
+    this.tab = tab;
   }
 
 }

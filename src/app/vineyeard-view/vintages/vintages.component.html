@@ -23,7 +23,20 @@
           <span class="year">{{vintage.year}}</span>
         </div>
       </div>
-      <app-timeline [vineyard]="vineyard" [vintage]="vintage"></app-timeline>
-      <app-notes [vineyard]="vineyard" [vintage]="vintage"></app-notes>
+      <div class="info">
+          <ion-tab-bar>
+            <ion-tab-button (click)="setTab('info')" [class.selected]="tab === 'info'">
+              <ion-icon name="information-circle"></ion-icon>
+              <ion-label>Information</ion-label>
+            </ion-tab-button>
+            <ion-tab-button  (click)="setTab('notes')" [class.selected]="tab === 'notes'">
+              <ion-icon name="create-outline"></ion-icon>
+              <ion-label>Notes</ion-label>
+            </ion-tab-button>
+          </ion-tab-bar>
+        <app-timeline [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'info'"></app-timeline>
+        <app-notes [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'notes'"></app-notes>
+      </div>
+
   </div>
 </div>
