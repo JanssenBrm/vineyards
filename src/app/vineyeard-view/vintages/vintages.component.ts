@@ -28,7 +28,7 @@ export class VintagesComponent implements OnChanges {
   @Input()
   vintage: Vintage;
 
-  tab: 'timeline' | 'notes';
+  tab: 'timeline' | 'notes' = 'timeline';
 
 
   constructor(
