@@ -1,5 +1,5 @@
 <div class="header">
-  <h1>Statistics</h1>
+  <h1> <ion-icon name="stats-chart" slot="start"></ion-icon>Statistics</h1>
   <div>
     <ion-select multiple="true" [(ngModel)]="activeVarieties" (ionChange)="setVarieties()" *ngIf="vineyard">
       <ion-select-option *ngFor="let variety of vineyard.varieties" [value]="variety.id">{{variety.name}}</ion-select-option>

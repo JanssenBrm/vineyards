@@ -2,10 +2,17 @@
   height: 100%;
   display: flex;
   width: 100%;
+  flex-direction: column;
+}
+
+h1 {
+  height: auto;
 }
 
 .container {
   display: flex;
+  flex: 1;
+  overflow:auto;
   width: 100%;
 
   .sidebar{
