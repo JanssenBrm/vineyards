@@ -17,7 +17,7 @@ import {VintageEvent} from '../../models/vintageevent.model';
   templateUrl: './vintages.component.html',
   styleUrls: ['./vintages.component.scss'],
 })
-export class VintagesComponent {
+export class VintagesComponent implements OnChanges {
 
   @Input()
   vineyard: Vineyard;
@@ -25,6 +25,7 @@ export class VintagesComponent {
   @Input()
   vintages: Vintage[];
 
+  @Input()
   vintage: Vintage;
 
 
@@ -34,6 +35,13 @@ export class VintagesComponent {
       public vineyardService: VineyardService,
       private alertController: AlertController
   ) {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.vintages && !this.vintage) {
+      console.log("SELECTING DEFAULT");
+      this.setVintage(this.vintages[0]);
+    }
   }
 
   async openAddVintageModal(vintage?: Vintage) {
