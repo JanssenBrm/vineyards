@@ -3,9 +3,11 @@ import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from './../services/vineyard.service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { Subject, Observable } from 'rxjs';
+import {Subject, Observable, BehaviorSubject} from 'rxjs';
 import { RouterStateSnapshot, ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import {VintageService} from '../services/vintage.service';
+import {Vintage} from '../models/vintage.model';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -15,7 +17,7 @@ import { Location } from '@angular/common';
 export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location, private menuController: MenuController,
-               private navController: NavController) { }
+               private navController: NavController, public vintageService: VintageService,) { }
 
   public seasons: number[];
 
@@ -23,11 +25,13 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   public activeSeasons: number[];
 
   private _destroy: Subject<boolean>;
+  public vintages$: BehaviorSubject<Vintage[]> = null;
 
   public activePage: 'info' | 'actions' | 'stats' | 'vintages';
 
   ngOnInit() {
     this._destroy = new Subject<boolean>();
+    this.vintages$ = this.vintageService.getVintageListener();
     this.activePage = 'info';
   }
   
@@ -38,6 +42,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe((vineyards: Vineyard[]) => {
       this.activeVineyard = vineyards.find((v: Vineyard) => v.id === this.activeRoute.snapshot.params.id);
       if (this.activeVineyard) {
+        this.vintageService.getVintages(this.activeVineyard);
         this.seasons = this.vineyardService.getYears(this.activeVineyard);
       }
     });

@@ -42,7 +42,7 @@
                          [vineyard]="activeVineyard"></app-actions>
             <app-statistics *ngIf="activePage === 'stats'" [seasons]="activeSeasons"
                             [vineyard]="activeVineyard"></app-statistics>
-            <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard"></app-vintages>
+            <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"></app-vintages>
         </div>
     </div>
 </ion-content>

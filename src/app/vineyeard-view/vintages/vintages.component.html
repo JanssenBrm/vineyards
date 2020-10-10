@@ -3,7 +3,7 @@
   <div class="sidebar" *appHideOnPlatform="['mobile']">
     <div class="list">
       <ion-list>
-        <ion-item *ngFor="let vintage of (vintages$ | async)" (click)="setVintage(vintage)">
+        <ion-item *ngFor="let vintage of vintages" (click)="setVintage(vintage)">
           <ion-label>
             <div class="title"><span>{{vintage.name}}</span><span class="actions"><ion-icon name="create-outline" (click)="editVintage(vintage)"></ion-icon><ion-icon name="trash-outline" (click)="deleteVintage(vintage)"></ion-icon></span></div>
             <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{vintage.year}}</div>

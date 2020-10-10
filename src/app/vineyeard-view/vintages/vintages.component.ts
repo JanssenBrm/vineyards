@@ -17,14 +17,16 @@ import {VintageEvent} from '../../models/vintageevent.model';
   templateUrl: './vintages.component.html',
   styleUrls: ['./vintages.component.scss'],
 })
-export class VintagesComponent implements OnChanges {
+export class VintagesComponent {
 
   @Input()
   vineyard: Vineyard;
 
+  @Input()
+  vintages: Vintage[];
+
   vintage: Vintage;
 
-  public vintages$: BehaviorSubject<Vintage[]> = null;
 
   constructor(
       private modalController: ModalController,
@@ -32,13 +34,6 @@ export class VintagesComponent implements OnChanges {
       public vineyardService: VineyardService,
       private alertController: AlertController
   ) {
-    this.vintages$ = this.vintageService.getVintageListener();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.vineyard && this.vineyard) {
-      this.vintageService.getVintages(this.vineyard);
-    }
   }
 
   async openAddVintageModal(vintage?: Vintage) {
@@ -46,7 +41,7 @@ export class VintagesComponent implements OnChanges {
       component: AddVintageComponent,
       componentProps: {
         vineyard: this.vineyard,
-        vintage: vintage
+        vintage
       }
     });
     modal.present();
