@@ -36,7 +36,7 @@
                 <div class="submenu" *ngIf="activeSubMenus.includes('vintages')">
                     <ion-item button (click)="openVintage(vintage)"  *ngFor="let vintage of (vintages$ | async)">
                         <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
-                        <ion-label>{{vintage.name}}</ion-label>
+                        <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
                     </ion-item>
                 </div>
             </ng-container>
