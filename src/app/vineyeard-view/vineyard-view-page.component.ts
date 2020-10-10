@@ -1,4 +1,4 @@
-import {MenuController, Platform} from '@ionic/angular';
+import {MenuController, NavController, Platform} from '@ionic/angular';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from './../services/vineyard.service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
@@ -14,7 +14,8 @@ import { Location } from '@angular/common';
 })
 export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location, private menuController: MenuController) { }
+  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location, private menuController: MenuController,
+               private navController: NavController) { }
 
   public seasons: number[];
 
@@ -59,6 +60,10 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
       this.menuController.close();
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
+  }
+
+  openOverview() {
+    this.navController.back();
   }
 
   ngOnDestroy(): void {

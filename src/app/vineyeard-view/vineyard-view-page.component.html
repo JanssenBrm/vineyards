@@ -8,7 +8,12 @@
         </ion-toolbar>
     </ion-header>
     <ion-content>
+
         <ion-list>
+            <ion-item button (click)="openOverview()">
+                <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+                <ion-label>Vineyards</ion-label>
+            </ion-item>
             <ion-item button (click)="openTab('info')"  [class.selected]="activePage === 'info'">
                 <ion-icon name="information-circle" slot="start"></ion-icon>
                 <ion-label>Info</ion-label>
