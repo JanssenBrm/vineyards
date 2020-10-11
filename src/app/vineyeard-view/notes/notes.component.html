@@ -1,9 +1,9 @@
 <div class="list">
   <ion-card *ngFor="let note of (notes$ | async) | orderBy:{key: 'date', type: 'dateString', desc: true} ">
     <ion-card-header >
-      <div class="cover" *ngIf="note.files && note.files.length > 0">
+      <!--<div class="cover" *ngIf="note.files && note.files.length > 0">
         <img [src]="note.files[0]"/>
-      </div>
+      </div>-->
       <ion-card-subtitle>{{STAGE[note.stage]}}</ion-card-subtitle>
       <ion-card-title>
         <div class="subtitle">
