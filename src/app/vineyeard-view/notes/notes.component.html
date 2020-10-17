@@ -1,5 +1,8 @@
+<div class="filters">
+  <ion-badge [style.backgroundColor]="getEventTypeColor(type)" *ngFor="let type of (notes$ | async | noteTypes)" (click)="toggleNoteType(type)">{{STAGE[type]}}</ion-badge>
+</div>
 <div class="list">
-  <ion-card *ngFor="let note of (notes$ | async) | orderBy:{key: 'date', type: 'dateString', desc: true} ">
+  <ion-card *ngFor="let note of (notes$ | async) | filterNotesByTypes: activeTypes  | orderBy:{key: 'date', type: 'dateString', desc: true} ">
     <ion-card-header >
       <!--<div class="cover" *ngIf="note.files && note.files.length > 0">
         <img [src]="note.files[0]"/>

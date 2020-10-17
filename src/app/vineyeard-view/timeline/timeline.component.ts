@@ -3,7 +3,7 @@ import {Vineyard} from '../../models/vineyard.model';
 import {Vintage} from '../../models/vintage.model';
 import {BehaviorSubject, combineLatest, concat, Observable, of} from 'rxjs';
 import {Note} from '../../models/note.model';
-import {SINGLE_DATES, VintageEvent} from '../../models/vintageevent.model';
+import {SINGLE_DATES, VintageEvent, VINTAGEEVENT_COLORS} from '../../models/vintageevent.model';
 import {NotesService} from '../../services/notes.service';
 import {ModalController} from '@ionic/angular';
 import {skipWhile, switchMap, tap, withLatestFrom} from 'rxjs/operators';
@@ -41,14 +41,6 @@ export class TimelineComponent implements OnInit, OnChanges {
     }
 
     createChart(notes: Note[]) {
-        const colors = [
-            'rgb(255, 205, 86)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 99, 132)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)'
-        ];
         if (notes.length > 0) {
             this.chart = new Chart(this.timelineChart.nativeElement, {
                 type: 'scatter',
@@ -64,10 +56,10 @@ export class TimelineComponent implements OnInit, OnChanges {
                                     y: stage,
                                     description: n.description
                                 })),
-                            borderColor: colors[idx],
+                            borderColor: VINTAGEEVENT_COLORS[idx],
                             borderWidth: 10,
-                            pointBackgroundColor: colors[idx],
-                            pointBorderColor: colors[idx],
+                            pointBackgroundColor: VINTAGEEVENT_COLORS[idx],
+                            pointBorderColor: VINTAGEEVENT_COLORS[idx],
                             pointRadius: 1,
                             pointHoverRadius: 1,
                             fill: false,

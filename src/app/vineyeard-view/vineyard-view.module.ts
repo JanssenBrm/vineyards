@@ -23,6 +23,8 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {NotesComponent} from './notes/notes.component';
 import {TimelineComponent} from './timeline/timeline.component';
 import {OrderByPipe} from '../pipes/order-by.pipe';
+import {NoteTypesPipe} from '../pipes/note-types.pipe';
+import {FilterNotesByTypesPipe} from '../pipes/filter-notes-by-types.pipe';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -58,7 +60,9 @@ theme(Highcharts);
         AddNoteComponent,
         NotesComponent,
         TimelineComponent,
-        OrderByPipe
+        OrderByPipe,
+        NoteTypesPipe,
+        FilterNotesByTypesPipe
     ],
     providers: [
         PhotoViewer,
