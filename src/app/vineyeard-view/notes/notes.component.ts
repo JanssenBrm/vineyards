@@ -24,7 +24,7 @@ export class NotesComponent implements OnInit, OnChanges {
   public notes$: BehaviorSubject<Note[]> = null;
   public  STAGE = VintageEvent;
 
-  private activeTypes: string[] = Object.keys(VintageEvent);
+  public activeTypes: string[] = Object.keys(VintageEvent);
 
   constructor(
       private notesService: NotesService,
