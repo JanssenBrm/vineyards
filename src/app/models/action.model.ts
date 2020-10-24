@@ -6,6 +6,7 @@ export interface Action {
     bbch?: string;
     variety?: string[];
     value?: number;
+    files?: string[];
 }
 
 

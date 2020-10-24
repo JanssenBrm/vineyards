@@ -1,23 +1,37 @@
 <h1><ion-icon name="time" slot="start"></ion-icon>History</h1>
-<section id="cd-timeline" class="cd-container">
-    <div *ngFor="let activity of vineyardService.getActionsInYears(vineyard, [], seasons)">
-      <div class="cd-timeline-block">
-        <div class="cd-timeline-icon royal">
-          <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
-        </div>
-        <!-- cd-timeline-img -->
-        <div class="cd-timeline-content royal">
-          <h5 class="marginBottom0 marginTop0 title">{{activity.type | titlecase}}</h5>
-          <span class="remove"><ion-icon name="trash" (click)="removeAction(activity)"></ion-icon></span>
-          <p class="marginTop5 cd-author"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{activity.date | date: "dd MMMM yyyy"}}</p>
-          <p class="variety" *ngIf="activity.variety"><img class="icon" src="assets/icon/grape.png" />{{ vineyardService.getVarietiesLabel(vineyard, activity)}}</p>
-          <p class="timelineText"  *ngIf="activity.type === 'brix'">{{activity.value}} degrees ({{activity.value | brixToAlcohol }}%)</p>
-          <p class="timelineText"  *ngIf="activity.description">{{activity.description}}</p>
-          <p class="timelineText" *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
-          <p class="timelineText" *ngIf="activity.type === 'planting'">
-            <span *ngFor="let variety of vineyardService.getVariety(vineyard, activity.variety)"> Planted {{variety.rows * variety.plantsPerRow}} plants</span>
-          </p>       
+<div class="list">
+  <ion-card  *ngFor="let activity of vineyardService.getActionsInYears(vineyard, [], seasons)">
+    <ion-card-header >
+      <div class="image">
+        <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
+      </div>
+      <div class="text">
+        <ion-card-title>
+          <span>{{activity.type | titlecase}}</span>
+          <span><!--<ion-icon name="create-outline" (click)="editAction(activity)"></ion-icon>--><ion-icon name="trash-outline" (click)="removeAction(activity)"></ion-icon></span>
+        </ion-card-title>
+        <ion-card-subtitle>
+          <div class="subtitle">
+            <div><ion-icon name="calendar-outline" class="icon"></ion-icon>{{activity.date | date:'dd MMMM yyyy'}}</div>
+            <div class="variety" *ngIf="activity.variety"><img class="icon" src="assets/icon/grape.png" />{{ vineyardService.getVarietiesLabel(vineyard, activity)}}</div>
+          </div>
+        </ion-card-subtitle>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="description">
+        <p  *ngIf="activity.type === 'brix'">{{activity.value}} degrees ({{activity.value | brixToAlcohol }}%)</p>
+        <p *ngIf="activity.description">{{activity.description}}</p>
+        <p *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
+        <p  *ngIf="activity.type === 'planting'">
+          <span *ngFor="let variety of vineyardService.getVariety(vineyard, activity.variety)"> Planted {{variety.rows * variety.plantsPerRow}} plants</span>
+        </p>
+      </div>
+      <div class="files">
+        <div class="file" *ngFor="let file of activity.files">
+          <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
         </div>
       </div>
-    </div>
-  </section>
+    </ion-card-content>
+  </ion-card>
+</div>
