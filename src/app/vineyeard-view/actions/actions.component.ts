@@ -46,11 +46,12 @@ export class ActionsComponent implements OnInit {
     this.vineyardService.updateVineyard(this.vineyard);
   }
 
-  async openAddActionModal() {
+  async openAddActionModal(action?: Action) {
     const modal = await this.modalController.create({
       component: AddActionComponent,
       componentProps: {
-        vineyard: this.vineyard
+        vineyard: this.vineyard,
+        action: action
       }
     });
     modal.present();

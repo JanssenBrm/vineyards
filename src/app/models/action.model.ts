@@ -1,5 +1,6 @@
 import { Variety } from './variety.model';
 export interface Action {
+    id?: string;
     type: ActionType;
     date: string;
     description: string;
