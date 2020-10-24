@@ -35,7 +35,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   private actionTypes: string[] = Object.keys(ActionType);
 
-  constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform, private modalController: ModalController) { }
+  constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform) { }
 
   ngOnInit() {}
 
@@ -95,47 +95,4 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
   getTotalCount(info: Vineyard, seasons: number[]): number {
     return info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : 0;
   }
-
-  async openAddActionModal() {
-    const modal = await this.modalController.create({
-      component: AddActionComponent,
-      componentProps: {
-        vineyard: this.vineyard
-      }
-    });
-    modal.present();
-
-    const data = await modal.onWillDismiss();
-    if (data.data.action) {
-     this.parseAction(data.data.action);
-    }
-  }
-
-  parseAction(data: any) {
-
-    let id = null;
-
-    if (data.type === 'planting') {
-      id = uuid.v4();
-      this.vineyard.varieties.push({
-        id,
-        plantsPerRow: data.plantsPerRow,
-        name: data.variety,
-        rows: data.rows
-      });
-    }
-
-    const action: Action = {
-      type: data.type,
-      date: data.date,
-      description: data.description,
-      bbch: data.bbch,
-      variety: id ? [id] : data.varietyId,
-      value: data.value
-    };
-
-    this.vineyard.actions.push(action);
-    this.vineyardService.updateVineyard(this.vineyard);
-  }
-
 }

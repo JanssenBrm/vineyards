@@ -1,11 +1,13 @@
 import { UtilService } from './../../services/util.service';
 import { Action } from 'src/app/models/action.model';
-import { Platform } from '@ionic/angular';
+import {ModalController, Platform} from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Vineyard } from 'src/app/models/vineyard.model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Router } from '@angular/router';
+import {AddActionComponent} from '../add-action/add-action.component';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-actions',
@@ -20,7 +22,8 @@ export class ActionsComponent implements OnInit {
   @Input()
   seasons: number[];
 
-  constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform, private router: Router) { }
+  constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
+              private router: Router,  private modalController: ModalController) { }
 
   ngOnInit() {}
 
@@ -37,9 +40,53 @@ export class ActionsComponent implements OnInit {
   }
 
   removeAction(action: Action) {
-    const actions: Action[] = this.vineyard.actions.filter((a: Action) => !(a.date == action.date && a.type === action.type && a.description === action.description));
+    const actions: Action[] = this.vineyard.actions
+        .filter((a: Action) => !(a.date === action.date && a.type === action.type && a.description === action.description));
     this.vineyard.actions = actions;
     this.vineyardService.updateVineyard(this.vineyard);
   }
+
+  async openAddActionModal() {
+    const modal = await this.modalController.create({
+      component: AddActionComponent,
+      componentProps: {
+        vineyard: this.vineyard
+      }
+    });
+    modal.present();
+
+    const data = await modal.onWillDismiss();
+    if (data.data.action) {
+      this.parseAction(data.data.action);
+    }
+  }
+
+  parseAction(data: any) {
+
+    let id = null;
+
+    if (data.type === 'planting') {
+      id = uuid.v4();
+      this.vineyard.varieties.push({
+        id,
+        plantsPerRow: data.plantsPerRow,
+        name: data.variety,
+        rows: data.rows
+      });
+    }
+
+    const action: Action = {
+      type: data.type,
+      date: data.date,
+      description: data.description,
+      bbch: data.bbch,
+      variety: id ? [id] : data.varietyId,
+      value: data.value
+    };
+
+    this.vineyard.actions.push(action);
+    this.vineyardService.updateVineyard(this.vineyard);
+  }
+
 
 }
