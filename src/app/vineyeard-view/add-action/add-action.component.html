@@ -26,10 +26,10 @@
           }}</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item *ngIf="actionForm.value.type !== 'planting'">
+      <ion-item *ngIf="actionForm.value.type !== 'Planting'">
         <ion-label position="stacked">Variety</ion-label>
         <ion-select required  multiple="true"  formControlName="varietyId">
-          <ion-select-option *ngFor="let variety of vineyard.varieties" [value]="variety.id">{{
+          <ion-select-option *ngFor="let variety of (varieties | async)" [value]="variety.id">{{
             variety.name
           }}</ion-select-option>
         </ion-select>

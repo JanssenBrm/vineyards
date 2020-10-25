@@ -1,5 +1,5 @@
-<app-header (setSeasons)="setSeasons($event)" [activeSeasons]="activeSeasons"
-            [seasons]="seasons" [title]="activeVineyard ? activeVineyard.name : 'My vineyards'" [menuId]="'menu1'"></app-header>
+<app-header (setSeasons)="setSeasons($event)" [activeSeasons]="(activeSeasons$ | async)"
+            [seasons]="(seasons$ | async)" [title]="activeVineyard ? activeVineyard.name : 'My vineyards'" [menuId]="'menu1'"></app-header>
 
 <ion-menu side="start" content-id="main-content">
     <ion-header>

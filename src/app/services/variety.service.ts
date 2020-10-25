@@ -1,0 +1,58 @@
+import { Injectable } from '@angular/core';
+import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, DocumentReference} from '@angular/fire/firestore';
+import {Vineyard} from '../models/vineyard.model';
+import {VineyardDoc} from '../models/vineyarddoc.model';
+import {map, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
+import {Action} from '../models/action.model';
+import {Variety} from '../models/variety.model';
+export const VARIETY_COLLECTION = 'varieties';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class VarietyService {
+
+  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
+  private _varieties: BehaviorSubject<Variety[]>;
+
+  constructor(private fireStore: AngularFirestore) {
+    this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
+    this._varieties = new BehaviorSubject<Variety[]>([]);
+  }
+
+  public getVarietyListener(): BehaviorSubject<Variety[]> {
+    return this._varieties;
+  }
+
+  public addVariety(vineyard: Vineyard, variety: Variety): Promise<string> {
+    return this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).add(variety)
+        .then((doc: DocumentReference) => doc.id);
+  }
+
+  public updateVariety(vineyard: Vineyard, variety: Variety): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).doc(variety.id).set(variety);
+  }
+
+  public removeVaerity(vineyard: Vineyard, variety: Variety): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).doc(variety.id).delete();
+  }
+
+  public getVarietyByName(name: string): Variety {
+    return this._varieties.getValue().find((v: Variety) => v.name === name);
+  }
+
+  public getVarietyByID(id: string): Variety {
+    return this._varieties.getValue().find((v: Variety) => v.id === id);
+  }
+
+  public getVarieties(vineyard: Vineyard): void {
+    this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).snapshotChanges().pipe(
+        map((data: DocumentChangeAction<Variety>[]) => data.map((d: DocumentChangeAction<Variety>) => (
+            {
+              ...d.payload.doc.data(),
+              id: d.payload.doc.id,
+            }))),
+    ).subscribe((actions: Variety[]) => this._varieties.next(actions));
+  }
+}

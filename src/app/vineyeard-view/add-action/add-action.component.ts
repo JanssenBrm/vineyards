@@ -6,6 +6,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
 import {Action} from '../../../../functions/src/models/action.model';
+import {BehaviorSubject} from 'rxjs';
+import {VarietyService} from '../../services/variety.service';
+import {Variety} from '../../models/variety.model';
 
 @Component({
   selector: 'app-add-action',
@@ -20,15 +23,19 @@ export class AddActionComponent implements OnInit {
   @Input()
   action: Action;
   
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController,
+              private varietyService: VarietyService) { }
 
   public actionForm: FormGroup;
   public actionTypes: string[];
   public bbchCodes: BBCH[];
 
+  public varieties: BehaviorSubject<Variety[]>;
+
   ngOnInit() {
     this.actionTypes = Object.keys(ActionType);
     this.bbchCodes = BBCH_STAGES;
+    this.varieties = this.varietyService.getVarietyListener();
 
     if (this.action) {
       console.log(this.action);
@@ -43,6 +50,13 @@ export class AddActionComponent implements OnInit {
         plantsPerRow: new FormControl(''),
         value: new FormControl('')
       });
+
+      if (this.action.type === 'planting') {
+        const variety: Variety = this.varietyService.getVarietyByID(this.action.variety[0]);
+        this.actionForm.get('rows').setValue(variety.rows);
+        this.actionForm.get('plantsPerRow').setValue(variety.plantsPerRow);
+        this.actionForm.get('variety').setValue(variety.name);
+      }
     } else {
       this.actionForm = new FormGroup({
         type: new FormControl('', [Validators.required]),
@@ -65,6 +79,8 @@ export class AddActionComponent implements OnInit {
         this.actionForm.get('variety').setValidators([Validators.required]);
         this.actionForm.get('rows').setValidators([Validators.required]);
         this.actionForm.get('plantsPerRow').setValidators([Validators.required]);
+        this.actionForm.get('varietyId').setValidators(null);
+        this.actionForm.get('varietyId').setValue([]);
       }  else if (type === 'Brix') {
         this.actionForm.get('value').setValidators([Validators.required]);
       } else {
@@ -82,6 +98,7 @@ export class AddActionComponent implements OnInit {
     this.modalController.dismiss({
       action: {
         ...this.actionForm.value,
+        id: this.action ? this.action.id : '',
         date: this.actionForm.value.date.split('T')[0],
         type: ActionType[this.actionForm.value.type]
     }});

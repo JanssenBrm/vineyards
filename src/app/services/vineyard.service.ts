@@ -66,8 +66,7 @@ export class VineyardService {
             }))),
             tap((vineyards: Vineyard[]) => forkJoin(vineyards.map((v: Vineyard) => this.updateTempStats(v))).subscribe()),
             map((vineyards: Vineyard[]) => vineyards.map((v: Vineyard) => ({
-                ...v,
-                actions: v.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1)
+                ...v
             })))
         ).subscribe((vineyards: Vineyard[]) => {
             this._vineyards$.next(vineyards);

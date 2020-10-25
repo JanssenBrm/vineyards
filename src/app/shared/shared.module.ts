@@ -8,6 +8,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LastActionPipe } from './pipes/last-action.pipe';
 import { ActiveTypePipe } from './pipes/active-type.pipe';
 import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive';
+import {FilterActionsBySeasonPipe} from '../pipes/filter-actions-by-season.pipe';
 
 
 
@@ -17,7 +18,8 @@ import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive'
     ToolbarComponent,
     LastActionPipe,
     ActiveTypePipe,
-    HideOnPlatformDirective
+    HideOnPlatformDirective,
+      FilterActionsBySeasonPipe
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive'
     ToolbarComponent,
     LastActionPipe,
     ActiveTypePipe,
-    HideOnPlatformDirective
+    HideOnPlatformDirective,
+    FilterActionsBySeasonPipe
   ]
 })
 export class SharedModule { }

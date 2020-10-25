@@ -8,6 +8,10 @@ import { RouterStateSnapshot, ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import {VintageService} from '../services/vintage.service';
 import {Vintage} from '../models/vintage.model';
+import {VarietyService} from '../services/variety.service';
+import {Action} from '../models/action.model';
+import {ActionService} from '../services/action.service';
+import {SeasonsService} from '../services/seasons.service';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -17,12 +21,15 @@ import {Vintage} from '../models/vintage.model';
 export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location, private menuController: MenuController,
-               private navController: NavController, public vintageService: VintageService,) { }
+               private navController: NavController, public vintageService: VintageService,
+               private varietyService: VarietyService,
+               private actionService: ActionService,
+               private seasonService: SeasonsService) { }
 
-  public seasons: number[];
+  public seasons$: Observable<number[]>;
+  public activeSeasons$: BehaviorSubject<number[]>;
 
   public activeVineyard: Vineyard;
-  public activeSeasons: number[];
 
   private _destroy: Subject<boolean>;
   public vintages$: BehaviorSubject<Vintage[]> = null;
@@ -33,33 +40,34 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   public activeSubMenus: string[] = [];
 
+  public actions$: BehaviorSubject<Action[]>;
+
   ngOnInit() {
     this._destroy = new Subject<boolean>();
     this.vintages$ = this.vintageService.getVintageListener();
+    this.actions$ = this.actionService.getActionListener();
+    this.seasons$ = this.seasonService.getSeasonListener();
+    this.activeSeasons$ = this.seasonService.getActiveSeasonListener();
+
     this.activePage = 'info';
   }
-  
   ngAfterViewInit() {
     this.activePage = this.activeRoute.snapshot.params.tab;
+
     this.vineyardService.getVineyardsListener().pipe(
       takeUntil(this._destroy)
     ).subscribe((vineyards: Vineyard[]) => {
       this.activeVineyard = vineyards.find((v: Vineyard) => v.id === this.activeRoute.snapshot.params.id);
       if (this.activeVineyard) {
+        this.varietyService.getVarieties(this.activeVineyard);
         this.vintageService.getVintages(this.activeVineyard);
-        this.seasons = this.vineyardService.getYears(this.activeVineyard);
+        this.actionService.getActions(this.activeVineyard);
       }
     });
-    this.vineyardService.getActiveSeasons().pipe(
-      takeUntil(this._destroy)
-    ).subscribe((seasons: number[]) => {
-      this.activeSeasons = seasons;
-    });
-
   }
 
   setSeasons(years: number[]): void {
-    this.vineyardService.setActiveSeasons(years);
+    this.seasonService.setActiveSeasons(years);
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {

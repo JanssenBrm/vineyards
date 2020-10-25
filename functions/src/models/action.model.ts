@@ -5,6 +5,7 @@ export interface Action {
     description: string;
     bbch?: string;
     variety?: string[];
+    id?: string;
 }
 
 
