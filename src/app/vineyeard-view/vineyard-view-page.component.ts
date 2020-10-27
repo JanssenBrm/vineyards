@@ -12,6 +12,7 @@ import {VarietyService} from '../services/variety.service';
 import {Action} from '../models/action.model';
 import {ActionService} from '../services/action.service';
 import {SeasonsService} from '../services/seasons.service';
+import {Variety} from '../models/variety.model';
 
 @Component({
   selector: 'app-vineyeard-view',

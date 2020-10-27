@@ -25,28 +25,16 @@ export class ActionsComponent implements OnInit, OnChanges {
   vineyard: Vineyard;
 
   @Input()
-  seasons: number[];
-
-  actions: BehaviorSubject<Action[]>;
-  activeSeasons: BehaviorSubject<number[]>;
+  actions: Action[];
 
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
               private router: Router,  private modalController: ModalController,
               private actionService: ActionService,
-              private varietyService: VarietyService,
-              private seasonService: SeasonsService) { }
+              private varietyService: VarietyService) { }
 
-  ngOnInit() {
-   this.actions = this.actionService.getActionListener();
-   this.activeSeasons = this.seasonService.getActiveSeasonListener();
-  }
+  ngOnInit() {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.vineyard) {
-      this.actionService.getActions(this.vineyard);
-      this.varietyService.getVarieties(this.vineyard);
-    }
-  }
+  ngOnChanges(changes: SimpleChanges) {}
 
   getImage(type: string): string {
     return `/assets/icon/${type}.png`;
@@ -141,9 +129,6 @@ export class ActionsComponent implements OnInit, OnChanges {
     return varieties ? varieties.map((v: string) => this.varietyService.getVarietyByID(v)).filter((v: Variety) => !!v) : [];
   }
 
-  getVarietiesLabel(varieties: string[] | undefined): string[] {
-    return this.getVarieties(varieties).map((v: Variety) => v.name);
-  }
 
 
 }
