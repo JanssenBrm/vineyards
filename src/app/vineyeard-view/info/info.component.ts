@@ -97,5 +97,4 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
     return this.varietyService.getPlantCount(this.varieties);
   }
 
-  getVariety()
 }
