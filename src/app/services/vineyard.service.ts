@@ -140,11 +140,6 @@ export class VineyardService {
     }
 
 
-
-    getVintageVarietiesLabel(info: Vineyard, vintage: Vintage): string {
-        return ''//this.getVariety(info, vintage.varieties).map((v: Variety) => v.name).join(', ');
-    }
-
     getMeteoYears(info: Vineyard): number[] {
         return info && info.meteo && info.meteo.data ? [...new Set(info.meteo.data.map((e: MeteoStatEntry) => moment(e.date).year()))] : [];
     }
