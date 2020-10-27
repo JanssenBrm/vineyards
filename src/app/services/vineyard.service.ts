@@ -93,14 +93,6 @@ export class VineyardService {
         return plantingActions.length > 0 ? [].concat(...plantingActions.map((a: Action) => a.variety)).map((id: string) => info.varieties.find((v: Variety) => v.id === id)) : [];
     }
 
-    getYears(info: Vineyard): number[] {
-        return [...new Set(info.actions.map((a: Action) => (new Date(a.date).getFullYear())))];
-    }
-
-    getSeasons(): number[] {
-        return [...new Set([].concat(...this._vineyards$.getValue().map((v: Vineyard) => this.getYears(v))))];
-    }
-
     getFirstPlanting(info: Vineyard): Action {
         const plantingActions = this.getActions(info, [ActionType.Planting]);
         return plantingActions.length > 0 ? plantingActions[0] : undefined;
@@ -126,16 +118,6 @@ export class VineyardService {
             actions = actions.filter((a: Action) => (types.indexOf(a.type) >= 0));
         }
         return actions.length > 0 ? actions.filter((a: Action) => (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
-    }
-
-    getPlantCount(info: Vineyard, season: number): number {
-        const varities = this.getVarieties(info, season);
-        return varities.length > 0 ? varities.map((v: Variety) => v.plantsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
-    }
-
-    getLastUpdate(info: Vineyard): string {
-        const action = info && info.actions.length > 0 ? info.actions[info.actions.length - 1] : undefined;
-        return action ? action.date : undefined;
     }
 
 

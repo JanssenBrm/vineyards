@@ -46,4 +46,9 @@ export class ActionService {
         map((actions: Action[]) => actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1))
     ).subscribe((actions: Action[]) => this._actions.next(actions));
   }
+
+  public getLastUpdate(actions: Action[]): string {
+    const action = actions && actions.length > 0 ? actions[actions.length - 1] : undefined;
+    return action ? action.date : undefined;
+  }
 }

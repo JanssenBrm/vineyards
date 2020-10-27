@@ -20,7 +20,7 @@
         <ion-icon name="leaf-outline"></ion-icon>
       </div>
       <div>
-        {{getVariety(activeVineyard, activeSeasons)}}
+        {{getVarieties((varieties | async))}}
       </div>
     </div>
     <div class="row">
@@ -28,7 +28,7 @@
           <ion-icon name="pricetags-outline"></ion-icon>
         </div>
         <div>
-          {{getVarietyCount(activeVineyard, activeSeasons)}} plants
+          {{getVarietyCount((varieties | async))}} plants
         </div>
       </div>
       <div class="row">
@@ -36,7 +36,7 @@
           <ion-icon name="time-outline"></ion-icon>
         </div>
         <div>
-          {{getLastUpdate(activeVineyard) | date:'dd/MM/yyyy'}}
+          {{getLastUpdate((actions | async)) | date:'dd/MM/yyyy'}}
         </div>
       </div>
     <div class="row">

@@ -55,4 +55,8 @@ export class VarietyService {
             }))),
     ).subscribe((actions: Variety[]) => this._varieties.next(actions));
   }
+
+  public getPlantCount(varieties: Variety[]): number {
+    return varieties.length > 0 ? varieties.map((v: Variety) => v.plantsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
+  }
 }

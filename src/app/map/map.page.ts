@@ -23,7 +23,11 @@ import Snap from 'ol/interaction/Snap';
 import Overlay from 'ol/Overlay';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {VarietyService} from '../services/variety.service';
+import {Action} from '../models/action.model';
+import {ActionService} from '../services/action.service';
+import {SeasonsService} from '../services/seasons.service';
 
 @Component({
   selector: 'app-map',
@@ -34,7 +38,10 @@ export class MapPage implements OnInit, AfterViewInit {
   constructor(
     public vineyardService: VineyardService,
     private utilService: UtilService,
-    private router: Router
+    private router: Router,
+    private varietyService: VarietyService,
+    private actionService: ActionService,
+    private seasonService: SeasonsService
   ) {
     this._init = true;
   }
@@ -55,8 +62,15 @@ export class MapPage implements OnInit, AfterViewInit {
   public seasons: number[];
   public mapMode: MapMode;
 
+  public varieties: BehaviorSubject<Variety[]>;
+  public actions: BehaviorSubject<Action[]>;
 
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.varieties = this.varietyService.getVarietyListener();
+    this.actions = this.actionService.getActionListener();
+    this.seasons = [];
+  }
 
   ngAfterViewInit() {
     this.dirty = [];
@@ -107,6 +121,8 @@ export class MapPage implements OnInit, AfterViewInit {
         this.activeVineyard = this.vineyardService.getInfo(
           feature.selected[0].get('name')
         );
+        this.varietyService.getVarieties(this.activeVineyard);
+        this.actionService.getActions(this.activeVineyard);
         this._overlay.setPosition(feature.mapBrowserEvent.coordinate);
       } else {
         this.closePopup();
@@ -171,7 +187,6 @@ export class MapPage implements OnInit, AfterViewInit {
             .fit(center, { size: this._map.getSize(), maxZoom: 18 });
             this._init = false;
           }
-          this.seasons = this.vineyardService.getSeasons();
         }
       });
 
@@ -196,26 +211,21 @@ export class MapPage implements OnInit, AfterViewInit {
     this.router.navigate([`/vineyard/view/${info.id}/info`]);
   }
 
-  getVariety(info: Vineyard, seasons: number[]): string {
-    return seasons && info
-      ? [
+  getVarieties(varieties: Variety[]): string {
+    return varieties ? [
           ...new Set(
-            this.vineyardService
-              .getVarieties(info, Math.max(...seasons))
+              varieties
               .map((v: Variety) => v.name)
           )
-        ].join(', ')
-      : '';
+        ].join(', ') : '';
   }
 
-  getVarietyCount(info: Vineyard, seasons: number[]): number {
-    return seasons && info
-      ? this.vineyardService.getPlantCount(info, Math.max(...seasons))
-      : undefined;
+  getVarietyCount(varieties: Variety[]): number {
+    return this.varietyService.getPlantCount(varieties);
   }
 
-  getLastUpdate(info: Vineyard): string {
-    return this.vineyardService.getLastUpdate(info);
+  getLastUpdate(actions: Action[]): string {
+    return this.actionService.getLastUpdate(actions);
   }
 
   setSeasons(years: number[]): void {
