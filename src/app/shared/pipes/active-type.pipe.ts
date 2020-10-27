@@ -11,8 +11,7 @@ export class ActiveTypePipe implements PipeTransform {
   constructor(private vineyardService: VineyardService) {}
 
 
-  transform(vineyard: Vineyard, seasons: number[]): ActionType[] {
-    const actions = this.vineyardService.getActionsInYears(vineyard, [], seasons);
+  transform(actions: Action[]): ActionType[] {
     return actions.length > 0 ? [...new Set(actions.map((a: Action) => a.type))] : [];
   }
 

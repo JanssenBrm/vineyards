@@ -41,6 +41,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   public activeSubMenus: string[] = [];
 
   public actions$: BehaviorSubject<Action[]>;
+  public varieties$: BehaviorSubject<Variety[]>;
 
   ngOnInit() {
     this._destroy = new Subject<boolean>();
@@ -48,6 +49,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.actions$ = this.actionService.getActionListener();
     this.seasons$ = this.seasonService.getSeasonListener();
     this.activeSeasons$ = this.seasonService.getActiveSeasonListener();
+    this.varieties$ = this.varietyService.getVarietyListener();
 
     this.activePage = 'info';
   }
@@ -62,6 +64,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
         this.varietyService.getVarieties(this.activeVineyard);
         this.vintageService.getVintages(this.activeVineyard);
         this.actionService.getActions(this.activeVineyard);
+        this.varietyService.getVarieties(this.activeVineyard);
       }
     });
   }

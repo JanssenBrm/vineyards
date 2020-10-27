@@ -16,6 +16,7 @@ import Feature from 'ol/Feature';
 import { Action, ActionType } from 'src/app/models/action.model';
 import { ObjectUnsubscribedError } from 'rxjs';
 import * as uuid from 'uuid';
+import {VarietyService} from '../../services/variety.service';
 
 @Component({
   selector: 'app-info',
@@ -28,14 +29,18 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
   vineyard: Vineyard;
 
   @Input()
-  seasons: number[];
+  varieties: Variety[];
+
+  @Input()
+  actions: Action[];
 
   private _map: olMap;
   private _featureLayer: VectorLayer;
 
   private actionTypes: string[] = Object.keys(ActionType);
 
-  constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform) { }
+  constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform,
+              public varietyService: VarietyService) { }
 
   ngOnInit() {}
 
@@ -88,11 +93,9 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
     }, 500);
   }
 
-  getVarieties(info: Vineyard, seasons: number[]): Variety[] {
-    return info ? this.vineyardService.getVarieties(info, Math.max(...seasons)) : [];
+  getTotalCount(): number {
+    return this.varietyService.getPlantCount(this.varieties);
   }
 
-  getTotalCount(info: Vineyard, seasons: number[]): number {
-    return info ? this.vineyardService.getPlantCount(info, Math.max(...seasons)) : 0;
-  }
+  getVariety()
 }

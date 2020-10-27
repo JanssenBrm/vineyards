@@ -111,16 +111,6 @@ export class VineyardService {
         return actions.length > 0 ? actions.filter((a: Action) => new Date(a.date).getFullYear() <= maxYear) : actions;
     }
 
-    getActionsInYears(info: Vineyard, types: ActionType[], years: number[]): Action[] {
-        let actions = info ? info.actions : [];
-
-        if (types.length > 0) {
-            actions = actions.filter((a: Action) => (types.indexOf(a.type) >= 0));
-        }
-        return actions.length > 0 ? actions.filter((a: Action) => (years.indexOf(new Date(a.date).getFullYear()) >= 0)) : actions;
-    }
-
-
     updateLocation(id: string, geometry: Polygon): void {
         const polygons = this._vineyards$.getValue().map((v: Vineyard) => v.id === id ? ({
             ...v,
@@ -149,16 +139,10 @@ export class VineyardService {
         this.saveVineyards([vineyard.id]);
     }
 
-    getVariety(info: Vineyard, ids: string[]): Variety[] {
-        return info.varieties.filter((v: Variety) => ids.indexOf(v.id) >= 0);
-    }
 
-    getVarietiesLabel(info: Vineyard, action: Action): string {
-        return this.getVariety(info, action.variety).map((v: Variety) => v.name).join(', ');
-    }
 
     getVintageVarietiesLabel(info: Vineyard, vintage: Vintage): string {
-        return this.getVariety(info, vintage.varieties).map((v: Variety) => v.name).join(', ');
+        return ''//this.getVariety(info, vintage.varieties).map((v: Variety) => v.name).join(', ');
     }
 
     getMeteoYears(info: Vineyard): number[] {

@@ -59,4 +59,12 @@ export class VarietyService {
   public getPlantCount(varieties: Variety[]): number {
     return varieties.length > 0 ? varieties.map((v: Variety) => v.plantsPerRow * v.rows).reduce((sum: number, count: number, idx: number) => sum + count) : 0;
   }
+
+  getVariety(ids: string[]): Variety[] {
+    return this._varieties.getValue().filter((v: Variety) => ids.indexOf(v.id) >= 0);
+  }
+
+  getVarietiesLabel(action: Action): string {
+    return this.getVariety(action.variety).map((v: Variety) => v.name).join(', ');
+  }
 }

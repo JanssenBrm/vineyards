@@ -8,14 +8,14 @@
       </tr>
       <tr>
         <th>Total plants</th>
-        <td>{{getTotalCount(vineyard, seasons)}}</td>
+        <td>{{getTotalCount()}}</td>
       </tr>
       <tr>
         <th coslpan="2">Varieties</th>
       </tr>
       <tr>
         <td colspan="2"><ul>
-            <li *ngFor="let variety of getVarieties(vineyard, seasons)">{{variety.name}} - {{variety.rows * variety.plantsPerRow}} plants</li>
+            <li *ngFor="let variety of varieties">{{variety.name}} - {{variety.rows * variety.plantsPerRow}} plants</li>
         </ul>
       </td>
       </tr>
@@ -27,8 +27,8 @@
       <tr>
         <td colspan="2">
           <div  *ngIf="vineyard" class="actions-container">
-          <div class="actions" *ngFor="let type of vineyard | activeType:seasons">
-            <div class="action" *ngFor="let action of (vineyard | lastAction:[type]:seasons)">
+          <div class="actions" *ngFor="let type of actions | activeType">
+            <div class="action" *ngFor="let action of (actions | lastAction:[type])">
               <div class="icon">
                 <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
               </div>
@@ -37,9 +37,9 @@
                 <span class="description">{{action.description}}</span>
                 <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>
                 <span class="description" *ngIf="action.type === 'brix'">{{action.value}} ({{action.value | brixToAlcohol}}%)</span>
-                <span class="description" *ngIf="action.type === 'planting'">{{vineyardService.getVariety(vineyard, action.variety)[0].rows * vineyardService.getVariety(vineyard, action.variety)[0].plantsPerRow}} plants</span>
+                <span class="description" *ngIf="action.type === 'planting'">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}} plants</span>
                 <span class="description variety" *ngIf="action.variety">
-                    {{vineyardService.getVarietiesLabel(vineyard, action)}}
+                    {{varietyService.getVarietiesLabel(action)}}
                 </span>
               </div>
             </div>
