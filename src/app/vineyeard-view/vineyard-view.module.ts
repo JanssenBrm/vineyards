@@ -25,6 +25,7 @@ import {TimelineComponent} from './timeline/timeline.component';
 import {OrderByPipe} from '../pipes/order-by.pipe';
 import {NoteTypesPipe} from '../pipes/note-types.pipe';
 import {FilterNotesByTypesPipe} from '../pipes/filter-notes-by-types.pipe';
+import {FilterVarietiesBySeasonPipe} from '../pipes/filter-varieties-by-season.pipe';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -62,7 +63,8 @@ theme(Highcharts);
         TimelineComponent,
         OrderByPipe,
         NoteTypesPipe,
-        FilterNotesByTypesPipe
+        FilterNotesByTypesPipe,
+        FilterVarietiesBySeasonPipe
     ],
     providers: [
         PhotoViewer,
