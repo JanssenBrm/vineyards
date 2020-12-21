@@ -1,0 +1,18 @@
+<ion-header>
+</ion-header>
+<ion-content>
+  <form [formGroup]="form" (submit)="register()">
+    <ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input type="text" formControlName="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Password</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+    <ion-button type="submit" color="primary" expand="full" [disabled]="!form.valid">
+      <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+      <span *ngIf="!loading">Register</span>
+    </ion-button>
+  </form>
+</ion-content>
