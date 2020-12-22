@@ -30,7 +30,7 @@ export class ActionsComponent implements OnInit, OnChanges {
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
               private router: Router,  private modalController: ModalController,
               private actionService: ActionService,
-              private varietyService: VarietyService) { }
+              public varietyService: VarietyService) { }
 
   ngOnInit() {}
 
