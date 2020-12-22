@@ -4,12 +4,15 @@ import { Injectable } from '@angular/core';
 import { createEmpty, extend } from 'ol/extent';
 import Polygon from 'ol/geom/Polygon';
 import { BBCH } from '../models/bbch.model';
+import {Platform} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
-  constructor() { }
+  constructor(
+      public platform: Platform
+  ) { }
 
   getExtent(locations: Polygon[]): any {
     let extent = createEmpty();
@@ -30,5 +33,14 @@ export class UtilService {
   getBBCHDescription(code: string): string {
     const stage: BBCH = BBCH_STAGES.find((s: BBCH) => s.code === code);
     return stage ? stage.description : '';
+  }
+
+  isMobile(): boolean {
+    console.log(this.platform.platforms());
+    if (this.platform.is('ios') || this.platform.is('android')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
