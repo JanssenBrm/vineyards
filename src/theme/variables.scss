@@ -1,15 +1,24 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;800&family=Raleway&display=swap');
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #581afb;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary-shade: #5119e3;
+  --ion-color-primary-tint: #5119e3;
+
+  --ion-border-radius: 15px;
+  --ion-box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  --ion-padding: 1rem;
+  --ion-title-font: 'Open Sans';
+
+  --ion-font-family: 'Raleway';
 
   /** secondary **/
   --ion-color-secondary: #3dc2ff;

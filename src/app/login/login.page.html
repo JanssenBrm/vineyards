@@ -1,30 +1,38 @@
 <ion-header>
 </ion-header>
 <ion-content>
-    <form [formGroup]="form" (submit)="login()">
-        <ion-item>
-            <ion-label position="stacked">Email</ion-label>
-            <ion-input type="text" formControlName="username"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label position="stacked">Password</ion-label>
-            <ion-input type="password" formControlName="password"></ion-input>
-        </ion-item>
-        <ion-button type="submit" color="primary" expand="full" [disabled]="!form.valid">
-            <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
-            <span *ngIf="!loading">Login</span>
-        </ion-button>
-    </form>
-    <ion-buttons>
-        <ion-button expand="full" routerLink="/register">
-            <span *ngIf="!loading">Create account</span>
-        </ion-button>
-        <ion-button expand="full" (click)="loginWithGoogle()">
-            <ion-icon name="logo-google"></ion-icon>
-            <span *ngIf="!loading">Login with Google</span>
-        </ion-button>
-        <ion-button expand="full" routerLink="/forgot-password">
-            <span *ngIf="!loading">Forgot password</span>
-        </ion-button>
-    </ion-buttons>
+    <div class="content">
+        <div class="title">
+            <img src="assets/logo.png" height="100px"/>
+            <span>Vineyards</span>
+        </div>
+        <form [formGroup]="form" (submit)="login()">
+            <ion-item>
+                <ion-label position="stacked">Email</ion-label>
+                <ion-input type="email" formControlName="username"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Password</ion-label>
+                <ion-input type="password" formControlName="password"></ion-input>
+            </ion-item>
+            <ion-button type="submit" [color]="form.valid ? 'primary' : 'medium'" expand="full" [disabled]="!form.valid">
+                <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+                <span *ngIf="!loading">Continue</span>
+            </ion-button>
+        </form>
+        <ion-buttons class="secondary">
+            <ion-buttons>
+                <ion-button expand="full" routerLink="/register">
+                    <span *ngIf="!loading">Create account</span>
+                </ion-button>
+                <ion-button expand="full" routerLink="/forgot-password">
+                    <span *ngIf="!loading">Forgot password</span>
+                </ion-button>
+            </ion-buttons>
+            <ion-button expand="full" (click)="loginWithGoogle()">
+                <ion-icon name="logo-google"></ion-icon>
+                <span *ngIf="!loading">Login with Google</span>
+            </ion-button>
+        </ion-buttons>
+    </div>
 </ion-content>

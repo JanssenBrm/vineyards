@@ -61,6 +61,8 @@ export class AuthService {
 
     async loginWithGoogle() {
         await this.fbAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
-        this.router.navigate(['map']);
+        await setTimeout(() => {
+           this.router.navigate(['map']);
+        }, 500);
     }
 }
