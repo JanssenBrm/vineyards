@@ -1,11 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Vineyards</ion-title>
-    <ion-button (click)="logout()">
-      Logout
-    </ion-button>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="'My vineyards'" showSeasons="false" [showBackButton]="false"> </app-header>
 <ion-content id="map-content">
   <div id="map"></div>
   <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)"></app-toolbar>

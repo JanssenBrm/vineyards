@@ -1,0 +1,14 @@
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+
+  span {
+    font-family: var(--ion-title-font);
+    color: white;
+    margin-left: .5rem;
+    font-variant: all-petite-caps;
+    font-size: 25px;
+  }
+}

@@ -24,6 +24,9 @@ export class HeaderComponent implements OnInit, OnChanges {
   @Input()
   showBackButton = true;
 
+  @Input()
+  showSeasons = true;
+
   @Output()
   setSeasons: EventEmitter<number[]> = new EventEmitter<number[]>();
 

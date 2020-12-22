@@ -74,6 +74,11 @@ ion-item, ion-tab-button {
     }
 }
 
+ion-toolbar, ion-header {
+    --ion-background-color: var(--ion-primary-gradient);
+    color: var(--ion-color-light);
+}
+
 @media only screen and (orientation: portrait) {
     h1, .header {
         padding-left: 1rem;

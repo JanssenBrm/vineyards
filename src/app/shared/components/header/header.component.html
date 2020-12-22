@@ -4,8 +4,13 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
       <ion-menu-toggle menu="'menu1"></ion-menu-toggle>
-    <ion-title>{{title}}</ion-title>
-    <ion-select *ngIf="seasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
+    <ion-title>
+        <div class="title">
+            <img src="assets/logo.png" height="32">
+            <span>{{title}}</span>
+        </div>
+    </ion-title>
+    <ion-select *ngIf="seasons && showSeasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
         <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
       </ion-select>
   </ion-toolbar>

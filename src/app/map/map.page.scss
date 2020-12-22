@@ -8,7 +8,7 @@
     background-color: white;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     color: black;
-    padding: 15px;
+    padding: 1rem;
     border-radius: 10px;
     border: 1px solid #cccccc;
     bottom: 12px;
@@ -39,8 +39,8 @@
   .ol-popup-closer {
     text-decoration: none;
     position: absolute;
-    top: 2px;
-    right: 8px;
+    top: .5rem;
+    right: .5rem;
   }
   .ol-popup-closer:after {
     content: "✖";
