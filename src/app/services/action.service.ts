@@ -5,6 +5,8 @@ import {VineyardDoc} from '../models/vineyarddoc.model';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {Action} from '../models/action.model';
+import {User} from 'firebase';
+import {AuthService} from './auth.service';
 export const ACTION_COLLECTION = 'actions';
 
 @Injectable({
@@ -15,9 +17,13 @@ export class ActionService {
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
   private _actions: BehaviorSubject<Action[]>;
 
-  constructor(private fireStore: AngularFirestore) {
-    this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
+  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._actions = new BehaviorSubject<Action[]>([]);
+    this.authService.getUser().subscribe((user: User) => {
+      if (user) {
+        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+      }
+    });
   }
 
   public getActionListener(): BehaviorSubject<Action[]> {

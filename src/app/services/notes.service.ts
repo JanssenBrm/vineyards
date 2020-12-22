@@ -7,6 +7,8 @@ import {Note} from '../models/note.model';
 import {Vineyard} from '../models/vineyard.model';
 import {map} from 'rxjs/operators';
 import {VINTAGE_COLLECTION} from './vintage.service';
+import {User} from 'firebase';
+import {AuthService} from './auth.service';
 
 export const  NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -18,9 +20,13 @@ export class NotesService {
   private _notes: BehaviorSubject<Note[]>;
 
 
-  constructor(private fireStore: AngularFirestore) {
-    this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
+  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._notes = new BehaviorSubject<Note[]>([]);
+    this.authService.getUser().subscribe((user: User) => {
+      if (user) {
+        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+      }
+    });
   }
 
   public getNotesListener(): BehaviorSubject<Note[]> {

@@ -87,7 +87,7 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
-.ios {
+.ios, .android{
   ion-toolbar, ion-item {
     min-height: 56px;
     padding:0;
@@ -248,7 +248,4 @@ ion-tab-bar {
     --ion-item-background: #1A1B1E;*/
   }
 
-  ion-title.title-large {
-    --color: white;
-  }
 }
