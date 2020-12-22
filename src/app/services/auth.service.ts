@@ -3,6 +3,9 @@ import {auth, User} from 'firebase';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {VineyardDoc} from '../models/vineyarddoc.model';
+import {UserData} from '../models/userdata.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,17 +15,29 @@ export class AuthService {
     private user: BehaviorSubject<User>;
 
     constructor(
-        public fbAuth: AngularFireAuth, public router: Router
+        public fbAuth: AngularFireAuth, public router: Router,
+        private fireStore: AngularFirestore,
     ) {
         this.user = new BehaviorSubject<User>(undefined);
         this.fbAuth.authState.subscribe((user: User) => {
             this.user.next(user);
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user));
+                this.updateUser(user);
             } else {
                 localStorage.removeItem('user');
             }
         });
+
+    }
+
+    private updateUser(user: User) {
+        this.fireStore.collection<UserData>('users')
+            .doc(user.uid)
+            .set({
+                id: user.uid,
+                name: user.displayName
+            });
     }
 
     getUser(): BehaviorSubject<User> {

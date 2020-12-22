@@ -8,10 +8,12 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {Action, ActionType} from '../models/action.model';
-import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, DocumentSnapshot, QuerySnapshot} from '@angular/fire/firestore';
 import {GeoJSON} from 'ol/format';
 import * as moment from 'moment';
 import {Vintage} from '../models/vintage.model';
+import {AuthService} from './auth.service';
+import {User} from 'firebase';
 
 @Injectable({
     providedIn: 'root'
@@ -25,12 +27,20 @@ export class VineyardService {
 
     private _API: string = 'https://us-central1-winery-f4d20.cloudfunctions.net';
 
-    constructor(private http: HttpClient, private utilService: UtilService, private fireStore: AngularFirestore) {
+    constructor(private http: HttpClient, private utilService: UtilService, private fireStore: AngularFirestore, private authService: AuthService) {
         this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
         this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
         this._activeSeasons$ = new BehaviorSubject<number[]>([(new Date()).getFullYear()]);
-        this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
-        this.getVineyards();
+
+        this.authService.getUser().subscribe((user: User) => {
+          if (user) {
+              this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+              this.getVineyards();
+          } else {
+              this._vineyards$.next([]);
+          }
+        });
+
     }
 
     getVineyardsListener(): Observable<Vineyard[]> {
