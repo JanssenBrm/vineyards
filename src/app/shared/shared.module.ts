@@ -9,12 +9,14 @@ import { LastActionPipe } from './pipes/last-action.pipe';
 import { ActiveTypePipe } from './pipes/active-type.pipe';
 import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive';
 import {FilterActionsBySeasonPipe} from '../pipes/filter-actions-by-season.pipe';
+import {UsermenuComponent} from './components/usermenu/usermenu.component';
 
 
 
 @NgModule({
   declarations: [
     HeaderComponent,
+      UsermenuComponent,
     ToolbarComponent,
     LastActionPipe,
     ActiveTypePipe,
@@ -29,11 +31,15 @@ import {FilterActionsBySeasonPipe} from '../pipes/filter-actions-by-season.pipe'
   ],
   exports: [
     HeaderComponent,
+      UsermenuComponent,
     ToolbarComponent,
     LastActionPipe,
     ActiveTypePipe,
     HideOnPlatformDirective,
     FilterActionsBySeasonPipe
+  ],
+  entryComponents: [
+      UsermenuComponent
   ]
 })
 export class SharedModule { }

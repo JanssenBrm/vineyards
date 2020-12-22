@@ -79,6 +79,12 @@ ion-toolbar, ion-header {
     color: var(--ion-color-light);
 }
 
+ion-toolbar {
+    ion-chip {
+        color: var(--ion-color-light);
+    }
+}
+
 @media only screen and (orientation: portrait) {
     h1, .header {
         padding-left: 1rem;

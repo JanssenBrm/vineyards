@@ -10,8 +10,14 @@
             <span>{{title}}</span>
         </div>
     </ion-title>
-    <ion-select *ngIf="seasons && showSeasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
-        <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
+      <ion-select *ngIf="seasons && showSeasons" [(ngModel)]="activeSeasons"  multiple="true" slot="end" placeholder="Season" (ionChange)="updateSeasons()">
+          <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
       </ion-select>
+      <ion-chip slot="end" *ngIf="(user | async)" (click)="showUserMenu($event)">
+          <ion-avatar>
+              <img [src]="(user |async).photoURL ? (user |async).photoURL : 'assets/avatar.svg' ">
+          </ion-avatar>
+          <ion-label>{{(user |async).displayName}}</ion-label>
+      </ion-chip>
   </ion-toolbar>
 </ion-header>

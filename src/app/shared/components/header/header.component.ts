@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Season } from 'src/app/models/season.model';
-import {MenuController} from '@ionic/angular';
+import {MenuController, PopoverController} from '@ionic/angular';
+import {AuthService} from '../../../services/auth.service';
+import {BehaviorSubject} from 'rxjs';
+import {User} from 'firebase';
+import {UsermenuComponent} from '../usermenu/usermenu.component';
 
 @Component({
   selector: 'app-header',
@@ -30,12 +34,17 @@ export class HeaderComponent implements OnInit, OnChanges {
   @Output()
   setSeasons: EventEmitter<number[]> = new EventEmitter<number[]>();
 
+  user: BehaviorSubject<User>;
+
   constructor(
-      private menuController: MenuController
+      private menuController: MenuController,
+      private authService: AuthService,
+      private popoverController: PopoverController
 
   ) { }
 
   ngOnInit() {
+    this.user = this.authService.getUser()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -44,6 +53,16 @@ export class HeaderComponent implements OnInit, OnChanges {
           this.activeSeasons = [this.seasons[this.seasons.length - 1]];
       }
     }
+  }
+
+  async showUserMenu(event) {
+      const popover = await this.popoverController.create({
+        component: UsermenuComponent,
+        event,
+        showBackdrop: false,
+        translucent: true
+      });
+      return await popover.present();
   }
 
   updateSeasons() {
