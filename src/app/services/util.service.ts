@@ -36,7 +36,6 @@ export class UtilService {
   }
 
   isMobile(): boolean {
-    console.log(this.platform.platforms());
     if (this.platform.is('ios') || this.platform.is('android')) {
       return true;
     } else {
