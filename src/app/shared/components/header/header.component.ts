@@ -5,6 +5,7 @@ import {AuthService} from '../../../services/auth.service';
 import {BehaviorSubject} from 'rxjs';
 import {User} from 'firebase';
 import {UsermenuComponent} from '../usermenu/usermenu.component';
+import {UtilService} from '../../../services/util.service';
 
 @Component({
   selector: 'app-header',
@@ -39,7 +40,8 @@ export class HeaderComponent implements OnInit, OnChanges {
   constructor(
       private menuController: MenuController,
       private authService: AuthService,
-      private popoverController: PopoverController
+      private popoverController: PopoverController,
+      public utilService: UtilService
 
   ) { }
 
