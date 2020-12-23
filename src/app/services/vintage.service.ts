@@ -8,6 +8,8 @@ import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {Action} from '../models/action.model';
 import {Note} from '../models/note.model';
 import {NOTE_COLLECTION} from './notes.service';
+import {User} from 'firebase';
+import {AuthService} from './auth.service';
 
 export const VINTAGE_COLLECTION = 'vintages';
 
@@ -19,9 +21,13 @@ export class VintageService {
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
   private _vintages: BehaviorSubject<Vintage[]>;
 
-  constructor(private fireStore: AngularFirestore) {
-    this._vineyardCollection = fireStore.collection<VineyardDoc>('vineyards');
+  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._vintages = new BehaviorSubject<Vintage[]>([]);
+    this.authService.getUser().subscribe((user: User) => {
+      if (user) {
+        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+      }
+    });
   }
 
   public getVintageListener(): BehaviorSubject<Vintage[]> {

@@ -1,0 +1,68 @@
+.content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    span {
+      font-family: var(--ion-title-font);
+      font-weight: 600;
+      font-size: 50px;
+      color: white;
+      margin-left: .5rem;
+    }
+  }
+  .text {
+    width: 50%;
+    background-color: var(--ion-color-light);
+    border-radius: var(--ion-border-radius);
+    box-shadow:  var(--ion-box-shadow);
+    padding: var(--ion-padding);
+    margin: 1rem 0;
+
+    h3 {
+      text-align: center;
+    }
+
+    ion-button {
+      margin-top: 1rem;
+      ion-icon {
+        margin-right: .5rem;
+      }
+    }
+  }
+}
+
+.mobile {
+  .text {
+    width: 95% !important;
+  }
+  ion-buttons {
+    display: flex;
+    flex-direction: column;
+    ion-button {
+      margin: .5rem 0;
+    }
+  }
+}
+
+.secondary {
+  ion-button {
+    color: var(--ion-color-light);
+  }
+}
+
+ion-content {
+  --ion-background-color: var(--ion-primary-gradient)
+}
+
+ion-item, ion-label, ion-input {
+  --ion-background-color:  var(--ion-color-light);
+}

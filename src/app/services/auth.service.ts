@@ -51,7 +51,9 @@ export class AuthService {
 
     async login(email: string, password: string) {
         const result = await this.fbAuth.auth.signInWithEmailAndPassword(email, password);
-        this.router.navigate(['/map']);
+        await setTimeout(() => {
+            this.router.navigate(['/map']);
+        }, 500);
     }
 
     async register(email: string, password: string) {
@@ -71,7 +73,9 @@ export class AuthService {
     async logout() {
         await this.fbAuth.auth.signOut();
         localStorage.removeItem('user');
-        this.router.navigate(['login']);
+        await setTimeout(() => {
+            this.router.navigate(['login']);
+        }, 500);
     }
 
     async loginWithGoogle() {

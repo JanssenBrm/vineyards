@@ -36,6 +36,19 @@
   }
 }
 
+.mobile {
+  form {
+    width: 95% !important;
+  }
+  ion-buttons {
+    display: flex;
+    flex-direction: column;
+    ion-button {
+      margin: .5rem 0;
+    }
+  }
+}
+
 .secondary {
   ion-button {
     color: var(--ion-color-light);

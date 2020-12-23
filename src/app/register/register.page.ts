@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
-import {ToastController} from '@ionic/angular';
+import {Platform, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
+import {UtilService} from '../services/util.service';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,8 @@ export class RegisterPage implements OnInit {
   constructor(
       public authService: AuthService,
       public toastController: ToastController,
-      public router: Router
+      public router: Router,
+      public utilService: UtilService
   ) { }
 
   ngOnInit() {

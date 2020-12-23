@@ -1,6 +1,6 @@
 <ion-header>
 </ion-header>
-<ion-content>
+<ion-content [class.mobile]="utilService.isMobile()">
   <div class="content">
     <div class="title">
       <img src="assets/logo.png" height="100px"/>
@@ -22,10 +22,10 @@
     </form>
     <ion-buttons class="secondary">
       <ion-button expand="full" routerLink="/login">
-        <span *ngIf="!loading">Back to login</span>
+        <span>Back to login</span>
       </ion-button>
       <ion-button expand="full" routerLink="/forgot-password">
-        <span *ngIf="!loading">Forgot password</span>
+        <span>Forgot password</span>
       </ion-button>
     </ion-buttons>
   </div>

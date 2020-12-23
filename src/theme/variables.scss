@@ -87,7 +87,7 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
-.ios {
+.ios, .android{
   ion-toolbar, ion-item {
     min-height: 56px;
     padding:0;
@@ -107,7 +107,7 @@ ion-tab-bar {
    */
 
   body {
-    --ion-color-primary: #428cff;
+   /* --ion-color-primary: #428cff;
     --ion-color-primary-rgb: 66,140,255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255,255,255;
@@ -168,7 +168,7 @@ ion-tab-bar {
     --ion-color-light-contrast: #ffffff;
     --ion-color-light-contrast-rgb: 255,255,255;
     --ion-color-light-shade: #1e2023;
-    --ion-color-light-tint: #383a3e;
+    --ion-color-light-tint: #383a3e;*/
   }
 
   /*
@@ -248,7 +248,4 @@ ion-tab-bar {
     --ion-item-background: #1A1B1E;*/
   }
 
-  ion-title.title-large {
-    --color: white;
-  }
 }

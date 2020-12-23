@@ -1,6 +1,6 @@
 <ion-header>
 </ion-header>
-<ion-content>
+<ion-content [class.mobile]="utilService.isMobile()">
     <div class="content">
         <div class="title">
             <img src="assets/logo.png" height="100px"/>
@@ -23,15 +23,15 @@
         <ion-buttons class="secondary">
             <ion-buttons>
                 <ion-button expand="full" routerLink="/register">
-                    <span *ngIf="!loading">Create account</span>
+                    <span>Create account</span>
                 </ion-button>
                 <ion-button expand="full" routerLink="/forgot-password">
-                    <span *ngIf="!loading">Forgot password</span>
+                    <span>Forgot password</span>
                 </ion-button>
             </ion-buttons>
             <ion-button expand="full" (click)="loginWithGoogle()">
                 <ion-icon name="logo-google"></ion-icon>
-                <span *ngIf="!loading">Login with Google</span>
+                <span>Login with Google</span>
             </ion-button>
         </ion-buttons>
     </div>

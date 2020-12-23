@@ -1,20 +1,27 @@
-<ion-content>
-  <h3>Thank You for Registering</h3>
-
-  <div class="formGroup" *ngIf="(user | async)">
-    <p class="text-center">We have sent a confirmation email to <strong>{{(user | async).email}}</strong>.</p>
-    <p class="text-center">Please check your email and click on the link to verfiy your email address.</p>
+<ion-content [class.mobile]="utilService.isMobile()">
+  <div class="content">
+    <div class="title">
+      <img src="assets/logo.png" height="100px"/>
+      <span>Vineyards</span>
+    </div>
+    <div class="text">
+      <h3>Thank You for Registering</h3>
+      <div class="formGroup" *ngIf="(user | async)">
+        <p class="text-center">We have sent a confirmation email to <strong>{{(user | async).email}}</strong>.</p>
+        <p class="text-center">Please check your email and click on the link to verfiy your email address.</p>
+      </div>
+      <!-- Calling SendVerificationMail() method using authService Api -->
+      <div class="formGroup">
+        <ion-button expand="full"  (click)="authService.sendEmailVerification()">
+          Resend Verification Email
+        </ion-button>
+      </div>
+    </div>
+    <ion-buttons class="secondary">
+      <ion-button expand="full" routerLink="/login">
+        <span>Back to login</span>
+      </ion-button>
+    </ion-buttons>
   </div>
 
-  <!-- Calling SendVerificationMail() method using authService Api -->
-  <div class="formGroup">
-    <button type="button" class="btn btnPrimary" (click)="authService.sendEmailVerification()">
-      <i class="fas fa-redo-alt"></i>
-      Resend Verification Email
-    </button>
-  </div>
-
-  <div class="redirectToLogin">
-    <span>Go back to?<span class="redirect" routerLink="/login"> Sign in</span></span>
-  </div>
 </ion-content>
