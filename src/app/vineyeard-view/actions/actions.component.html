@@ -1,13 +1,16 @@
 <h1><ion-icon name="time" slot="start"></ion-icon>History</h1>
+<div class="filters">
+  <ion-badge [style.backgroundColor]="getActionTypeColor(type)" *ngFor="let type of actionTypes" (click)="toggleActionType(type)">{{type}}</ion-badge>
+</div>
 <div class="list">
-  <ion-card  *ngFor="let activity of (actions)">
+  <ion-card  *ngFor="let activity of (actions) | filterActionsByTypes: activeTypes">
     <ion-card-header >
       <div class="image">
         <img [src]="getImage(activity.type)" class="ion-image timelineIcon"/>
       </div>
       <div class="text">
         <ion-card-title>
-          <span>{{activity.type | titlecase}}</span>
+          <span><ion-badge [style.backgroundColor]="getActionTypeColor(findActionType(activity.type))">{{findActionType(activity.type)}}</ion-badge></span>
           <span><ion-icon name="create-outline" (click)="openAddActionModal(activity)"></ion-icon><ion-icon name="trash-outline" (click)="removeAction(activity)"></ion-icon></span>
         </ion-card-title>
         <ion-card-subtitle>

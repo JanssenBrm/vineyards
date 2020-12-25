@@ -1,5 +1,5 @@
 import { UtilService } from './../../services/util.service';
-import { Action } from 'src/app/models/action.model';
+import {Action, ACTION_COLORS, ActionType} from 'src/app/models/action.model';
 import {ModalController, Platform} from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
 import {Component, OnInit, Input, SimpleChanges, OnChanges} from '@angular/core';
@@ -13,6 +13,7 @@ import {ActionService} from '../../services/action.service';
 import {VarietyService} from '../../services/variety.service';
 import {Variety} from '../../models/variety.model';
 import {SeasonsService} from '../../services/seasons.service';
+import {VINTAGEEVENT_COLORS} from '../../models/vintageevent.model';
 
 @Component({
   selector: 'app-actions',
@@ -26,6 +27,10 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   @Input()
   actions: Action[];
+
+  ACTIONTYPES = ActionType;
+  actionTypes = Object.keys(ActionType);
+  activeTypes: string[] = Object.keys(ActionType);
 
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
               private router: Router,  private modalController: ModalController,
@@ -50,6 +55,27 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   removeAction(action: Action) {
     this.actionService.removeAction(this.vineyard, action);
+  }
+
+  getActionTypeColor(stage: string): string {
+    const idx = Object.keys(ActionType).findIndex((s: string) => s === stage);
+    if (idx >= 0 && this.activeTypes.find(s => s === stage)) {
+      return ACTION_COLORS[idx];
+    } else {
+      return 'lightgrey';
+    }
+  }
+
+  findActionType(type: string): string {
+    return Object.keys(ActionType).find((s: string) => ActionType[s] === type);
+  }
+
+  toggleActionType(stage: string) {
+    if (this.activeTypes.find(s => s === stage)) {
+      this.activeTypes = this.activeTypes.filter(s => s !== stage);
+    } else {
+      this.activeTypes = [...this.activeTypes, stage];
+    }
   }
 
   async openAddActionModal(action?: Action) {
