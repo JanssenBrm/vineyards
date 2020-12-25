@@ -27,8 +27,9 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
                private actionService: ActionService,
                private seasonService: SeasonsService) { }
 
-  public seasons$: Observable<number[]>;
+  public seasons$: BehaviorSubject<number[]>;
   public activeSeasons$: BehaviorSubject<number[]>;
+  public activeSeasons: number[]
 
   public activeVineyard: Vineyard;
 
@@ -68,10 +69,14 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
         this.varietyService.getVarieties(this.activeVineyard);
       }
     });
+    this.activeSeasons$.pipe(
+        takeUntil(this._destroy)
+    ).subscribe((seasons: number[]) => this.activeSeasons = seasons);
   }
 
   setSeasons(years: number[]): void {
     this.seasonService.setActiveSeasons(years);
+    this.menuController.close();
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {

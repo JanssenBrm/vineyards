@@ -74,16 +74,20 @@ ion-item, ion-tab-button {
     }
 }
 
-ion-toolbar, ion-header {
+ion-toolbar, ion-header, {
     --ion-background-color: var(--ion-primary-gradient);
     color: var(--ion-color-light);
 }
 
 ion-toolbar {
-    ion-chip {
+    ion-title {
+        background: var(--ion-primary-gradient);
+    }
+    ion-chip, ion-menu-button {
         color: var(--ion-color-light);
     }
 }
+
 
 @media only screen and (orientation: portrait) {
     h1, .header {

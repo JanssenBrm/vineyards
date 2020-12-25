@@ -8,6 +8,12 @@
         </ion-toolbar>
     </ion-header>
     <ion-content>
+        <div class="season">
+            <span>Season</span>
+            <ion-select *ngIf="(seasons$ | async).length > 0" [(ngModel)]="activeSeasons" multiple="true" placeholder="Season" (ionChange)="setSeasons($event.target.value)">
+                <ion-select-option *ngFor="let season of (seasons$ | async)" [value]="season">{{season}}</ion-select-option>
+            </ion-select>
+        </div>
 
         <ion-list>
             <ion-item button (click)="openOverview()">

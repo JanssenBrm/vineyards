@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
-import {Vineyard} from '../models/vineyard.model';
-import {VineyardDoc} from '../models/vineyarddoc.model';
-import {map, switchMap, tap} from 'rxjs/operators';
-import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {map, tap} from 'rxjs/operators';
+import {BehaviorSubject} from 'rxjs';
 import {Action} from '../models/action.model';
 import {ActionService} from './action.service';
 
@@ -13,23 +11,28 @@ import {ActionService} from './action.service';
 })
 export class SeasonsService {
 
-    private _seasons: Observable<number[]>;
+    private _seasons: BehaviorSubject<number[]>;
     private _activeSeasons: BehaviorSubject<number[]>;
 
     constructor(private fireStore: AngularFirestore, private actionService: ActionService) {
-        this._seasons = this.actionService.getActionListener()
+        this._activeSeasons = new BehaviorSubject<number[]>([]);
+        this._seasons = new BehaviorSubject<number[]>([]);
+        this.actionService.getActionListener()
             .pipe(
                 map((actions: Action[]) => [...new Set(actions.map((a: Action) => new Date(a.date).getFullYear()))]),
                 tap((years: number[]) => {
-                        if (years.length > 0 && this._activeSeasons.getValue().length === 0) {
-                            this.setActiveSeasons([years[0]]);
-                        }
+                    if (years.length > 0 && this._activeSeasons.getValue().length === 0) {
+                        this.setActiveSeasons([years[0]]);
+                    }
+                    if (years.length > 0 && this._seasons.getValue().length === 0) {
+                        this._seasons.next(years);
+                    }
                 })
-            );
+            ).subscribe();
         this._activeSeasons = new BehaviorSubject<number[]>([]);
     }
 
-    public getSeasonListener(): Observable<number[]> {
+    public getSeasonListener(): BehaviorSubject<number[]> {
         return this._seasons;
     }
 

@@ -36,6 +36,16 @@
   width: 16px;
 }
 
+.season {
+  padding: 1rem;
+  background-color: var(--ion-color-light-tint);
+  margin-bottom: 1rem;
+
+  span {
+    font-weight: bold;
+  }
+}
+
 @media only screen and (orientation: portrait) {
   .content {
     padding: 0rem !important;
