@@ -7,7 +7,7 @@
           <ion-label>
             <div class="title"><span>{{v.name}}</span><span class="actions"><ion-icon name="create-outline" (click)="editVintage(v)"></ion-icon><ion-icon name="trash-outline" (click)="deleteVintage(v)"></ion-icon></span></div>
             <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{v.year}}</div>
-            <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + v.color.toLowerCase() +'.png'" />{{}</div>
+            <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + v.color.toLowerCase() +'.png'" />{{getVarieties(v)}}</div>
           </ion-label>
         </ion-item>
       </ion-list>

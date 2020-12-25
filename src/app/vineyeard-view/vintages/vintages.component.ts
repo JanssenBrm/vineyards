@@ -11,6 +11,7 @@ import {Note} from '../../models/note.model';
 import {NotesService} from '../../services/notes.service';
 import {AddNoteComponent} from '../add-note/add-note.component';
 import {VintageEvent} from '../../models/vintageevent.model';
+import {VarietyService} from '../../services/variety.service';
 
 @Component({
   selector: 'app-vintages',
@@ -35,7 +36,8 @@ export class VintagesComponent implements OnChanges {
       private modalController: ModalController,
       public vintageService: VintageService,
       public vineyardService: VineyardService,
-      private alertController: AlertController
+      private alertController: AlertController,
+      public varietyService: VarietyService
   ) {
   }
 
@@ -103,6 +105,12 @@ export class VintagesComponent implements OnChanges {
 
   setTab(tab: 'timeline' | 'notes') {
     this.tab = tab;
+  }
+
+  getVarieties(vintage: Vintage): string {
+    return vintage.varieties
+        .map((v: string) => this.varietyService.getVarietyByID(v).name)
+        .join(',');
   }
 
 }
