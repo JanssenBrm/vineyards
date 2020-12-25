@@ -67,6 +67,11 @@
       margin-right: 5%;
       margin-bottom: 1rem;
 
+      &.mobile {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
       .action {
         display: flex;
         flex-direction: row;
@@ -87,8 +92,9 @@
           .title{
             font-weight: bold;
             display: flex;
+            align-items: center;
             ion-badge {
-              margin-right: .5rem;
+              margin-left: .5rem;
             }
           }
 

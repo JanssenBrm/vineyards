@@ -27,13 +27,16 @@
       <tr>
         <td colspan="2">
           <div  *ngIf="vineyard" class="actions-container">
-          <div class="actions" *ngFor="let type of actions | activeType">
+          <div class="actions" *ngFor="let type of actions | activeType" [class.mobile]="utilService.isMobile()">
             <div class="action" *ngFor="let action of (actions | lastAction:[type])">
               <!--<div class="icon">
                 <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
               </div>-->
               <div class="text">
-                <span class="title"><ion-badge [style.backgroundColor]="actionService.getActionTypeColor(actionService.findActionType(action.type))">{{actionService.findActionType(action.type)}}</ion-badge> {{action.date | date: "dd MMMM yyyy"}}</span>
+                <span class="title">
+                  {{action.date | date: "dd MMMM yyyy"}}
+                  <ion-badge [style.backgroundColor]="actionService.getActionTypeColor(actionService.findActionType(action.type))">{{actionService.findActionType(action.type)}}</ion-badge>
+                </span>
                 <span class="type"></span>
                 <span class="description">{{action.description.length > 50 ? action.description.substr(0, 50) + ' ...' : action.description}}</span>
                 <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>

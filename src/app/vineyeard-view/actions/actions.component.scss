@@ -26,6 +26,11 @@ ion-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: .5rem;
+
+    &.mobile {
+      font-size: 15px;
+    }
     span {
       display: flex;
       align-items: center;
