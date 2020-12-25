@@ -4,7 +4,7 @@ import {Vineyard} from '../models/vineyard.model';
 import {VineyardDoc} from '../models/vineyarddoc.model';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
-import {Action} from '../models/action.model';
+import {Action, ACTION_COLORS, ActionType} from '../models/action.model';
 import {User} from 'firebase';
 import {AuthService} from './auth.service';
 export const ACTION_COLLECTION = 'actions';
@@ -56,5 +56,14 @@ export class ActionService {
   public getLastUpdate(actions: Action[]): string {
     const action = actions && actions.length > 0 ? actions[actions.length - 1] : undefined;
     return action ? action.date : undefined;
+  }
+
+  getActionTypeColor(stage: string): string {
+    const idx = Object.keys(ActionType).findIndex((s: string) => s === stage);
+    return idx >= 0 ? ACTION_COLORS[idx] : undefined;
+  }
+
+  findActionType(type: string): string {
+    return Object.keys(ActionType).find((s: string) => ActionType[s] === type);
   }
 }

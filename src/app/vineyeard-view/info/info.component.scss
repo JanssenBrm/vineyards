@@ -86,6 +86,10 @@
         
           .title{
             font-weight: bold;
+            display: flex;
+            ion-badge {
+              margin-right: .5rem;
+            }
           }
 
           .description{

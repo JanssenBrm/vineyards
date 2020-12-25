@@ -17,6 +17,7 @@ import { Action, ActionType } from 'src/app/models/action.model';
 import { ObjectUnsubscribedError } from 'rxjs';
 import * as uuid from 'uuid';
 import {VarietyService} from '../../services/variety.service';
+import {ActionService} from '../../services/action.service';
 
 @Component({
   selector: 'app-info',
@@ -40,7 +41,7 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
   private actionTypes: string[] = Object.keys(ActionType);
 
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform,
-              public varietyService: VarietyService) { }
+              public varietyService: VarietyService, public actionService: ActionService) { }
 
   ngOnInit() {}
 

@@ -34,7 +34,7 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
               private router: Router,  private modalController: ModalController,
-              private actionService: ActionService,
+              public actionService: ActionService,
               public varietyService: VarietyService) { }
 
   ngOnInit() {}
@@ -58,16 +58,12 @@ export class ActionsComponent implements OnInit, OnChanges {
   }
 
   getActionTypeColor(stage: string): string {
-    const idx = Object.keys(ActionType).findIndex((s: string) => s === stage);
-    if (idx >= 0 && this.activeTypes.find(s => s === stage)) {
-      return ACTION_COLORS[idx];
+    const color = this.actionService.getActionTypeColor(stage);
+    if (color && this.activeTypes.find(s => s === stage)) {
+      return color;
     } else {
       return 'lightgrey';
     }
-  }
-
-  findActionType(type: string): string {
-    return Object.keys(ActionType).find((s: string) => ActionType[s] === type);
   }
 
   toggleActionType(stage: string) {

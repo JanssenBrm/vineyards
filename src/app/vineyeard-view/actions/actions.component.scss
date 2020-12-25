@@ -26,6 +26,13 @@ ion-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    span {
+      display: flex;
+      align-items: center;
+    }
+    ion-badge {
+      margin-left: .5rem;
+    }
   }
 
   .image {
@@ -66,3 +73,4 @@ ion-card-header {
     }
   }
 }
+
