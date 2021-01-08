@@ -3,6 +3,11 @@
   <div id="map"></div>
   <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
 </ion-content>
+
+<div id="clickPopup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closeClickPopup()"></a>
+  <div [innerHTML]="clickText"></div>
+</div>
 <div id="popup" class="ol-popup">
   <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closePopup()"></a>
   <div id="popup-content">

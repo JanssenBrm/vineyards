@@ -22,8 +22,8 @@ import Modify from 'ol/interaction/Modify';
 import Snap from 'ol/interaction/Snap';
 import Overlay from 'ol/Overlay';
 import {Router} from '@angular/router';
-import {takeUntil} from 'rxjs/operators';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {catchError, switchMap, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, forkJoin, merge, Observable, of, Subject} from 'rxjs';
 import {VarietyService} from '../services/variety.service';
 import {Action} from '../models/action.model';
 import {ActionService} from '../services/action.service';
@@ -31,6 +31,7 @@ import {SeasonsService} from '../services/seasons.service';
 import {AuthService} from '../services/auth.service';
 import {User} from 'firebase';
 import {Layer} from '../models/layer.model';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     selector: 'app-map',
@@ -55,6 +56,12 @@ export class MapPage implements OnInit, AfterViewInit {
     private _destroy: Subject<boolean>;
     private _init: boolean;
 
+    private view: View;
+    private clickOverlay: Overlay;
+    private backgroundLayers: Layer[];
+
+    public clickText: string;
+
     constructor(
         public vineyardService: VineyardService,
         private utilService: UtilService,
@@ -62,7 +69,8 @@ export class MapPage implements OnInit, AfterViewInit {
         private varietyService: VarietyService,
         private actionService: ActionService,
         private seasonService: SeasonsService,
-        private authService: AuthService
+        private authService: AuthService,
+        private http: HttpClient
     ) {
         this._init = true;
     }
@@ -79,8 +87,21 @@ export class MapPage implements OnInit, AfterViewInit {
         this._destroy = new Subject<boolean>();
         this._featureLayer = this._getFeatureLayer();
 
+        this.view = new View({
+            center: [573381.618724, 6662862.881562],
+            zoom: 10
+        });
+
         this._overlay = new Overlay({
             element: document.getElementById('popup'),
+            autoPan: true,
+            autoPanAnimation: {
+                duration: 250
+            }
+        });
+
+        this.clickOverlay = new Overlay({
+            element: document.getElementById('clickPopup'),
             autoPan: true,
             autoPanAnimation: {
                 duration: 250
@@ -90,15 +111,39 @@ export class MapPage implements OnInit, AfterViewInit {
         this._map = new olMap({
             layers: [this._getBaseMap(), this._featureLayer],
             target: document.getElementById('map'),
-            overlays: [this._overlay],
-            view: new View({
-                center: [573381.618724, 6662862.881562],
-                zoom: 10
-            })
+            overlays: [this._overlay, this.clickOverlay],
+            view: this.view
         });
 
         this._select = this._getSelectInteraction();
         this._map.addInteraction(this._select);
+
+        this._map.on('singleclick', (event) => {
+            const requests = this.backgroundLayers ? this.backgroundLayers.map((l: Layer) => {
+                const layer = this._getMapLayer(l);
+                if (layer && l.enabled && l.click) {
+                   return this.http.get(layer.getSource().getFeatureInfoUrl(
+                       event.coordinate,
+                       this.view.getResolution(),
+                       'EPSG:3857',
+                       {
+                           'INFO_FORMAT': 'application/json'
+                       }
+                   )).pipe(
+                       switchMap((data: any) => of(l.click(data))),
+                       catchError(() => of(''))
+                   );
+                } else {
+                    return null;
+                }
+            }).filter((r: any) => !!r) : [];
+            if (requests.length > 0) {
+                forkJoin((requests)).subscribe((results: string[]) => {
+                    this.clickText = results.filter((r: string) => r !== '').join('<br/>');
+                    this.clickOverlay.setPosition(event.coordinate);
+                });
+            }
+        });
 
         this._modify = this._getModifyInteraction();
         /*this._snap = this._getSnapInteraction();
@@ -113,6 +158,12 @@ export class MapPage implements OnInit, AfterViewInit {
     closePopup() {
         this._overlay.setPosition(undefined);
         this._select.getFeatures().clear();
+        return false;
+    }
+
+    closeClickPopup() {
+        this.clickOverlay.setPosition(undefined);
+        this.clickText = '';
         return false;
     }
 
@@ -162,14 +213,20 @@ export class MapPage implements OnInit, AfterViewInit {
     }
 
     public updateBackgroundLayers(layers: Layer[]) {
+        this.backgroundLayers = layers;
+        this.closeClickPopup();
         layers.forEach((l: Layer) => {
-            const exists = this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
+            const exists = this._getMapLayer(l);
             if (!exists && l.enabled) {
                 this._map.addLayer(this._getLayer(l));
             } else if (exists) {
                 exists.setVisible(l.enabled);
             }
         });
+    }
+
+    public _getMapLayer(l: Layer): any {
+        return this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
     }
 
     private _getLayer(l: Layer): TileLayer {
