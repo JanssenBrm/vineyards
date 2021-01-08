@@ -1,0 +1,10 @@
+<ion-list>
+  <ion-item *ngFor="let layer of layers">
+    <ion-label>{{layer.label}}</ion-label>
+    <ion-checkbox color="primary"  slot="start" [checked]="layer.enabled" (ionChange)="toggleLayer(layer)"></ion-checkbox>
+  </ion-item>
+</ion-list>
+  <ion-buttons class="buttons">
+    <ion-button (click)="save()"><ion-icon slot="start" name="save-outline"></ion-icon></ion-button>
+  </ion-buttons>
+
