@@ -162,13 +162,11 @@ export class MapPage implements OnInit, AfterViewInit {
     }
 
     public updateBackgroundLayers(layers: Layer[]) {
-        console.log('SETTING LAYERS', layers, this._map.getLayers());
         layers.forEach((l: Layer) => {
             const exists = this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
             if (!exists && l.enabled) {
                 this._map.addLayer(this._getLayer(l));
             } else if (exists) {
-                console.log("EXISTS", exists, l.enabled);
                 exists.setVisible(l.enabled);
             }
         });
