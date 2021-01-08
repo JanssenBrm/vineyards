@@ -2,7 +2,7 @@ import {MapMode} from './../models/mapmode.model';
 import {Season} from './../models/season.model';
 import {Variety} from './../models/variety.model';
 import {Polygon} from 'ol/geom/Polygon';
-import {XYZ} from 'ol/source.js';
+import {XYZ, TileWMS} from 'ol/source.js';
 import {UtilService} from './../services/util.service';
 import {Vineyard} from './../models/vineyard.model';
 import {VineyardService} from '../services/vineyard.service';
@@ -30,6 +30,7 @@ import {ActionService} from '../services/action.service';
 import {SeasonsService} from '../services/seasons.service';
 import {AuthService} from '../services/auth.service';
 import {User} from 'firebase';
+import {Layer} from '../models/layer.model';
 
 @Component({
     selector: 'app-map',
@@ -53,7 +54,7 @@ export class MapPage implements OnInit, AfterViewInit {
     private _overlay: Overlay;
     private _destroy: Subject<boolean>;
     private _init: boolean;
- 
+
     constructor(
         public vineyardService: VineyardService,
         private utilService: UtilService,
@@ -160,6 +161,35 @@ export class MapPage implements OnInit, AfterViewInit {
         }
     }
 
+    public updateBackgroundLayers(layers: Layer[]) {
+        console.log('SETTING LAYERS', layers, this._map.getLayers());
+        layers.forEach((l: Layer) => {
+            const exists = this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
+            if (!exists && l.enabled) {
+                this._map.addLayer(this._getLayer(l));
+            } else if (exists) {
+                console.log("EXISTS", exists, l.enabled);
+                exists.setVisible(l.enabled);
+            }
+        });
+    }
+
+    private _getLayer(l: Layer): TileLayer {
+        return new TileLayer({
+            id: l.id,
+            name: l.label,
+            visible: l.enabled,
+            source: new TileWMS({
+                url: l.url,
+                params: {
+                    LAYERS: l.params.layer,
+                    TILED: true
+                },
+                transition: 0,
+            }),
+        });
+    }
+
     private _getSelectInteraction(): Select {
         const select = new Select();
         select.on('select', (feature: any) => {
@@ -194,6 +224,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
     private _getFeatureLayer(): VectorLayer {
         return new VectorLayer({
+            zIndex: 99,
             source: new VectorSource({
                 features: []
             })

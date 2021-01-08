@@ -1,7 +1,7 @@
 <app-header [title]="'My vineyards'" showSeasons="false" [showBackButton]="false"> </app-header>
 <ion-content id="map-content">
   <div id="map"></div>
-  <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)"></app-toolbar>
+  <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
 </ion-content>
 <div id="popup" class="ol-popup">
   <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closePopup()"></a>
