@@ -4,5 +4,5 @@ export interface Layer {
     enabled: boolean;
     url: string;
     params: any;
-    click: (data: any) => string;
+    click?: (data: any) => string;
 }

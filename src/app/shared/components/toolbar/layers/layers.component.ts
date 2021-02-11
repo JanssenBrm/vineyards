@@ -24,6 +24,7 @@ export class LayersComponent implements OnInit {
       ...l,
       enabled: l.id === layer.id ? !l.enabled : l.enabled
     }));
+    this.save();
   }
 
   save() {

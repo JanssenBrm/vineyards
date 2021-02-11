@@ -65,8 +65,10 @@ export class ToolbarComponent implements OnInit, OnChanges {
       }
     });
     popover.onDidDismiss().then((e: OverlayEventDetail<any>) => {
-      this.layers = e.data.layers;
-      this.updateBackgroundLayers.emit(this.layers);
+      if (e.data) {
+        this.layers = e.data.layers;
+        this.updateBackgroundLayers.emit(this.layers);
+      }
     });
     return await popover.present();
   }
