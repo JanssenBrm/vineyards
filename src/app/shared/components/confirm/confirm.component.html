@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Are you sure?</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+ <div class="content" [innerHTML]="message"></div>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+            (click)="close(true)"
+            color="primary"
+            slot="end">
+      Yes
+    </ion-button>
+    <ion-button (click)="close(false)" color="light" slot="end">No</ion-button>
+  </ion-toolbar>
+</ion-footer>

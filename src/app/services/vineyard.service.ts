@@ -171,6 +171,9 @@ export class VineyardService {
             }
         });
     }
+    async deleteVineyard(id :string): Promise<void> {
+        return this._vineyardCollection.doc(id).delete();
+    }
 
 
     getMeteoYears(info: Vineyard): number[] {

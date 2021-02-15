@@ -2,6 +2,7 @@
   <ion-button (click)="showLayersMenu($event)"><ion-icon slot="start" name="map-outline"></ion-icon>Layers</ion-button>
   <ion-button  *ngIf="mapMode === undefined" (click)="setMapMode(mapModes.Edit)"><ion-icon name="pencil-outline"></ion-icon></ion-button>
   <ion-button  *ngIf="mapMode === undefined" (click)="setMapMode(mapModes.Add)"><ion-icon name="add-outline"></ion-icon></ion-button>
+  <ion-button  *ngIf="mapMode === undefined" (click)="setMapMode(mapModes.Remove)"><ion-icon name="trash-outline"></ion-icon></ion-button>
   <ion-button color="primary" *ngIf="dirty && mapMode !== undefined" (click)="save()"><ion-icon slot="start" name="save-outline"></ion-icon> Save</ion-button>
   <ion-button color="light" *ngIf="mapMode !== undefined" (click)="discard()">Cancel</ion-button>
 </div>

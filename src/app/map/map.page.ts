@@ -31,6 +31,7 @@ import {AddActionComponent} from '../vineyeard-view/add-action/add-action.compon
 import {ModalController} from '@ionic/angular';
 import {AddVineyardComponent} from './addvineyard/addvineyard.component';
 import {Polygon} from 'ol/geom';
+import {ConfirmComponent} from '../shared/components/confirm/confirm.component';
 
 @Component({
     selector: 'app-map',
@@ -51,6 +52,7 @@ export class MapPage implements OnInit, AfterViewInit {
     private _select: Select;
     private _modify: Modify;
     private _draw: Draw;
+    private _remove: Select;
     private _snap: Snap;
     private _overlay: Overlay;
     private _destroy: Subject<boolean>;
@@ -148,6 +150,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
         this._modify = this._getModifyInteraction();
         this._draw = this._getDrawInteraction();
+        this._remove = this._getRemoveInteraction();
         /*this._snap = this._getSnapInteraction();
         this._map.addInteraction(this._snap);*/
 
@@ -213,13 +216,22 @@ export class MapPage implements OnInit, AfterViewInit {
             this._map.removeInteraction(this._modify);
         }
 
-
         if (this.mapMode === MapMode.Add) {
             this._map.addInteraction(this._draw);
-            this._map.removeInteraction(this._select);
         } else {
             this._map.removeInteraction(this._draw);
+        }
+
+        if (this.mapMode === MapMode.Remove) {
+            this._map.addInteraction(this._remove);
+        } else {
+            this._map.removeInteraction(this._remove);
+        }
+
+        if (this.mapMode === undefined) {
             this._map.addInteraction(this._select);
+        } else {
+            this._map.removeInteraction(this._select);
         }
 
     }
@@ -274,6 +286,18 @@ export class MapPage implements OnInit, AfterViewInit {
         return select;
     }
 
+    private _getRemoveInteraction(): Select {
+        const select = new Select();
+        select.on('select', async (feature: any) => {
+            if (feature.selected && feature.selected.length > 0) {
+                for (const f of feature.selected) {
+                    await this.openDeleteConfirmModal(feature.selected[0]);
+                }
+            }
+        });
+        return select;
+    }
+
     private _getModifyInteraction(): Modify {
         const modify = new Modify({source: this._featureLayer.getSource()});
         modify.on('modifyend', (event: any) => {
@@ -313,6 +337,22 @@ export class MapPage implements OnInit, AfterViewInit {
             }
         }
     }
+
+    async openDeleteConfirmModal(f: Feature) {
+        const modal = await this.modalController.create({
+            component: ConfirmComponent,
+            componentProps: {
+                message: `Are you sure you want to delete vineyard ${f.get('title')}?`
+            }
+        });
+        modal.present();
+        const data = await modal.onWillDismiss();
+        if (data.data && data.data.confirm) {
+            await this.vineyardService.deleteVineyard(f.get('name'));
+        } else {
+            this._remove.getFeatures().clear();
+        }
+    }
     private _getSnapInteraction(): Snap {
         return new Snap({source: this._featureLayer.getSource()});
     }
@@ -347,7 +387,8 @@ export class MapPage implements OnInit, AfterViewInit {
                             (v: Vineyard) =>
                                 new Feature({
                                     geometry: v.location,
-                                    name: v.id
+                                    name: v.id,
+                                    title: v.name
                                 })
                         )
                     );

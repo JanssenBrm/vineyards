@@ -11,6 +11,7 @@ import {HideOnPlatformDirective} from '../directives/hide-on-platform.directive'
 import {FilterActionsBySeasonPipe} from '../pipes/filter-actions-by-season.pipe';
 import {UsermenuComponent} from './components/usermenu/usermenu.component';
 import {LayersComponent} from './components/toolbar/layers/layers.component';
+import {ConfirmComponent} from './components/confirm/confirm.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {LayersComponent} from './components/toolbar/layers/layers.component';
         ActiveTypePipe,
         HideOnPlatformDirective,
         FilterActionsBySeasonPipe,
-        LayersComponent
+        LayersComponent,
+        ConfirmComponent
     ],
     imports: [
         CommonModule,
@@ -38,11 +40,13 @@ import {LayersComponent} from './components/toolbar/layers/layers.component';
         ActiveTypePipe,
         HideOnPlatformDirective,
         FilterActionsBySeasonPipe,
-        LayersComponent
+        LayersComponent,
+        ConfirmComponent
     ],
     entryComponents: [
         UsermenuComponent,
-        LayersComponent
+        LayersComponent,
+        ConfirmComponent
     ]
 })
 export class SharedModule {
