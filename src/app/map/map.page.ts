@@ -1,29 +1,24 @@
 import {MapMode} from './../models/mapmode.model';
-import {Season} from './../models/season.model';
 import {Variety} from './../models/variety.model';
-import {Polygon} from 'ol/geom/Polygon';
-import {XYZ, TileWMS} from 'ol/source.js';
+import {TileWMS, XYZ} from 'ol/source.js';
 import {UtilService} from './../services/util.service';
 import {Vineyard} from './../models/vineyard.model';
 import {VineyardService} from '../services/vineyard.service';
-import {Component, OnInit, AfterViewInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {Map as olMap} from 'ol';
-import {get as getProjection} from 'ol/proj';
 import View from 'ol/View.js';
 import TileLayer from 'ol/layer/Tile.js';
-import {getWidth, getTopLeft} from 'ol/extent';
-import WMTS from 'ol/source/WMTS';
-import WMTSTileGrid from 'ol/tilegrid/WMTS';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Select from 'ol/interaction/Select';
 import Modify from 'ol/interaction/Modify';
 import Snap from 'ol/interaction/Snap';
+import Draw from 'ol/interaction/Draw';
 import Overlay from 'ol/Overlay';
 import {Router} from '@angular/router';
 import {catchError, switchMap, takeUntil} from 'rxjs/operators';
-import {BehaviorSubject, forkJoin, merge, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, of, Subject} from 'rxjs';
 import {VarietyService} from '../services/variety.service';
 import {Action} from '../models/action.model';
 import {ActionService} from '../services/action.service';
@@ -32,6 +27,10 @@ import {AuthService} from '../services/auth.service';
 import {User} from 'firebase';
 import {Layer} from '../models/layer.model';
 import {HttpClient} from '@angular/common/http';
+import {AddActionComponent} from '../vineyeard-view/add-action/add-action.component';
+import {ModalController} from '@ionic/angular';
+import {AddVineyardComponent} from './addvineyard/addvineyard.component';
+import {Polygon} from 'ol/geom';
 
 @Component({
     selector: 'app-map',
@@ -51,6 +50,7 @@ export class MapPage implements OnInit, AfterViewInit {
     private _featureLayer: VectorLayer;
     private _select: Select;
     private _modify: Modify;
+    private _draw: Draw;
     private _snap: Snap;
     private _overlay: Overlay;
     private _destroy: Subject<boolean>;
@@ -70,7 +70,8 @@ export class MapPage implements OnInit, AfterViewInit {
         private actionService: ActionService,
         private seasonService: SeasonsService,
         private authService: AuthService,
-        private http: HttpClient
+        private http: HttpClient,
+        private modalController: ModalController
     ) {
         this._init = true;
     }
@@ -146,6 +147,7 @@ export class MapPage implements OnInit, AfterViewInit {
         });
 
         this._modify = this._getModifyInteraction();
+        this._draw = this._getDrawInteraction();
         /*this._snap = this._getSnapInteraction();
         this._map.addInteraction(this._snap);*/
 
@@ -210,6 +212,16 @@ export class MapPage implements OnInit, AfterViewInit {
         } else {
             this._map.removeInteraction(this._modify);
         }
+
+
+        if (this.mapMode === MapMode.Add) {
+            this._map.addInteraction(this._draw);
+            this._map.removeInteraction(this._select);
+        } else {
+            this._map.removeInteraction(this._draw);
+            this._map.addInteraction(this._select);
+        }
+
     }
 
     public updateBackgroundLayers(layers: Layer[]) {
@@ -273,6 +285,34 @@ export class MapPage implements OnInit, AfterViewInit {
         return modify;
     }
 
+    private _getDrawInteraction(): Draw {
+        const modify = new Draw({source: this._featureLayer.getSource(), type: 'Polygon'});
+        modify.on('drawend', async (event: any) => {
+            await this.openAddVineyardModal(event.feature);
+        });
+        return modify;
+    }
+
+
+    async openAddVineyardModal(f: Feature) {
+        const modal = await this.modalController.create({
+            component: AddVineyardComponent,
+            componentProps: {
+                geometry: f.getGeometry()
+            }
+        });
+        modal.present();
+
+        const data = await modal.onWillDismiss();
+        if (data.data) {
+            console.log(data.data);
+            if (!data.data.vineyard) {
+                this._draw.source_.removeFeature(f);
+            } else {
+                await this.vineyardService.addVineyard(data.data.vineyard.name, data.data.vineyard.geometry);
+            }
+        }
+    }
     private _getSnapInteraction(): Snap {
         return new Snap({source: this._featureLayer.getSource()});
     }

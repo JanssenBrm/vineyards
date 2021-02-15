@@ -1,0 +1,27 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Add vineyard</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form [formGroup]="vineyardForm">
+        <ion-list lines="full">
+            <ion-item>
+                <ion-label position="stacked">Name</ion-label>
+                <ion-input formControlName="name" required type="text"></ion-input>
+            </ion-item>
+        </ion-list>
+    </form>
+</ion-content>
+<ion-footer>
+    <ion-toolbar>
+        <ion-button
+                (click)="save()"
+                [disabled]="!vineyardForm.valid"
+                color="primary"
+                slot="end">
+            Save
+        </ion-button>
+        <ion-button (click)="discard()" color="light" slot="end">Cancel</ion-button>
+    </ion-toolbar>
+</ion-footer>

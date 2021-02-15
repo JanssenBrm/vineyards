@@ -1,6 +1,6 @@
 import {Polygon} from 'ol/geom';
 import {VineyardDoc} from './../models/vineyarddoc.model';
-import {MeteoStatEntry, Vineyard} from './../models/vineyard.model';
+import {MeteoStatEntry, MeteoStats, Vineyard} from './../models/vineyard.model';
 import {Variety} from './../models/variety.model';
 import {UtilService} from './util.service';
 import {Injectable} from '@angular/core';
@@ -8,7 +8,14 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, forkJoin, Observable, of} from 'rxjs';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {Action, ActionType} from '../models/action.model';
-import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, DocumentSnapshot, QuerySnapshot} from '@angular/fire/firestore';
+import {
+    AngularFirestore,
+    AngularFirestoreCollection,
+    DocumentChangeAction,
+    DocumentReference,
+    DocumentSnapshot,
+    QuerySnapshot
+} from '@angular/fire/firestore';
 import {GeoJSON} from 'ol/format';
 import * as moment from 'moment';
 import {Vintage} from '../models/vintage.model';
@@ -74,7 +81,7 @@ export class VineyardService {
                 ...d,
                 location: new Polygon(JSON.parse(d.location).coordinates).transform('EPSG:4326', 'EPSG:3857')
             }))),
-            tap((vineyards: Vineyard[]) => forkJoin(vineyards.map((v: Vineyard) => this.updateTempStats(v))).subscribe()),
+           // tap((vineyards: Vineyard[]) => forkJoin(vineyards.map((v: Vineyard) => this.updateTempStats(v))).subscribe()),
             map((vineyards: Vineyard[]) => vineyards.map((v: Vineyard) => ({
                 ...v
             })))
@@ -147,6 +154,22 @@ export class VineyardService {
         const vineyards: Vineyard[] = this._vineyards$.getValue().map((v: Vineyard) => v.id === vineyard.id ? vineyard : v);
         this._vineyards$.next(vineyards);
         this.saveVineyards([vineyard.id]);
+    }
+
+    async addVineyard(name: string, location: Polygon): Promise<DocumentReference> {
+        const geoJSON = new GeoJSON({
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        });
+        return this._vineyardCollection.add({
+            name,
+            location: geoJSON.writeGeometry(location),
+            actions: [],
+            varieties: [],
+            meteo: {
+                data: []
+            }
+        });
     }
 
 
