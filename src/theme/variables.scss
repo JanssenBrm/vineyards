@@ -1,7 +1,7 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;800&family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;800&family=Inter&display=swap');
 
 /** Ionic CSS Variables **/
 :root {
@@ -18,7 +18,7 @@
   --ion-padding: 1rem;
   --ion-title-font: 'Open Sans';
 
-  --ion-font-family: 'Raleway';
+  --ion-font-family: 'Inter';
 
   --ion-primary-gradient: linear-gradient(90deg, rgba(91,28,242,1) 0%, rgba(88,26,251,1) 100%);
 
