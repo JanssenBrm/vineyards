@@ -62,6 +62,14 @@ ion-card-header {
   }
 }
 
+.files {
+  margin-top: 1rem;
+  display: flex;
+  .file {
+    margin-right: .5rem;
+  }
+}
+
 .filters {
   display: flex;
   flex-direction: row;

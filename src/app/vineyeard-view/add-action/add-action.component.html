@@ -54,6 +54,10 @@
         <ion-label position="stacked">Description</ion-label>
         <ion-textarea formControlName="description"></ion-textarea>
       </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Files</ion-label>
+        <ion-input type="file" formControlName="files" multiple (change)="readFile($event.target.files)"></ion-input>
+      </ion-item>
     </ion-list>
   </form>
 </ion-content>

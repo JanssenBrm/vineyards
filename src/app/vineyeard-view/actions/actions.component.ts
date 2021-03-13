@@ -79,7 +79,7 @@ export class ActionsComponent implements OnInit, OnChanges {
       component: AddActionComponent,
       componentProps: {
         vineyard: this.vineyard,
-        action: action
+        action
       }
     });
     modal.present();
@@ -105,7 +105,8 @@ export class ActionsComponent implements OnInit, OnChanges {
           description: data.description,
           bbch: data.bbch,
           variety: [id],
-          value: data.value
+          value: data.value,
+          files: data.files
         }));
       } else {
         this.varietyService.updateVariety(this.vineyard, {
@@ -122,7 +123,8 @@ export class ActionsComponent implements OnInit, OnChanges {
           description: data.description,
           bbch: data.bbch,
           variety: data.varietyId,
-          value: data.value
+          value: data.value,
+          files: data.files
         });
       }
     } else {
@@ -133,7 +135,8 @@ export class ActionsComponent implements OnInit, OnChanges {
         description: data.description,
         bbch: data.bbch,
         variety: data.varietyId,
-        value: data.value
+        value: data.value,
+        files: data.files
       });
     }
 
