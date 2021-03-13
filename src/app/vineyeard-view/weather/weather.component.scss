@@ -1,0 +1,27 @@
+.conditions {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+
+  .condition {
+    display: flex;
+    flex-direction: column;
+    margin: 0 .5rem;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 5rem;
+      height: 5rem;
+    }
+    .label {
+      margin: .25rem 0;
+      font-size: small;
+      font-weight: bolder;
+    }
+    .date {
+      font-size: x-small;
+    }
+  }
+}

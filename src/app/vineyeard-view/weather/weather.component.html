@@ -1,0 +1,7 @@
+<div class="row conditions">
+    <div class="condition" *ngFor="let condition of conditions">
+        <img [src]="'http://openweathermap.org/img/wn/' + condition.icon + '@2x.png'"/>
+        <span class="label">{{condition.label | titlecase}}</span>
+        <span class="date">{{condition.date | date:'dd MMMM yyyy'}}</span>
+    </div>
+</div>

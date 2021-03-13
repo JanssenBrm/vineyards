@@ -27,6 +27,7 @@ import {NoteTypesPipe} from '../pipes/note-types.pipe';
 import {FilterNotesByTypesPipe} from '../pipes/filter-notes-by-types.pipe';
 import {FilterVarietiesBySeasonPipe} from '../pipes/filter-varieties-by-season.pipe';
 import {FilterActionsByTypesPipe} from '../pipes/filter-actions-by-types.pipe';
+import {WeatherComponent} from './weather/weather.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -66,7 +67,8 @@ theme(Highcharts);
         NoteTypesPipe,
         FilterNotesByTypesPipe,
         FilterVarietiesBySeasonPipe,
-        FilterActionsByTypesPipe
+        FilterActionsByTypesPipe,
+        WeatherComponent
     ],
     providers: [
         PhotoViewer,
