@@ -29,8 +29,7 @@ export class WeatherComponent implements OnChanges {
 
   getMeteoInfo(vineyard: Vineyard) {
     const location = this.getLocation(vineyard);
-    console.log("LOCATION", location);
-    this.http.get(`http://api.openweathermap.org/data/2.5/onecall?lon=${location[0]}&lat=${location[1]}&appid=${environment.owm_key}&cnt=5`)
+    this.http.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${location[0]}&lat=${location[1]}&appid=${environment.owm_key}&cnt=5`)
         .subscribe((result: any) => {
           console.log(result);
           this.conditions = result.daily.map((entry) => ({
@@ -42,6 +41,6 @@ export class WeatherComponent implements OnChanges {
   }
 
   getLocation(vineyard: Vineyard): [number, number] {
-    return getCenter(transformExtent(this.vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
+    return getCenter(transformExtent(vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
   }
 }
