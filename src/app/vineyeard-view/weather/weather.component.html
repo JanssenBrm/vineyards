@@ -3,6 +3,6 @@
         <img [src]="'http://openweathermap.org/img/wn/' + condition.icon + '@2x.png'"/>
         <span class="date">{{condition.date | date:'dd MMMM yyyy'}}</span>
         <span class="label">{{condition.label | titlecase}}</span>
-        <span class="temp">{{condition.temp.min}}°C | {{condition.temp.max}}°C</span>
+        <span class="temp">{{condition.temp.min | number: '1.0-0'}}°C | {{condition.temp.max | number: '1.0-0'}}°C</span>
     </div>
 </div>
