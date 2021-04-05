@@ -1,0 +1,36 @@
+.warnings {
+  display: flex;
+  flex-direction: column;
+
+  .dates {
+    .warning {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+
+      .type {
+        margin-right: 0.5rem;
+      }
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: .5rem;
+    }
+
+    .date {
+   //   font-weight: bold;
+      font-size: smaller;
+      font-style: italic;
+      color: gray;
+
+    }
+
+    .description {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+

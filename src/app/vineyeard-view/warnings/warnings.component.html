@@ -1,0 +1,14 @@
+<div class="warnings">
+  <div class="dates" *ngFor="let date of dates">
+    <div class="info">
+      <div class="date">
+        {{date | date:'dd MMMM yyyy'}}
+      </div>
+      <div class="entries">
+        <div class="warning" *ngFor="let warning of getWarningsForDate(date)">
+          <ion-icon name="snow-outline" *ngIf="warning.type === WARNING_TYPE.FROST"></ion-icon> {{warning.description}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
