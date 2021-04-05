@@ -1,9 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Vineyard} from '../../models/vineyard.model';
-import {getCenter} from 'ol/extent';
-import {transformExtent} from 'ol/proj';
-import {environment} from '../../../environments/environment';
+
 import {HttpClient} from '@angular/common/http';
+import {WeatherInfo} from '../../models/weather.model';
+import {WeatherService} from '../../services/weather.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-weather',
@@ -15,10 +16,11 @@ export class WeatherComponent implements OnChanges {
   @Input()
   vineyard: Vineyard;
 
-  public conditions: {date: string, icon: string, label: string, temp: any}[] = [];
+  public conditions: BehaviorSubject<WeatherInfo[]>;
 
   constructor(
-      private http: HttpClient
+      private http: HttpClient,
+      private weatherService: WeatherService
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -28,20 +30,6 @@ export class WeatherComponent implements OnChanges {
   }
 
   getMeteoInfo(vineyard: Vineyard) {
-    const location = this.getLocation(vineyard);
-    this.http.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${location[0]}&lat=${location[1]}&appid=${environment.owm_key}&cnt=5&units=metric`)
-        .subscribe((result: any) => {
-          console.log(result);
-          this.conditions = result.daily.map((entry) => ({
-            date: new Date(entry.dt * 1000).toISOString(),
-            label: `${entry.weather[0].description}`,
-            icon: entry.weather[0].icon,
-            temp: entry.temp
-          }));
-        });
-  }
-
-  getLocation(vineyard: Vineyard): [number, number] {
-    return getCenter(transformExtent(vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
+    this.conditions = this.weatherService.loadConditions(vineyard);
   }
 }

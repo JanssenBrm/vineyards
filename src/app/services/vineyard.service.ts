@@ -21,6 +21,8 @@ import * as moment from 'moment';
 import {Vintage} from '../models/vintage.model';
 import {AuthService} from './auth.service';
 import {User} from 'firebase';
+import {getCenter} from 'ol/extent';
+import {transformExtent} from 'ol/proj';
 
 @Injectable({
     providedIn: 'root'
@@ -182,5 +184,9 @@ export class VineyardService {
 
     getMeteoByYears(info: Vineyard, years: number[]): MeteoStatEntry[] {
         return info && info.meteo && info.meteo.data ? info.meteo.data.filter((e: MeteoStatEntry) => years.indexOf(moment(e.date).year()) >= 0) : [];
+    }
+
+    getLocation(vineyard: Vineyard): [number, number] {
+        return getCenter(transformExtent(vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
     }
 }
