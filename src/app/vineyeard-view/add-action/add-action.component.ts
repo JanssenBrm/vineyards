@@ -112,7 +112,7 @@ export class AddActionComponent implements OnInit {
     if (this._files.length > 0) {
       this.presentLoading();
       forkJoin(
-          this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/${this.action.id}/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
+          this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/actions/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
       ).subscribe((urls: string[]) => {
         this.hideLoading();
         this.closeDialog(urls);
