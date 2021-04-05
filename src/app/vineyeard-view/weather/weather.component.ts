@@ -15,7 +15,7 @@ export class WeatherComponent implements OnChanges {
   @Input()
   vineyard: Vineyard;
 
-  public conditions: {date: string, icon: string, label: string}[] = [];
+  public conditions: {date: string, icon: string, label: string, temp: any}[] = [];
 
   constructor(
       private http: HttpClient
@@ -29,13 +29,14 @@ export class WeatherComponent implements OnChanges {
 
   getMeteoInfo(vineyard: Vineyard) {
     const location = this.getLocation(vineyard);
-    this.http.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${location[0]}&lat=${location[1]}&appid=${environment.owm_key}&cnt=5`)
+    this.http.get(`https://api.openweathermap.org/data/2.5/onecall?lon=${location[0]}&lat=${location[1]}&appid=${environment.owm_key}&cnt=5&units=metric`)
         .subscribe((result: any) => {
           console.log(result);
           this.conditions = result.daily.map((entry) => ({
             date: new Date(entry.dt * 1000).toISOString(),
             label: `${entry.weather[0].description}`,
-            icon: entry.weather[0].icon
+            icon: entry.weather[0].icon,
+            temp: entry.temp
           }));
         });
   }
