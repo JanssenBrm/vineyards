@@ -110,6 +110,11 @@ h1 {
   margin-top: .25rem !important;
 }
 
+.status {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .cover {
   background-size: cover !important;
   height: 10rem;
@@ -141,5 +146,20 @@ h1 {
       font-size: large !important;
       color: black;
     }
+  }
+}
+
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &.end {
+    justify-content: flex-end;
   }
 }

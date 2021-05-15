@@ -3,7 +3,7 @@ import {AddActionComponent} from '../add-action/add-action.component';
 import {AlertController, ModalController} from '@ionic/angular';
 import {Vineyard} from '../../models/vineyard.model';
 import {AddVintageComponent} from '../add-vintage/add-vintage.component';
-import {Vintage} from '../../models/vintage.model';
+import {Vintage, VINTAGE_STATUS, VINTAGE_STATUS_COLORS} from '../../models/vintage.model';
 import {VintageService} from '../../services/vintage.service';
 import {BehaviorSubject} from 'rxjs';
 import {VineyardService} from '../../services/vineyard.service';
@@ -30,6 +30,9 @@ export class VintagesComponent implements OnChanges {
   vintage: Vintage;
 
   tab: 'timeline' | 'notes' = 'timeline';
+
+  VINTAGE_STATUS = VINTAGE_STATUS;
+  VINTAGE_STATUS_COLORS = VINTAGE_STATUS_COLORS;
 
 
   constructor(

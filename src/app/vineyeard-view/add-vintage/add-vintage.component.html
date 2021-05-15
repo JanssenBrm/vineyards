@@ -11,6 +11,14 @@
         <ion-input type="text" required formControlName="name"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label position="stacked">Status</ion-label>
+        <ion-select required  formControlName="status">
+          <ion-select-option *ngFor="let status of STATUSES" [value]="status">{{
+            VINTAGE_STATUS[status]
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label position="stacked">Year</ion-label>
         <ion-datetime required formControlName="year" displayFormat="YYYY" pickerFormat="YYYY"></ion-datetime>
       </ion-item>

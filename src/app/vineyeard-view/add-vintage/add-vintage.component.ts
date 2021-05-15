@@ -4,10 +4,11 @@ import {Vineyard} from '../../models/vineyard.model';
 import {ActionType} from '../../models/action.model';
 import {LoadingController, ModalController} from '@ionic/angular';
 import * as moment from 'moment';
-import {Vintage} from '../../models/vintage.model';
+import {Vintage, VINTAGE_STATUS} from '../../models/vintage.model';
 import {VintageColor} from '../../models/vintagecolor.model';
 import {UploadService} from '../../services/upload.service';
 import {forkJoin} from 'rxjs';
+import {VintageEvent} from '../../models/vintageevent.model';
 
 @Component({
   selector: 'app-add-vintage',
@@ -28,6 +29,9 @@ export class AddVintageComponent implements OnInit {
   private _files: File[];
   private _loading: HTMLIonLoadingElement;
 
+  public VINTAGE_STATUS = VINTAGE_STATUS;
+  public STATUSES = Object.keys(VINTAGE_STATUS);
+
   constructor(
       private modalController: ModalController,
       private uploadService: UploadService,
@@ -42,7 +46,8 @@ export class AddVintageComponent implements OnInit {
         name: new FormControl(this.vintage.name, [Validators.required]),
         color: new FormControl(this.vintage.color, [Validators.required]),
         varieties: new FormControl(this.vintage.varieties, [Validators.required]),
-        cover: new FormControl([this.vintage.cover])
+        cover: new FormControl([this.vintage.cover]),
+        status: new FormControl([this.vintage.status], [Validators.required])
       });
     } else {
       this.vintageForm = new FormGroup({
@@ -50,7 +55,8 @@ export class AddVintageComponent implements OnInit {
         name: new FormControl('', [Validators.required]),
         color: new FormControl('', [Validators.required]),
         varieties: new FormControl([], [Validators.required]),
-        cover: new FormControl([this.vintage.cover])
+        cover: new FormControl([]),
+        status: new FormControl(this.STATUSES[0], [Validators.required])
       });
     }
 
@@ -61,7 +67,7 @@ export class AddVintageComponent implements OnInit {
   }
 
   save() {
-    if (this._files.length > 0) {
+    if (this._files && this._files.length > 0) {
       this.presentLoading();
       forkJoin(
           this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/${this.vintage.id}/cover/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
