@@ -27,6 +27,7 @@ export class TimelineComponent implements OnInit, OnChanges {
     vintage: Vintage;
 
     legend: { color: string, label: string }[] = [];
+    totalDays: number;
 
     public STAGE = VintageEvent;
 
@@ -138,6 +139,12 @@ export class TimelineComponent implements OnInit, OnChanges {
             .sort((d1: moment.Moment, d2: moment.Moment) => d1.isSameOrBefore(d2) ? -1 : 1);
     }
 
+    calculateTotalDays(notes: Note[]): number {
+        const dates = notes.map((n: Note) => moment(n.date))
+            .sort((d1: moment.Moment, d2: moment.Moment) => d1.isSameOrBefore(d2) ? -1 : 1);
+        return dates[dates.length - 1].diff(dates[0], 'days');
+    }
+
     ngOnInit() {
         this.containerReady = new BehaviorSubject<boolean>(false);
         this.checkContainerReady();
@@ -149,6 +156,7 @@ export class TimelineComponent implements OnInit, OnChanges {
             this.notesService.getNotesListener()
         ).subscribe((value) => {
             this.createChart(value[1]);
+            this.totalDays = this.calculateTotalDays(value[1]);
         });
     }
 

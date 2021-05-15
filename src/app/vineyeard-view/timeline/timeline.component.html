@@ -1,3 +1,6 @@
+<div class="total" *ngIf="!!totalDays">
+    Duration - {{totalDays}} day{{totalDays == 1 ? '' : 's'}}
+</div>
 <div class="legend">
     <div class="legend-item" *ngFor="let item of legend">
         <div class="color" [style.backgroundColor]="item.color"></div>
