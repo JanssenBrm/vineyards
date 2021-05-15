@@ -7,8 +7,10 @@ import * as moment from 'moment';
 import {Vintage, VINTAGE_STATUS} from '../../models/vintage.model';
 import {VintageColor} from '../../models/vintagecolor.model';
 import {UploadService} from '../../services/upload.service';
-import {forkJoin} from 'rxjs';
+import {BehaviorSubject, forkJoin} from 'rxjs';
 import {VintageEvent} from '../../models/vintageevent.model';
+import {Variety} from '../../models/variety.model';
+import {VarietyService} from '../../services/variety.service';
 
 @Component({
   selector: 'app-add-vintage',
@@ -32,14 +34,18 @@ export class AddVintageComponent implements OnInit {
   public VINTAGE_STATUS = VINTAGE_STATUS;
   public STATUSES = Object.keys(VINTAGE_STATUS);
 
+  public varieties: BehaviorSubject<Variety[]>;
+
   constructor(
       private modalController: ModalController,
       private uploadService: UploadService,
+      private varietyService: VarietyService,
       private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
     this.colors = Object.keys(VintageColor);
+    this.varieties = this.varietyService.getVarietyListener();
     if (this.vintage) {
       this.vintageForm = new FormGroup({
         year: new FormControl(`${this.vintage.year}-01-01'`, [Validators.required]),
@@ -103,7 +109,7 @@ export class AddVintageComponent implements OnInit {
         id: this.vintage ? this.vintage.id : '',
         ...this.vintageForm.value,
         year: moment(this.vintageForm.value.year).year(),
-        cover: files !== undefined ? files[0] : ''
+        cover: files !== undefined && files.length > 0 ? files[0] : 'assets/images/vintage.jpg'
       }});
   }
 
