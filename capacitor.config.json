@@ -1,8 +1,8 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "be.bram.winery",
   "appName": "winery",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www",
+  "webDir": "public",
   "cordova": {}
 }
