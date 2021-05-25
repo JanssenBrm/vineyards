@@ -53,7 +53,7 @@ export class AddVintageComponent implements OnInit {
         color: new FormControl(this.vintage.color, [Validators.required]),
         varieties: new FormControl(this.vintage.varieties, [Validators.required]),
         cover: new FormControl([this.vintage.cover]),
-        status: new FormControl([this.vintage.status], [Validators.required])
+        status: new FormControl(this.vintage.status, [Validators.required])
       });
     } else {
       this.vintageForm = new FormGroup({
