@@ -5,7 +5,7 @@ import {Platform} from '@ionic/angular';
   selector: '[appHideOnPlatform]'
 })
 export class HideOnPlatformDirective {
-  const mappings = {
+   mappings = {
     mobile: ['ios', 'android'],
     desktop: ['desktop', 'mobileweb']
   };
