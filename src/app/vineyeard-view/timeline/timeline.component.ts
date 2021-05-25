@@ -142,7 +142,7 @@ export class TimelineComponent implements OnInit, OnChanges {
     calculateTotalDays(notes: Note[]): number {
         const dates = notes.map((n: Note) => moment(n.date))
             .sort((d1: moment.Moment, d2: moment.Moment) => d1.isSameOrBefore(d2) ? -1 : 1);
-        return dates[dates.length - 1].diff(dates[0], 'days');
+        return dates.length > 0 ? dates[dates.length - 1].diff(dates[0], 'days') : 0;
     }
 
     ngOnInit() {
