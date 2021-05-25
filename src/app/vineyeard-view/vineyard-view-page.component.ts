@@ -1,4 +1,4 @@
-import {MenuController, NavController, Platform} from '@ionic/angular';
+import {MenuController, ModalController, NavController, Platform} from '@ionic/angular';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from './../services/vineyard.service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
@@ -13,6 +13,7 @@ import {Action} from '../models/action.model';
 import {ActionService} from '../services/action.service';
 import {SeasonsService} from '../services/seasons.service';
 import {Variety} from '../models/variety.model';
+import {AddVintageComponent} from './add-vintage/add-vintage.component';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -25,7 +26,8 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
                private navController: NavController, public vintageService: VintageService,
                private varietyService: VarietyService,
                private actionService: ActionService,
-               private seasonService: SeasonsService) { }
+               private seasonService: SeasonsService,
+               private modalController: ModalController) { }
 
   public seasons$: BehaviorSubject<number[]>;
   public activeSeasons$: BehaviorSubject<number[]>;
@@ -85,6 +87,26 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
     this.menuController.close();
+  }
+
+  async openAddVintageModal(vintage?: Vintage) {
+    const modal = await this.modalController.create({
+      component: AddVintageComponent,
+      componentProps: {
+        vineyard: this.activeVineyard,
+        vintage
+      }
+    });
+    modal.present();
+
+    const data = await modal.onWillDismiss();
+    if (data.data.vintage) {
+      this.parseVintage(data.data.vintage);
+    }
+  }
+
+  private parseVintage(vintage: Vintage) {
+    vintage.id ? this.vintageService.updateVintage(this.activeVineyard, vintage) : this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   openOverview() {

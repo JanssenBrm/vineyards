@@ -28,13 +28,7 @@
                 <ion-icon name="calendar-outline" slot="start"></ion-icon>
                 <ion-label>History</ion-label>
             </ion-item>
-            <ng-container *appHideOnPlatform="['mobile']">
-                <ion-item button (click)="openTab('vintages')"  [class.selected]="activePage === 'vintages'" >
-                    <ion-icon name="wine-outline" slot="start"></ion-icon>
-                    <ion-label>Vintages</ion-label>
-                </ion-item>
-            </ng-container>
-            <ng-container *appHideOnPlatform="['desktop']">
+            <ng-container>
                 <ion-item button (click)="toggleSubmenu('vintages')"  [class.selected]="activePage === 'vintages'" >
                     <ion-icon name="wine-outline" slot="start"></ion-icon>
                     <ion-label>Vintages</ion-label>
@@ -43,6 +37,10 @@
                     <ion-item button (click)="openVintage(vintage)"  *ngFor="let vintage of (vintages$ | async)">
                         <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
                         <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
+                    </ion-item>
+                    <ion-item button  (click)="openAddVintageModal()">
+                        <ion-icon slot="start" name="add-outline"></ion-icon>
+                        <ion-label>Add vintage</ion-label>
                     </ion-item>
                 </div>
             </ng-container>

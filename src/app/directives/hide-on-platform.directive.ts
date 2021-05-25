@@ -5,6 +5,10 @@ import {Platform} from '@ionic/angular';
   selector: '[appHideOnPlatform]'
 })
 export class HideOnPlatformDirective {
+  const mappings = {
+    mobile: ['ios', 'android'],
+    dekstop: ['desktop']
+  };
 
   constructor(
       private platform: Platform,
@@ -13,7 +17,7 @@ export class HideOnPlatformDirective {
   ) { }
 
   @Input() set appHideOnPlatform(platforms: string[]) {
-    if (platforms.filter((p: string) => this.platform.platforms().includes(p)).length > 0) {
+    if ([].concat(...platforms.map((p: string) => this.mappings[p])).filter((p: string) => this.platform.platforms().includes(p)).length > 0) {
       this.vcr.clear();
     } else {
       this.vcr.createEmbeddedView(this.tpl);
