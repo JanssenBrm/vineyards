@@ -2,12 +2,18 @@
 .title {
   display: flex;
   flex-direction: row;
-  align-items: center;
 
   span {
     font-family: var(--ion-title-font);
     color: white;
     margin-left: .5rem;
+    font-variant: all-petite-caps;
   }
 }
 
+
+@media only screen and (orientation: portrait)  {
+  .title {
+    align-items: center;
+  }
+}
