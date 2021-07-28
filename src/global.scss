@@ -75,13 +75,13 @@ ion-item, ion-tab-button {
 }
 
 ion-toolbar, ion-header, {
-    --ion-background-color: var(--ion-primary-gradient);
+    --ion-background-color: var( --ion-primary-gradient-2);
     color: var(--ion-color-light);
 }
 
 ion-toolbar {
     ion-title {
-        background: var(--ion-primary-gradient);
+        background: var( --ion-primary-gradient-2);
     }
     ion-chip, ion-menu-button {
         color: var(--ion-color-light);

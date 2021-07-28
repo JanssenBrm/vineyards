@@ -5,6 +5,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: var(--ion-color-primary-contrast) !important;
 
   .content {
     padding: 1rem;
@@ -45,6 +46,8 @@
     font-weight: bold;
   }
 }
+
+
 
 @media only screen and (orientation: portrait) {
   .content {
