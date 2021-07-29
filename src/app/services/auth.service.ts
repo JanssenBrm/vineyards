@@ -4,8 +4,8 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {VineyardDoc} from '../models/vineyarddoc.model';
 import {UserData} from '../models/userdata.model';
+import {AngularFireAnalytics} from '@angular/fire/analytics';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +17,7 @@ export class AuthService {
     constructor(
         public fbAuth: AngularFireAuth, public router: Router,
         private fireStore: AngularFirestore,
+        private analytics: AngularFireAnalytics
     ) {
         this.user = new BehaviorSubject<User>(undefined);
         this.fbAuth.authState.subscribe((user: User) => {
@@ -52,36 +53,43 @@ export class AuthService {
     async login(email: string, password: string) {
         const result = await this.fbAuth.auth.signInWithEmailAndPassword(email, password);
         await setTimeout(() => {
+            this.analytics.logEvent('auth_login_email_success', {username: email});
             this.router.navigate(['/map']);
         }, 500);
     }
 
     async register(email: string, password: string) {
         const result = await this.fbAuth.auth.createUserWithEmailAndPassword(email, password);
-        this.sendEmailVerification();
+        this.analytics.logEvent('auth_register', {username: email});
+        this.sendEmailVerification(email);
     }
 
-    async sendEmailVerification() {
+    async sendEmailVerification(email?: string) {
         await this.fbAuth.auth.currentUser.sendEmailVerification();
+        this.analytics.logEvent('auth_send_email_verification', {username: email});
         this.router.navigate(['verify-email']);
     }
 
     async sendPasswordResetEmail(passwordResetEmail: string) {
+        this.analytics.logEvent('auth_send_password_reset', {username: passwordResetEmail});
         return await this.fbAuth.auth.sendPasswordResetEmail(passwordResetEmail);
     }
 
     async logout() {
+        const username = this.fbAuth.auth.currentUser.email;
         await this.fbAuth.auth.signOut();
         localStorage.removeItem('user');
         await setTimeout(() => {
+            this.analytics.logEvent('auth_logout_success', {username});
             this.router.navigate(['login']);
         }, 500);
     }
 
     async loginWithGoogle() {
-        await this.fbAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+        const user: auth.UserCredential = await this.fbAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
         await setTimeout(() => {
-           this.router.navigate(['map']);
+            this.analytics.logEvent('auth_login_google_success', {username: user.user.email});
+            this.router.navigate(['map']);
         }, 500);
     }
 }

@@ -4,6 +4,7 @@ import {AuthService} from '../services/auth.service';
 import {Platform, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {UtilService} from '../services/util.service';
+import {AngularFireAnalytics} from '@angular/fire/analytics';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,7 +20,8 @@ export class ForgotPasswordPage implements OnInit {
       public authService: AuthService,
       public toastController: ToastController,
       public router: Router,
-      public utilService: UtilService
+      public utilService: UtilService,
+      private analytics: AngularFireAnalytics
   ) { }
 
   ngOnInit() {
@@ -36,6 +38,7 @@ export class ForgotPasswordPage implements OnInit {
           this.showMessage('Password reset email sent, check your inbox.');
         })
         .catch((error: any) => {
+          this.analytics.logEvent('auth_send_password_reset_failed', {username: this.form.get('username').value, error});
           this.showMessage(error.message, true);
           this.loading = false;
         });
