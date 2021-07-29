@@ -22,8 +22,14 @@ import {AddVintageComponent} from './add-vintage/add-vintage.component';
 })
 export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor( public vineyardService: VineyardService, private activeRoute: ActivatedRoute, private router: Router, private location: Location, private menuController: MenuController,
-               private navController: NavController, public vintageService: VintageService,
+  constructor( public vineyardService: VineyardService,
+               private activeRoute: ActivatedRoute,
+               private router: Router,
+               private location: Location,
+               private platform: Platform,
+               private menuController: MenuController,
+               private navController: NavController,
+               public vintageService: VintageService,
                private varietyService: VarietyService,
                private actionService: ActionService,
                private seasonService: SeasonsService,
@@ -31,7 +37,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   public seasons$: BehaviorSubject<number[]>;
   public activeSeasons$: BehaviorSubject<number[]>;
-  public activeSeasons: number[]
+  public activeSeasons: number[];
 
   public activeVineyard: Vineyard;
 
@@ -78,7 +84,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   setSeasons(years: number[]): void {
     this.seasonService.setActiveSeasons(years);
-    this.menuController.close();
+    this.closeMenu();
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
@@ -86,7 +92,17 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
       this.activePage = tab;
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
-    this.menuController.close();
+    this.closeMenu();
+  }
+
+  closeMenu(): void {
+    if (this.isMobile()) {
+      this.menuController.close();
+    }
+  }
+
+  isMobile(): boolean {
+    return ['mobile'].filter((p: string) => this.platform.platforms().includes(p)).length > 0
   }
 
   async openAddVintageModal(vintage?: Vintage) {
@@ -117,13 +133,6 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this._destroy.next(true);
   }
 
-  toggleSubmenu(menu: string) {
-    if (this.activeSubMenus.includes(menu)) {
-      this.activeSubMenus = this.activeSubMenus.filter((m: string) => m != menu);
-    } else {
-      this.activeSubMenus.push(menu);
-    }
-  }
 
   openVintage(vintage: Vintage) {
     this.activeVintage = vintage;

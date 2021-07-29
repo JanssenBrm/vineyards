@@ -1,0 +1,43 @@
+<div class="season">
+  <span>Season</span>
+  <ion-select *ngIf="seasons.length > 0" [(ngModel)]="activeSeasons" multiple="true" placeholder="Season" (ionChange)="setSeasons($event.target.value)">
+    <ion-select-option *ngFor="let season of seasons" [value]="season">{{season}}</ion-select-option>
+  </ion-select>
+</div>
+
+<ion-list>
+  <ion-item button (click)="openOverview()">
+    <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+    <ion-label>Vineyards</ion-label>
+  </ion-item>
+  <ion-item button (click)="openTab('info')"  [class.selected]="activePage === 'info'">
+    <ion-icon name="information-circle" slot="start"></ion-icon>
+    <ion-label>Info</ion-label>
+  </ion-item>
+  <ion-item button (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
+    <ion-icon name="calendar-outline" slot="start"></ion-icon>
+    <ion-label>History</ion-label>
+  </ion-item>
+  <ng-container *appHideOnPlatform="['mobile']">
+    <ion-item button (click)="openTab('vintages')"  [class.selected]="activePage === 'vintages'" >
+      <ion-icon name="wine-outline" slot="start"></ion-icon>
+      <ion-label>Vintages</ion-label>
+    </ion-item>
+  </ng-container>
+  <ng-container *appHideOnPlatform="['desktop']">
+    <ion-item button (click)="toggleSubmenu('vintages')"  [class.selected]="activePage === 'vintages'" >
+      <ion-icon name="wine-outline" slot="start"></ion-icon>
+      <ion-label>Vintages</ion-label>
+    </ion-item>
+    <div class="submenu" *ngIf="activeSubMenus.includes('vintages')">
+      <ion-item button (click)="viewVintage(vintage)"  *ngFor="let vintage of vintages">
+        <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
+        <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
+      </ion-item>
+    </div>
+  </ng-container>
+  <ion-item button (click)="openTab('stats')"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
+    <ion-icon name="stats-chart" slot="start"></ion-icon>
+    <ion-label>Statistics</ion-label>
+  </ion-item>
+</ion-list>
