@@ -1,49 +1,45 @@
-<h1 *appHideOnPlatform="['mobile']"><ion-icon name="wine-outline" slot="start"></ion-icon>Vintages</h1>
+<div class="content-title">
+    <span>Vintage</span>
+<div class="actions" *ngIf="vintage">
+    <ion-button  (click)="editVintage(vintage)">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+    </ion-button>
+        <ion-button  (click)="deleteVintage(vintage)">
+            <ion-icon  slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+</div>
+</div>
 <div class="container">
-  <div class="sidebar" *appHideOnPlatform="['mobile']">
-    <div class="list">
-      <ion-list>
-        <ion-item button *ngFor="let v of vintages" (click)="setVintage(v)" [class.selected]="v === vintage">
-          <ion-label>
-            <div class="title"><span>{{v.name}}</span><span class="actions"><ion-icon name="create-outline" (click)="editVintage(v)"></ion-icon><ion-icon name="trash-outline" (click)="deleteVintage(v)"></ion-icon></span></div>
-            <div class="row">
-              <div class="column">
-                <div class="year"><ion-icon name="calendar-outline" class="icon"></ion-icon>{{v.year}}</div>
-                <div class="variety"><img class="icon" [src]="'assets/icon/grape_' + v.color.toLowerCase() +'.png'" />{{getVarieties(v)}}</div>
-              </div>
-              <div class="column end">
-                <div class="status"> <ion-badge [style.backgroundColor]="VINTAGE_STATUS_COLORS[v.status]" slot="end">{{VINTAGE_STATUS[v.status]}}</ion-badge></div>
-              </div>
+    <div class="content" *ngIf="vintage">
+        <div class="cover" [style.background]="'url(/assets/images/vintage.jpg)'">
+            <div class="text">
+                <div class="variety">
+                        <img class="icon"
+                             [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"/>{{getVarieties(vintage)}}
+                </div>
+                <div class="title">{{vintage.name}}<span class="year">{{vintage.year}}</span></div>
+                <div class="subtitle">
+                        <span class="status">
+              <ion-badge [style.backgroundColor]="VINTAGE_STATUS_COLORS[vintage.status]"
+                         slot="end">{{VINTAGE_STATUS[vintage.status]}}</ion-badge
+              ></span>
+                </div>
             </div>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </div>
-    <div class="footer">
-      <ion-button (click)="openAddVintageModal()"><ion-icon slot="start" name="add-outline"></ion-icon><ion-label>Add vintage</ion-label></ion-button>
-    </div>
-  </div>
-  <div class="content" *ngIf="vintage">
-      <div class="cover" [style.background]="'url(/assets/images/vintage.jpg)'">
-        <div class="text">
-          <span class="title">{{vintage.name}}</span>
-          <span class="year">{{vintage.year}}</span>
         </div>
-      </div>
-    <ion-tab-bar>
-      <ion-tab-button (click)="setTab('timeline')" [class.selected]="tab === 'timeline'">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <ion-label>Timeline</ion-label>
-      </ion-tab-button>
-      <ion-tab-button  (click)="setTab('notes')" [class.selected]="tab === 'notes'">
-        <ion-icon name="create-outline"></ion-icon>
-        <ion-label>Notes</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-      <div class="info">
-        <app-timeline [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'timeline'"></app-timeline>
-        <app-notes [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'notes'"></app-notes>
-      </div>
+        <ion-tab-bar>
+            <ion-tab-button (click)="setTab('timeline')" [class.selected]="tab === 'timeline'">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <ion-label>Timeline</ion-label>
+            </ion-tab-button>
+            <ion-tab-button (click)="setTab('notes')" [class.selected]="tab === 'notes'">
+                <ion-icon name="create-outline"></ion-icon>
+                <ion-label>Notes</ion-label>
+            </ion-tab-button>
+        </ion-tab-bar>
+        <div class="info">
+            <app-timeline [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'timeline'"></app-timeline>
+            <app-notes [vineyard]="vineyard" [vintage]="vintage" *ngIf="tab === 'notes'"></app-notes>
+        </div>
 
-  </div>
+    </div>
 </div>

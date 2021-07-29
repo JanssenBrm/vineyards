@@ -12,48 +12,23 @@ h1 {
 .container {
   display: flex;
   flex: 1;
-  overflow:auto;
   width: 100%;
-
-  .sidebar{
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    margin-right: 1rem;
-
-    .list {
-      flex: 1;
-      overflow: auto;
-
-      ion-item.selected {
-
-        ion-label, ion-icon {
-          color: inherit !important;
-          font-weight: normal !important;
-        }
-        .title {
-          font-weight: bold;
-        }
-      }
-    }
-
-    .footer {
-      height: 2.5rem;
-    }
-  }
 
   .content {
     flex: 1;
-    overflow: auto;
     display: flex;
     flex-direction: column;
 
     .info {
       flex: 1;
-      overflow: auto;
     }
   }
+}
+
+.content-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .title {
@@ -88,22 +63,27 @@ h1 {
   }
 }
 
-.year, .variety {
-  font-size: smaller !important;
-  color: gray;
-  margin-bottom: 0!important;
+.subtitle {
   display: flex;
-  align-items: end;
+  align-items: baseline;
+}
 
-  .icon {
-    height: 16px;
-    width: 16px;
-    margin-right: .5rem;
-  }
+.variety {
+  font-size: small !important;
+  margin-right: .5rem;
+  display: flex;
+  align-items: center;
 }
 
 .year {
   margin-top: 0 !important;
+  font-weight: normal;
+  margin-left: .5rem;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
 }
 
 .variety {
@@ -140,12 +120,6 @@ h1 {
       margin-bottom: 0;
       font-weight: bold;
     }
-
-    .year {
-      margin-top: 0;
-      font-size: large !important;
-      color: black;
-    }
   }
 }
 
@@ -162,4 +136,9 @@ h1 {
   &.end {
     justify-content: flex-end;
   }
+}
+
+
+ion-tab-bar, ion-tab-button {
+  background-color: var(--ion-color-primary-contrast);
 }
