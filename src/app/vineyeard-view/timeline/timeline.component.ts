@@ -121,6 +121,10 @@ export class TimelineComponent implements OnInit, OnChanges {
             });
             this.chart.resize();
             this.legend = this.chart.generateLegend();
+        } else {
+            if (this.chart) {
+                this.chart.destroy();
+            }
         }
     }
 
