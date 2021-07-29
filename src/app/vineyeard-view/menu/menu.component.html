@@ -5,39 +5,47 @@
   </ion-select>
 </div>
 
-<ion-list>
-  <ion-item button (click)="openOverview()">
-    <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+<div class="section">
+  <div class="header">
     <ion-label>Vineyards</ion-label>
-  </ion-item>
-  <ion-item button (click)="openTab('info')"  [class.selected]="activePage === 'info'">
-    <ion-icon name="information-circle" slot="start"></ion-icon>
-    <ion-label>Info</ion-label>
-  </ion-item>
-  <ion-item button (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
-    <ion-icon name="calendar-outline" slot="start"></ion-icon>
-    <ion-label>History</ion-label>
-  </ion-item>
-  <ng-container *appHideOnPlatform="['mobile']">
-    <ion-item button (click)="openTab('vintages')"  [class.selected]="activePage === 'vintages'" >
-      <ion-icon name="wine-outline" slot="start"></ion-icon>
-      <ion-label>Vintages</ion-label>
-    </ion-item>
-  </ng-container>
-  <ng-container *appHideOnPlatform="['desktop']">
-    <ion-item button (click)="toggleSubmenu('vintages')"  [class.selected]="activePage === 'vintages'" >
-      <ion-icon name="wine-outline" slot="start"></ion-icon>
-      <ion-label>Vintages</ion-label>
-    </ion-item>
-    <div class="submenu" *ngIf="activeSubMenus.includes('vintages')">
-      <ion-item button (click)="viewVintage(vintage)"  *ngFor="let vintage of vintages">
-        <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
-        <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
-      </ion-item>
+  </div>
+  <div class="items">
+    <div class="item" button (click)="openOverview()">
+      <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+      <ion-label>Select vineyard</ion-label>
     </div>
-  </ng-container>
-  <ion-item button (click)="openTab('stats')"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
-    <ion-icon name="stats-chart" slot="start"></ion-icon>
-    <ion-label>Statistics</ion-label>
-  </ion-item>
-</ion-list>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="header">
+    <ion-label>Information</ion-label>
+  </div>
+  <div class="items">
+    <div class="item" (click)="openTab('info')"  [class.selected]="activePage === 'info'">
+      <ion-icon name="information-circle" slot="start"></ion-icon>
+      <ion-label>Info</ion-label>
+    </div>
+    <div class="item"  (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      <ion-label>History</ion-label>
+    </div>
+    <div class="item" (click)="openTab('stats')"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
+      <ion-icon name="stats-chart" slot="start"></ion-icon>
+      <ion-label>Statistics</ion-label>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="header">
+    <ion-label>Vintages</ion-label>
+  </div>
+  <div class="items">
+    <div class="item" (click)="viewVintage(vintage)"  *ngFor="let vintage of vintages" [class.selected]="activeVintage?.id === vintage.id">
+      <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
+      <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
+    </div>
+  </div>
+</div>

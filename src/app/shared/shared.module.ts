@@ -12,6 +12,7 @@ import {FilterActionsBySeasonPipe} from '../pipes/filter-actions-by-season.pipe'
 import {UsermenuComponent} from './components/usermenu/usermenu.component';
 import {LayersComponent} from './components/toolbar/layers/layers.component';
 import {ConfirmComponent} from './components/confirm/confirm.component';
+import {UserbuttonComponent} from './components/userbutton/userbutton.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {ConfirmComponent} from './components/confirm/confirm.component';
         HideOnPlatformDirective,
         FilterActionsBySeasonPipe,
         LayersComponent,
-        ConfirmComponent
+        ConfirmComponent,
+        UserbuttonComponent
     ],
     imports: [
         CommonModule,
@@ -41,7 +43,8 @@ import {ConfirmComponent} from './components/confirm/confirm.component';
         HideOnPlatformDirective,
         FilterActionsBySeasonPipe,
         LayersComponent,
-        ConfirmComponent
+        ConfirmComponent,
+        UserbuttonComponent
     ],
     entryComponents: [
         UsermenuComponent,

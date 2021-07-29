@@ -1,6 +1,5 @@
-<app-header (setSeasons)="setSeasons($event)" [activeSeasons]="(activeSeasons$ | async)"
-            [seasons]="(seasons$ | async)" [title]="activeVineyard ? activeVineyard.name : 'My vineyards'"
-            [menuId]="'menu1'"></app-header>
+<app-header [title]="activeVineyard ? activeVineyard.name : 'My vineyards'"
+            [menuId]="'menu1'" *appHideOnPlatform="['desktop']"></app-header>
 
 <ion-menu side="start" content-id="main-content" *appHideOnPlatform="['desktop']">
     <ion-header>
@@ -21,6 +20,9 @@
 <ion-content id="main-content">
     <div class="container">
         <div class="sidebar" *appHideOnPlatform="['mobile']">
+            <div class="title">
+                <span>{{activeVineyard?.name}}</span>
+            </div>
             <app-menu [seasons]="seasons$ | async" [activeSeasons]="activeSeasons$ | async"
                       [activeVineyard]="activeVineyard" [vintages]="vintages$ | async"
                       (tabUpdated)="openTab($event)"
@@ -29,16 +31,22 @@
             ></app-menu>
         </div>
         <div class="content">
-            <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [varieties]="(varieties$ | async)"
-                      [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
-            ></app-info>
-            <app-actions *ngIf="activePage === 'actions'"
-                         [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
-                         [vineyard]="activeVineyard"></app-actions>
-            <app-statistics *ngIf="activePage === 'stats'" [seasons]="(activeSeasons$ | async)"
-                            [vineyard]="activeVineyard"></app-statistics>
-            <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"
-                          [vintage]="activeVintage"></app-vintages>
+            <div class="header"  *appHideOnPlatform="['mobile']">
+                <app-userbutton slot="end"></app-userbutton>
+            </div>
+            <div class="view">
+                <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [varieties]="(varieties$ | async)"
+                          [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
+                ></app-info>
+                <app-actions *ngIf="activePage === 'actions'"
+                             [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
+                             [vineyard]="activeVineyard"></app-actions>
+                <app-statistics *ngIf="activePage === 'stats'" [seasons]="(activeSeasons$ | async)"
+                                [vineyard]="activeVineyard"></app-statistics>
+                <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"
+                              [vintage]="activeVintage"></app-vintages>
+            </div>
+
         </div>
     </div>
 </ion-content>

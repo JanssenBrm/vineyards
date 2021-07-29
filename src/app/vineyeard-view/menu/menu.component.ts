@@ -55,6 +55,8 @@ export class MenuComponent implements OnInit {
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
+    this.activePage = tab;
+    this.activeVintage = undefined;
     this.tabUpdated.emit(tab);
   }
 
@@ -67,6 +69,8 @@ export class MenuComponent implements OnInit {
   }
 
   viewVintage(vintage: Vintage) {
+    this.activeVintage = vintage;
+    this.activePage = undefined;
     this.openVintage.emit(vintage);
   }
 

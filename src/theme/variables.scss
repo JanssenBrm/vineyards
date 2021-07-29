@@ -1,7 +1,7 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;800&family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;800&family=Rubik&display=swap');
 
 /** Ionic CSS Variables **/
 :root {
@@ -10,6 +10,16 @@
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #f9fbfd;
   --ion-color-primary-contrast-2: #fff;
+  --ion-color-border: #edf2f9;
+  --ion-color-inactive: #818181;
+  --ion-color-dark-tint: #383a3e;
+
+
+  --ion-menu-active-gradient: linear-gradient(to right,#8971ea,#7f72ea,#7574ea,#6a75e9,#5f76e8);
+  --ion-menu-active-shadow:  0 7px 12px 0 rgb(95 118 232 / 21%);
+
+  --ion-header-height: 3.5rem;
+
   --ion-color-primary-shade: #5119e3;
   --ion-color-primary-tint: #5119e3;
 
@@ -18,7 +28,7 @@
   --ion-padding: 1rem;
   --ion-title-font: 'Open Sans';
 
-  --ion-font-family: 'Inter';
+  --ion-font-family: 'Rubik';
 
   --ion-primary-gradient-2: linear-gradient(to bottom, #6a75e9,#5f76e8);
   --ion-primary-gradient: linear-gradient(to bottom,#8971ea,#7f72ea,#7574ea,#6a75e9,#5f76e8);
