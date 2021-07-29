@@ -10,6 +10,7 @@
     <ion-content class="menu-content">
         <app-menu [seasons]="seasons$ | async" [activeSeasons]="activeSeasons$ | async"
                   [activeVineyard]="activeVineyard" [vintages]="vintages$ | async"
+                  [activeVintage]="activeVintage"
                   (tabUpdated)="openTab($event)"
                   (seasonsUpdated)="closeMenu()"
                   (openVintage)="openVintage($event)"
@@ -25,6 +26,7 @@
             </div>
             <app-menu [seasons]="seasons$ | async" [activeSeasons]="activeSeasons$ | async"
                       [activeVineyard]="activeVineyard" [vintages]="vintages$ | async"
+                      [activeVintage]="activeVintage"
                       (tabUpdated)="openTab($event)"
                       (seasonsUpdated)="closeMenu()"
                       (openVintage)="openVintage($event)"

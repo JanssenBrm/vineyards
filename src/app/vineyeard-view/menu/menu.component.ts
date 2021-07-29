@@ -22,6 +22,9 @@ export class MenuComponent implements OnInit {
   activeVineyard: Vineyard;
 
   @Input()
+  activeVintage: Vintage;
+
+  @Input()
   vintages: Vintage[];
 
   @Output()
@@ -35,7 +38,6 @@ export class MenuComponent implements OnInit {
 
   public activePage: 'info' | 'actions' | 'stats' | 'vintages';
   public activeSubMenus: string[] = [];
-  public activeVintage: Vintage;
 
   constructor(
       private seasonService: SeasonsService,
@@ -43,7 +45,11 @@ export class MenuComponent implements OnInit {
       private location: Location,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const path = this.location.path().split('/');
+    this.activePage = path[path.length - 1];
+    console.log(this.activePage);
+  }
 
   setSeasons(years: number[]): void {
     this.seasonService.setActiveSeasons(years);
