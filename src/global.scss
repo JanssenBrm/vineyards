@@ -82,6 +82,19 @@ ion-toolbar {
     }
 }
 
+ion-card {
+    margin: .5rem 0;
+    border: 0;
+    box-shadow: 0 3px 9px 0 rgb(169 184 200 / 15%);
+    border-radius: .25rem;
+}
+
+.content-title {
+    font-size: larger;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
 
 @media only screen and (orientation: portrait) {
     h1, .header {
