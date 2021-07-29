@@ -36,7 +36,7 @@ export class MenuComponent implements OnInit {
   @Output()
   openVintage: EventEmitter<Vintage> = new EventEmitter<Vintage>();
 
-  public activePage: 'info' | 'actions' | 'stats' | 'vintages';
+  public activePage: string;
   public activeSubMenus: string[] = [];
 
   constructor(
