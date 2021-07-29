@@ -91,6 +91,7 @@ export class VintagesComponent implements OnChanges {
 
   private parseVintage(vintage: Vintage) {
     vintage.id ? this.vintageService.updateVintage(this.vineyard, vintage) : this.vintageService.addVintage(this.vineyard, vintage);
+    this.vintage = vintage;
   }
 
   setVintage(vintage: Vintage) {

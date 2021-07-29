@@ -108,7 +108,7 @@ export class AddVintageComponent implements OnInit {
       vintage: {
         id: this.vintage ? this.vintage.id : '',
         ...this.vintageForm.value,
-        year: moment(this.vintageForm.value.year).year(),
+        year: moment(this.vintageForm.value.year.replace('\'', '')).year(),
         cover: files !== undefined && files.length > 0 ? files[0] : 'assets/images/vintage.jpg'
       }});
   }
