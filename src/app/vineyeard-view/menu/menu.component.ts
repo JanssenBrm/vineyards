@@ -1,9 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SeasonsService} from '../../services/seasons.service';
-import {NavController} from '@ionic/angular';
+import {ModalController, NavController} from '@ionic/angular';
 import {Vineyard} from '../../models/vineyard.model';
 import {Location} from '@angular/common';
 import {Vintage} from '../../models/vintage.model';
+import {AddVintageComponent} from '../add-vintage/add-vintage.component';
+import {VintageService} from '../../services/vintage.service';
 
 @Component({
   selector: 'app-menu',
@@ -43,6 +45,8 @@ export class MenuComponent implements OnInit {
       private seasonService: SeasonsService,
       private navController: NavController,
       private location: Location,
+      private modalController: ModalController,
+      public vintageService: VintageService,
   ) { }
 
   ngOnInit() {
@@ -72,6 +76,25 @@ export class MenuComponent implements OnInit {
     } else {
       this.activeSubMenus.push(menu);
     }
+  }
+
+  async openAddVintageModal() {
+    const modal = await this.modalController.create({
+      component: AddVintageComponent,
+      componentProps: {
+        vineyard: this.activeVineyard,
+      }
+    });
+    modal.present();
+
+    const data = await modal.onWillDismiss();
+    if (data.data.vintage) {
+      this.parseVintage(data.data.vintage);
+    }
+  }
+
+  private parseVintage(vintage: Vintage) {
+     this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   viewVintage(vintage: Vintage) {

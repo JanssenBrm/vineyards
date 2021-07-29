@@ -47,5 +47,8 @@
       <ion-img class="icon" [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"  slot="start"></ion-img>
       <ion-label>{{vintage.year}} - {{vintage.name}}</ion-label>
     </div>
+    <div class="item action">
+      <ion-button (click)="openAddVintageModal()" fill="clear"><ion-icon name="add-outline"></ion-icon>Add vintage</ion-button>
+    </div>
   </div>
 </div>

@@ -46,6 +46,12 @@
       padding: .75rem 1rem;
       line-height: 1.5;
 
+      &.action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       &.selected {
         color: var(--ion-color-primary-contrast-2) !important;
         background: var(--ion-menu-active-gradient);
