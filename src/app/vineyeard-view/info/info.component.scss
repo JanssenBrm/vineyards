@@ -2,22 +2,42 @@
   width: 100%;
 }
 
-.row {
+#vineyard-map {
+    height: 15rem;
+  width: 100%;
+}
+
+
+  ion-grid {
+    margin: 0;
+  }
+
+  ion-card {
+    height: 100%
+  }
+
+  ion-card-title {
+    font-size: medium;
+    font-weight: bold;
+  }
+
+  .trow {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap-reverse;
-    min-height: 15rem;
+    align-items: flex-start;
+    margin: .5rem 0;
   }
-  .col {
+
+  .tcol {
     display: flex;
     flex-direction: column;
-    padding: .5rem;
-    flex: 1;
+  }
 
-    &.large {
-      flex: 3;
-    }
+  .theader {
+    color: var(--ion-color-inactive);
+    font-weight: bold;
+    width: 7.5rem;
+    text-align: left;
   }
 
 

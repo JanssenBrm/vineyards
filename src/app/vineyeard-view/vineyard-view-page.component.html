@@ -36,7 +36,7 @@
             <div class="header"  *appHideOnPlatform="['mobile']">
                 <app-userbutton slot="end"></app-userbutton>
             </div>
-            <div class="view">
+            <div class="view" [class.mobile]="isMobile()">
                 <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [varieties]="(varieties$ | async)"
                           [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
                 ></app-info>

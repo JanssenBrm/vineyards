@@ -44,6 +44,10 @@
   .view {
     flex: 1;
     padding: 1rem 1.5rem;
+
+    &.mobile {
+    padding: .5rem;
+  }
   }
 
   .nav {
