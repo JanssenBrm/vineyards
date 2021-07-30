@@ -96,9 +96,11 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
-    if (tab !== this.activePage && tab !== 'vintages') {
+    if (tab !== this.activePage) {
       this.activePage = tab;
-      this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
+      if (tab !== 'vintages') {
+        this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
+      }
     }
     this.closeMenu();
   }
