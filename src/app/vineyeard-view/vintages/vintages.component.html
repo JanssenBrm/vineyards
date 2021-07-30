@@ -15,7 +15,7 @@
             <div class="text">
                 <div class="variety">
                         <img class="icon"
-                             [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"/>{{getVarieties(vintage)}}
+                             [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"/>{{varietyService.getVintageVarietiesLabel(vintage)}}
                 </div>
                 <div class="title">{{vintage.name}}<span class="year">{{vintage.year}}</span></div>
                 <div class="subtitle">

@@ -8,6 +8,7 @@ import {Action} from '../models/action.model';
 import {Variety} from '../models/variety.model';
 import {User} from 'firebase';
 import {AuthService} from './auth.service';
+import {Vintage} from '../models/vintage.model';
 export const VARIETY_COLLECTION = 'varieties';
 
 @Injectable({
@@ -72,5 +73,12 @@ export class VarietyService {
 
   getVarietiesLabel(action: Action): string {
     return this.getVariety(action.variety).map((v: Variety) => v.name).join(', ');
+  }
+
+
+  getVintageVarietiesLabel(vintage: Vintage): string {
+    return vintage.varieties
+        .map((v: string) => this.getVarietyByID(v).name)
+        .join(',');
   }
 }

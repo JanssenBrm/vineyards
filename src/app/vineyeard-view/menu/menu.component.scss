@@ -62,6 +62,15 @@
         cursor: pointer;
         color: var(--ion-color-dark-tint);
       }
+
+      ion-label {
+        display: flex;
+        flex-direction: column;
+        .vintage-variety {
+          font-size: x-small;
+        }
+      }
+
     }
 
   }

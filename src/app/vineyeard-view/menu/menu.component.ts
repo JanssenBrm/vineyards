@@ -6,6 +6,7 @@ import {Location} from '@angular/common';
 import {Vintage} from '../../models/vintage.model';
 import {AddVintageComponent} from '../add-vintage/add-vintage.component';
 import {VintageService} from '../../services/vintage.service';
+import {VarietyService} from '../../services/variety.service';
 
 @Component({
   selector: 'app-menu',
@@ -47,6 +48,7 @@ export class MenuComponent implements OnInit {
       private location: Location,
       private modalController: ModalController,
       public vintageService: VintageService,
+      public varietyService: VarietyService
   ) { }
 
   ngOnInit() {
