@@ -20,3 +20,14 @@
         height: 95%;
     }
 }
+
+.content-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    ion-select {
+        font-weight: normal;
+        font-size: smaller;
+    }
+}

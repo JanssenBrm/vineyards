@@ -44,7 +44,7 @@
                              [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
                              [vineyard]="activeVineyard"></app-actions>
                 <app-statistics *ngIf="activePage === 'stats'" [seasons]="(activeSeasons$ | async)"
-                                [vineyard]="activeVineyard"></app-statistics>
+                                [vineyard]="activeVineyard" [actions]="(actions$ | async)" [varieties]="(varieties$ | async)"></app-statistics>
                 <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"
                               [vintage]="activeVintage"></app-vintages>
             </div>

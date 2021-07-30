@@ -25,6 +25,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
     seasons: number[];
 
+    @Input()
+    actions: Action[];
+
+    @Input()
+    varieties: Variety[];
+
     @ViewChild('content', {static: false})
     content: ElementRef;
 
@@ -41,7 +47,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if ((changes.vineyard) || (changes.seasons)) {
             if (this.vineyard) {
-                this.activeVarieties = this.vineyard.varieties.map((v: Variety) => v.id);
+                this.activeVarieties = this.varieties.map((v: Variety) => v.id);
                 this.getStats();
             }
         }
@@ -69,9 +75,9 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 this._chart.series.forEach(s => s.remove(false));
             } else {
                 this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
-                [this.getActionAxis(), ...this.getMeteoAxis(), ...this.getAgriAxis()].forEach((a: any) => this._chart.addAxis(a));
+                [this.getActionAxis()/* ...this.getMeteoAxis(), ...this.getAgriAxis()*/].forEach((a: any) => this._chart.addAxis(a));
             }
-            [...this.getMeteoTimelines(), ...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+            //[(...this.getMeteoTimelines),...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
             this.updateActionStats();
         }
     }
@@ -134,7 +140,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getActionTimelines(): any[] {
-        return Object.keys(ActionType).map((a: string) => ({
+        const result = Object.keys(ActionType).map((a: string) => ({
             name: `${a}`,
             type: 'scatter',
             yAxis: 'actions',
@@ -146,7 +152,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 lineWidth: 2,
                 lineColor: '#FFFFFF'
             },
-            data: this.vineyardService.getActions(this.vineyard, [ActionType[a]])
+            data: this.actions
+                .filter((action: Action) => action.type === ActionType[a])
                 .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 && this.activeVarieties.filter(v => action.variety.indexOf(v) >= 0).length > 0)
                 .map((action: Action) => ({
                     label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.description}`,
@@ -154,6 +161,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                     y: new Date(action.date).getFullYear()
                 }))
         }));
+        return result;
     }
 
     getMeteoTimelines(): any[] {
