@@ -1,9 +1,14 @@
-<div class="content-title">History</div>
+<div class="content-title">
+  <span>History</span>
+  <ion-select multiple="true" [(ngModel)]="activeVarieties" *ngIf="vineyard">
+    <ion-select-option *ngFor="let variety of varieties" [value]="variety.id">{{variety.name}}</ion-select-option>
+  </ion-select>
+</div>
 <div class="filters">
   <ion-badge [style.backgroundColor]="getActionTypeColor(type)" *ngFor="let type of actionTypes" (click)="toggleActionType(type)">{{type}}</ion-badge>
 </div>
 <div class="list">
-  <ion-card  *ngFor="let activity of (actions) | filterActionsByTypes: activeTypes">
+  <ion-card  *ngFor="let activity of (actions) | filterActionsByTypes: activeTypes | filterActionsByVarieties: activeVarieties">
     <ion-card-header >
       <div class="text">
         <ion-card-title [class.mobile]="utilService.isMobile()">

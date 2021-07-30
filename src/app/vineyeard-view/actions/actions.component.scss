@@ -62,6 +62,18 @@ ion-card-header {
   }
 }
 
+.content-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ion-select {
+    font-weight: normal;
+    font-size: smaller;
+  }
+}
+
+
 .files {
   margin-top: 1rem;
   display: flex;

@@ -30,6 +30,7 @@ import {FilterActionsByTypesPipe} from '../pipes/filter-actions-by-types.pipe';
 import {WeatherComponent} from './weather/weather.component';
 import {WarningsComponent} from './warnings/warnings.component';
 import {MenuComponent} from './menu/menu.component';
+import {FilterActionsByVarietiesPipe} from '../pipes/filter-actions-by-varieties.pipe';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -70,6 +71,7 @@ theme(Highcharts);
         FilterNotesByTypesPipe,
         FilterVarietiesBySeasonPipe,
         FilterActionsByTypesPipe,
+        FilterActionsByVarietiesPipe,
         WeatherComponent,
         WarningsComponent,
         MenuComponent

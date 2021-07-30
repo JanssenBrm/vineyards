@@ -28,9 +28,13 @@ export class ActionsComponent implements OnInit, OnChanges {
   @Input()
   actions: Action[];
 
+  @Input()
+  varieties: Variety[];
+
   ACTIONTYPES = ActionType;
   actionTypes = Object.keys(ActionType);
   activeTypes: string[] = Object.keys(ActionType);
+  activeVarieties: string[];
 
   constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
               private router: Router,  private modalController: ModalController,
@@ -39,7 +43,9 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   ngOnInit() {}
 
-  ngOnChanges(changes: SimpleChanges) {}
+  ngOnChanges(changes: SimpleChanges) {
+    this.activeVarieties = this.varieties.map((v: Variety) => v.id);
+  }
 
   getImage(type: string): string {
     return `/assets/icon/${type}.png`;
