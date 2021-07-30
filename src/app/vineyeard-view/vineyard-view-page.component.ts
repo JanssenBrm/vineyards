@@ -77,6 +77,14 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
         this.varietyService.getVarieties(this.activeVineyard);
       }
     });
+
+    this.vintageService.getVintageListener().pipe(
+        takeUntil(this._destroy)
+    ).subscribe((vintages: Vintage[]) => {
+      if (this.activePage === 'vintages' && this.activeRoute.snapshot.params.subId) {
+        this.activeVintage = vintages.find((v: Vintage) => v.id === this.activeRoute.snapshot.params.subId);
+      }
+    });
     this.activeSeasons$.pipe(
         takeUntil(this._destroy)
     ).subscribe((seasons: number[]) => this.activeSeasons = seasons);
@@ -88,7 +96,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
-    if (tab !== this.activePage) {
+    if (tab !== this.activePage && tab !== 'vintages') {
       this.activePage = tab;
       this.location.go(`/vineyard/view/${this.activeVineyard.id}/${tab}`);
     }
@@ -137,6 +145,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   openVintage(vintage: Vintage) {
     this.activeVintage = vintage;
     this.openTab('vintages');
+    this.location.go(`/vineyard/view/${this.activeVineyard.id}/vintages/${vintage.id}`);
   }
 
 }

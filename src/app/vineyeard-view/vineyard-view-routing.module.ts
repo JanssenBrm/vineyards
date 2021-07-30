@@ -8,7 +8,11 @@ const routes: Routes = [
   {
     path: ':id/:tab',
     component: VineyardViewPage
-  }
+  },
+  {
+    path: ':id/:tab/:subId',
+    component: VineyardViewPage
+  },
 ];
 
 @NgModule({
