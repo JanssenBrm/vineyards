@@ -46,7 +46,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
   private _destroy: Subject<boolean>;
   public vintages$: BehaviorSubject<Vintage[]> = null;
 
-  public activePage: 'info' | 'actions' | 'stats' | 'vintages';
+  public activePage: 'info' | 'actions' | 'stats' | 'vintages' | 'notes';
 
   public activeVintage: Vintage;
 
@@ -98,7 +98,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.closeMenu();
   }
 
-  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
+  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages' | 'notes'): void {
     if (tab !== this.activePage) {
       this.activePage = tab;
       if (tab !== 'vintages') {
