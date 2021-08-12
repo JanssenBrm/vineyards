@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add note</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="noteForm">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label position="stacked">Title</ion-label>
+        <ion-input type="text" formControlName="title" ></ion-input>
+      </ion-item>
+      <ion-item class="description">
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea formControlName="description" autoGrow="true"></ion-textarea>
+      </ion-item>
+
+    </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+            slot="end"
+            color="primary"
+            [disabled]="!noteForm.valid"
+            (click)="save()"
+    >Save</ion-button
+    >
+    <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
+  </ion-toolbar>
+</ion-footer>

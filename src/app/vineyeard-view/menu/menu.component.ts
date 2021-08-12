@@ -34,7 +34,7 @@ export class MenuComponent implements OnInit {
   seasonsUpdated: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   @Output()
-  tabUpdated: EventEmitter<'info' | 'actions' | 'stats' | 'vintages'> = new EventEmitter<'info' | 'actions' | 'stats' | 'vintages'>();
+  tabUpdated: EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'> = new EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'>();
 
   @Output()
   openVintage: EventEmitter<Vintage> = new EventEmitter<Vintage>();
@@ -66,7 +66,7 @@ export class MenuComponent implements OnInit {
     this.navController.navigateBack('/');
   }
 
-  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages'): void {
+  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages' | 'notes'): void {
     this.activePage = tab;
     this.activeVintage = undefined;
     this.tabUpdated.emit(tab);

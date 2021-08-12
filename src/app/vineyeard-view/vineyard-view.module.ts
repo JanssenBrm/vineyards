@@ -31,6 +31,8 @@ import {WeatherComponent} from './weather/weather.component';
 import {WarningsComponent} from './warnings/warnings.component';
 import {MenuComponent} from './menu/menu.component';
 import {FilterActionsByVarietiesPipe} from '../pipes/filter-actions-by-varieties.pipe';
+import {NotebookComponent} from './notebook/notebook.component';
+import {AddNoteNotebookComponent} from './add-note-notebook/add-note-notebook.component';
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -74,7 +76,9 @@ theme(Highcharts);
         FilterActionsByVarietiesPipe,
         WeatherComponent,
         WarningsComponent,
-        MenuComponent
+        MenuComponent,
+        NotebookComponent,
+        AddNoteNotebookComponent
     ],
     providers: [
         PhotoViewer,
@@ -84,7 +88,8 @@ theme(Highcharts);
     entryComponents: [
         AddActionComponent,
         AddVintageComponent,
-        AddNoteComponent
+        AddNoteComponent,
+        AddNoteNotebookComponent
     ]
 })
 export class VineyardViewPageModule {

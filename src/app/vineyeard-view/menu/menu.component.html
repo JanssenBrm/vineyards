@@ -27,6 +27,10 @@
       <ion-icon name="information-circle" slot="start"></ion-icon>
       <ion-label>Info</ion-label>
     </div>
+    <div class="item" (click)="openTab('notes')"   [class.selected]="activePage === 'notes'">
+      <ion-icon name="create" slot="start"></ion-icon>
+      <ion-label>Notes</ion-label>
+    </div>
     <div class="item"  (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
       <ion-icon name="calendar-outline" slot="start"></ion-icon>
       <ion-label>History</ion-label>
