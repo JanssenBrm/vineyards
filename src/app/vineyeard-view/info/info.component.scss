@@ -1,0 +1,139 @@
+:host {
+  width: 100%;
+}
+
+#vineyard-map {
+  height: 15rem;
+  width: 100%;
+}
+
+
+ion-grid {
+  margin: 0;
+}
+
+ion-card {
+  height: 100%
+}
+
+ion-card-title {
+  font-size: medium;
+  font-weight: bold;
+}
+
+.trow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: .5rem 0;
+}
+
+.tcol {
+  display: flex;
+  flex-direction: column;
+}
+
+.theader {
+  color: var(--ion-color-inactive);
+  font-weight: bold;
+  width: 7.5rem;
+  text-align: left;
+}
+
+
+table {
+  tr {
+    th, td {
+      padding-right: 1rem;
+      text-align: left;
+      padding-bottom: 1rem;
+
+      ul {
+        li {
+          margin-bottom: .5rem;
+        }
+      }
+    }
+    &.indent{
+      p {
+        padding-left: 1rem;
+      }
+    }
+
+    td {
+      span {
+        width: 100%;
+      }
+    }
+  }
+}
+
+
+#vineyard-map {
+  flex: 1;
+}
+
+.actions-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 45%;
+    margin-right: 5%;
+    margin-bottom: 1rem;
+
+    &.mobile {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .action {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+
+      .icon {
+        img {
+          height: 1rem;
+        }
+        margin-right: 1rem;
+      }
+      .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        .title{
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          ion-badge {
+            margin-left: .5rem;
+          }
+        }
+
+        .description{
+          font-size: smaller;
+        }
+
+        .variety {
+          font-style: italic;
+          color: gray;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (orientation: portrait) {
+  #vineyard-map {
+    width: 96vw;
+    height: 15rem;
+  }
+}
