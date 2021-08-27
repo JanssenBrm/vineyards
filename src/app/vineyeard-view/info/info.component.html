@@ -29,13 +29,14 @@
                             Varieties
                         </div>
                         <div>
-                            <span *ngFor="let variety of varieties">{{variety.name}} - {{variety.rows * variety.plantsPerRow}} plants<br/></span>
+                            <span *ngFor="let variety of varieties">{{variety.name}}
+                                - {{variety.rows * variety.plantsPerRow}} plants<br/></span>
                         </div>
                     </div>
                 </ion-card-content>
             </ion-card>
         </ion-col>
-        <ion-col  class="ion-align-self-stretch" size="12" size-sm="3">
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="3">
             <ion-card>
                 <ion-card-header>
                     <ion-card-title>Warnings</ion-card-title>
@@ -45,7 +46,7 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
-        <ion-col  class="ion-align-self-stretch" size="12" size-sm="6">
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="6">
             <ion-card>
                 <ion-card-header>
                     <ion-card-title>Weather</ion-card-title>
@@ -55,32 +56,64 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
-        <ion-col  class="ion-align-self-stretch" size="12" size-sm="6">
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="6">
             <ion-card>
                 <ion-card-header>
                     <ion-card-title>History</ion-card-title>
                 </ion-card-header>
                 <ion-card-content>
-                    <div  *ngIf="vineyard" class="actions-container">
-                        <div class="actions" *ngFor="let type of actions | activeType" [class.mobile]="utilService.isMobile()">
-                            <div class="action" *ngFor="let action of (actions | lastAction:[type])">
-                                <!--<div class="icon">
-                                  <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
-                                </div>-->
-                                <div class="text">
+                    <div *ngIf="vineyard" class="actions-container">
+                        <div *ngFor="let action of actions.slice(0, 5)" [class.mobile]="utilService.isMobile()"
+                             class="action">
+                            <!--<div class="icon">
+                              <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
+                            </div>-->
+                            <div class="text">
                 <span class="title">
                   {{action.date | date: "dd MMMM yyyy"}}
-                    <ion-badge [style.backgroundColor]="actionService.getActionTypeColor(actionService.findActionType(action.type))">{{actionService.findActionType(action.type)}}</ion-badge>
+                    <ion-badge
+                            [style.backgroundColor]="actionService.getActionTypeColor(actionService.findActionType(action.type))">{{actionService.findActionType(action.type)}}</ion-badge>
                 </span>
-                                    <span class="type"></span>
-                                    <span class="description">{{action.description.length > 50 ? action.description.substr(0, 50) + ' ...' : action.description}}</span>
-                                    <span class="description" *ngIf="action.bbch">{{utilService.getBBCHDescription(action.bbch)}}</span>
-                                    <span class="description" *ngIf="action.type === 'brix'">{{action.value}} ({{action.value | brixToAlcohol}}%)</span>
-                                    <span class="description" *ngIf="action.type === 'planting'">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}} plants</span>
-                                    <span class="description variety" *ngIf="action.variety">
+                                <span class="type"></span>
+                                <span class="description">{{action.description.length > 50 ? action.description.substr(0, 50) + ' ...' : action.description}}</span>
+                                <span *ngIf="action.bbch"
+                                      class="description">{{utilService.getBBCHDescription(action.bbch)}}</span>
+                                <span *ngIf="action.type === 'brix'" class="description">{{action.value}}
+                                    ({{action.value | brixToAlcohol}}%)</span>
+                                <span *ngIf="action.type === 'planting'"
+                                      class="description">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}}
+                                    plants</span>
+                                <span *ngIf="action.variety" class="description variety">
                     {{varietyService.getVarietiesLabel(action)}}
                 </span>
-                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="vineyard" class="actions-container historic">
+                        <span class="subtext">Last year</span>
+                        <div *ngFor="let action of historicActions.slice(0, 5)" [class.mobile]="utilService.isMobile()"
+                             class="action">
+                            <!--<div class="icon">
+                              <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
+                            </div>-->
+                            <div class="text">
+                <span class="title">
+                  {{action.date | date: "dd MMMM yyyy"}}
+                    <ion-badge
+                            [style.backgroundColor]="actionService.getActionTypeColor(actionService.findActionType(action.type))">{{actionService.findActionType(action.type)}}</ion-badge>
+                </span>
+                                <span class="type"></span>
+                                <span class="description">{{action.description.length > 50 ? action.description.substr(0, 50) + ' ...' : action.description}}</span>
+                                <span *ngIf="action.bbch"
+                                      class="description">{{utilService.getBBCHDescription(action.bbch)}}</span>
+                                <span *ngIf="action.type === 'brix'" class="description">{{action.value}}
+                                    ({{action.value | brixToAlcohol}}%)</span>
+                                <span *ngIf="action.type === 'planting'"
+                                      class="description">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}}
+                                    plants</span>
+                                <span *ngIf="action.variety" class="description variety">
+                    {{varietyService.getVarietiesLabel(action)}}
+                </span>
                             </div>
                         </div>
                     </div>

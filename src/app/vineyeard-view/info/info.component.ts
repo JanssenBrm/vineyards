@@ -18,6 +18,7 @@ import { ObjectUnsubscribedError } from 'rxjs';
 import * as uuid from 'uuid';
 import {VarietyService} from '../../services/variety.service';
 import {ActionService} from '../../services/action.service';
+import * as moment from "moment";
 
 @Component({
     selector: 'app-info',
@@ -40,6 +41,8 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
 
     private actionTypes: string[] = Object.keys(ActionType);
 
+    public historicActions: Action[];
+
     constructor(public utilService: UtilService, public vineyardService: VineyardService, private platform: Platform,
                 public varietyService: VarietyService, public actionService: ActionService) { }
 
@@ -49,6 +52,16 @@ export class InfoComponent implements OnInit, OnChanges, AfterViewInit {
         if (changes.vineyard && this.vineyard) {
             this._createMap();
         }
+        if (changes.actions) {
+            this.historicActions = this.setHistoricActions(this.actions);
+        }
+    }
+
+    setHistoricActions(actions: Action[]): Action[] {
+        const count = 1;
+        const unit = 'weeks';
+        const range = [moment().add(-count, unit).add(-1, 'year'), moment().add(count, unit).add(-1, 'year')];
+        return actions.filter((a: Action) => moment(a.date).isSameOrAfter(range[0]) && moment(a.date).isSameOrBefore(range[1]));
     }
 
 

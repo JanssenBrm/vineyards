@@ -54,7 +54,8 @@ table {
         }
       }
     }
-    &.indent{
+
+    &.indent {
       p {
         padding-left: 1rem;
       }
@@ -77,9 +78,21 @@ table {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
 
-  .actions {
+  &.historic {
+    border-top: 1px solid var(--ion-color-border);
+    padding-top: .5rem;
+  }
+
+  .subtext {
+    font-size: x-small;
+    color: var(--ion-color-inactive);
+    width: 100%;
+  }
+
+
+  .action {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -92,42 +105,40 @@ table {
       flex-wrap: wrap;
     }
 
-    .action {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
 
-
-      .icon {
-        img {
-          height: 1rem;
-        }
-        margin-right: 1rem;
+    .icon {
+      img {
+        height: 1rem;
       }
-      .text {
+
+      margin-right: 1rem;
+    }
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      .title {
+        font-weight: bold;
         display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
+        align-items: center;
 
-        .title{
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-          ion-badge {
-            margin-left: .5rem;
-          }
+        ion-badge {
+          margin-left: .5rem;
         }
+      }
 
-        .description{
-          font-size: smaller;
-        }
+      .description {
+        font-size: smaller;
+      }
 
-        .variety {
-          font-style: italic;
-          color: gray;
-        }
+      .variety {
+        font-style: italic;
+        color: gray;
       }
     }
+
   }
 }
 
