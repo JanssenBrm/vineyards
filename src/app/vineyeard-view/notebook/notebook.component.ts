@@ -19,6 +19,7 @@ export class NotebookComponent implements OnInit {
   vineyard: Vineyard;
 
   public notes$: BehaviorSubject<VineyardNote[]> = null;
+  public filter: string = '';
 
   constructor(private modalController: ModalController, private notesService: VineyardNotesService) { }
 
@@ -51,6 +52,10 @@ export class NotebookComponent implements OnInit {
 
   private parseNote(note: VineyardNote) {
     note.id ?  this.notesService.updateNote(this.vineyard, note) : this.notesService.addNote(this.vineyard, note);
+  }
+
+  setTagFilter(filter: string) {
+    this.filter = `tag:${filter}`;
   }
 
 }

@@ -1,7 +1,15 @@
-<div class="content-title">Notes</div>
+<div class="content-title">
+  Notes
+</div>
+<div class="search">
+  <ion-item >
+    <ion-label><ion-icon name="search-outline"></ion-icon></ion-label>
+    <ion-input type="text" [(ngModel)]="filter"></ion-input>
+  </ion-item>
+</div>
 <ion-grid>
   <ion-row>
-    <ion-col *ngFor="let note of (notes$ | async)"  size="12" size-sm="4">
+    <ion-col *ngFor="let note of (notes$ | async | filterNotesByFilter:filter) "  size="12" size-sm="4">
       <ion-card>
         <ion-card-header>
           <ion-card-title>
@@ -12,7 +20,7 @@
           </ion-card-title>
           <ion-card-subtitle>{{note.date}}<br />
             <div class="tags" *ngIf="note.tags && note.tags.length > 0">
-              <ion-chip *ngFor="let tag of note.tags" color="primary">
+              <ion-chip *ngFor="let tag of note.tags" color="primary" (click)="setTagFilter(tag)">
                 <ion-label>{{tag}}</ion-label>
               </ion-chip>
             </div>

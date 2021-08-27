@@ -33,6 +33,7 @@ import {MenuComponent} from './menu/menu.component';
 import {FilterActionsByVarietiesPipe} from '../pipes/filter-actions-by-varieties.pipe';
 import {NotebookComponent} from './notebook/notebook.component';
 import {AddNoteNotebookComponent} from './add-note-notebook/add-note-notebook.component';
+import {FilterNotesByFilterPipe} from "../pipes/filter-notes-by-filter.pipe";
 
 declare var require: any;
 const Boost = require('highcharts/modules/boost');
@@ -78,12 +79,14 @@ theme(Highcharts);
         WarningsComponent,
         MenuComponent,
         NotebookComponent,
-        AddNoteNotebookComponent
+        AddNoteNotebookComponent,
+        FilterNotesByFilterPipe
     ],
     providers: [
         PhotoViewer,
         TitleCasePipe,
-        UploadService
+        UploadService,
+        FilterNotesByFilterPipe
     ],
     entryComponents: [
         AddActionComponent,
