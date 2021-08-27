@@ -22,8 +22,13 @@ export class SeasonsService {
                 map((actions: Action[]) => [...new Set(actions.map((a: Action) => new Date(a.date).getFullYear()))]),
                 tap((years: number[]) => {
                     if (years.length > 0 && this._activeSeasons.getValue().length === 0) {
-                        this.setActiveSeasons([years[0]]);
+                        const seasons = [years[0]];
+                        if (years.length > 1) {
+                            seasons.push(years[1]);
+                        }
+                        this.setActiveSeasons(seasons);
                     }
+
                     if (years.length > 0 && this._seasons.getValue().length === 0) {
                         this._seasons.next(years);
                     }
