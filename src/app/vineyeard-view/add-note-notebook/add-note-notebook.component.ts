@@ -18,6 +18,8 @@ export class AddNoteNotebookComponent implements OnInit {
     @Input()
     note: VineyardNote;
 
+    public tags: string[];
+
     public noteForm: FormGroup;
     private _loading: HTMLIonLoadingElement;
 
@@ -30,11 +32,13 @@ export class AddNoteNotebookComponent implements OnInit {
 
     ngOnInit() {
         if (this.note) {
+            this.tags = this.note.tags || [];
             this.noteForm = new FormGroup({
                 title: new FormControl(this.note.title),
                 description: new FormControl(this.note.description, [Validators.required]),
             });
         } else {
+            this.tags = [];
             this.noteForm = new FormGroup({
                 title: new FormControl('', [Validators.required]),
                 description: new FormControl('', [Validators.required]),
@@ -52,7 +56,8 @@ export class AddNoteNotebookComponent implements OnInit {
             note: {
                 id: this.note ? this.note.id : '',
                 ...this.noteForm.value,
-                date: new Date().toDateString()
+                date: new Date().toDateString(),
+                tags: this.tags
             }
         });
     }
@@ -63,5 +68,17 @@ export class AddNoteNotebookComponent implements OnInit {
         });
     }
 
+    addTag(target: HTMLInputElement): void {
+        console.log(target.value);
+        const tag = target.value.toLocaleLowerCase();
+        if (!this.tags.includes(tag)) {
+            this.tags.push(tag);
+        }
+        target.value = '';
+    }
+
+    removeTag(tag: string): void {
+        this.tags = this.tags.filter((t: string) => t !== tag);
+    }
 
 }

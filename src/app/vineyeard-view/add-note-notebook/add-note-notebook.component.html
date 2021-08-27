@@ -14,6 +14,16 @@
         <ion-label position="stacked">Description</ion-label>
         <ion-textarea formControlName="description" autoGrow="true"></ion-textarea>
       </ion-item>
+      <ion-item >
+          <ion-label position="stacked">Tag</ion-label>
+          <ion-input type="text" (change)="addTag($event.target)" ></ion-input>
+      </ion-item>
+      <div class="tags">
+        <ion-chip *ngFor="let tag of tags" color="primary" (click)="removeTag(tag)">
+          <ion-label>{{tag}}</ion-label>
+          <ion-icon name="close-outline" ></ion-icon>
+        </ion-chip>
+      </div>
 
     </ion-list>
   </form>

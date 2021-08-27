@@ -8,8 +8,9 @@ form {
     display: flex;
     flex-direction: column;
 
-    .description {
-      flex: 1
+    .tags {
+      flex: 1;
+      padding: .5rem;
     }
   }
 }
