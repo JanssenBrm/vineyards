@@ -14,7 +14,8 @@ import {Variety} from '../../models/variety.model';
 
 enum StatTypes {
     ACTIONS = 'Actions',
-    METEO = 'Meteo'
+    METEO = 'Meteo',
+    DGD = 'Growing Days'
 }
 
 @Component({
@@ -88,7 +89,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     setAxis() {
-        const axes = [...this.getMeteoAxis(), this.getActionAxis()];
+        const axes = [...this.getMeteoAxis(), this.getActionAxis(), ...this.getDgdAxis()];
         axes.forEach((a: any) => this._chart.addAxis(a));
     }
 
@@ -101,6 +102,10 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
 
         if (this.activeStats.includes(StatTypes.METEO)) {
            series.push(...this.getMeteoTimelines());
+        }
+
+        if (this.activeStats.includes(StatTypes.DGD)) {
+            series.push(...this.getDgdTimelines());
         }
         series.forEach((s: any) => this._chart.addSeries(s));
 
@@ -155,7 +160,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             }];
     }
 
-    getAgriAxis(): any[] {
+    getDgdAxis(): any[] {
         return [
             {
                 id: 'degreedays',
@@ -239,36 +244,41 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             }])));
     }
 
-    /*
-    getAgriTimelines(): any[] {
+
+    getDgdTimelines(): any[] {
         const baseTemp = 10.0;
-        const years = this.vineyardService.getMeteoYears(this.vineyard);
+        const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
+        const years = stats.map((s: MeteoStatEntry) => moment(s.date).year())
+            .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
         let degreeDaysSum = 0;
-        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
-            id: `Degree days ${y}`,
-            name: `Degree days ${y}`,
-            type: 'spline',
-            yAxis: 'degreedays',
-            color: 'darkred',
-            showInNavigator: true,
-            tooltip: {
-                formatter(point) {
-                    return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(2)} GGD`;
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => {
+            degreeDaysSum = 0;
+            return [{
+                id: `Degree days ${y}`,
+                name: `Degree days ${y}`,
+                type: 'spline',
+                yAxis: 'degreedays',
+                color: 'darkred',
+                showInNavigator: true,
+                tooltip: {
+                    formatter(point) {
+                        return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(2)} GGD`;
+                    },
                 },
-            },
-            data: this.vineyardService.getMeteoByYears(this.vineyard, [y]).filter((e: MeteoStatEntry) => e.temp >= baseTemp).map((e: MeteoStatEntry, idx: number, array: MeteoStatEntry[]) => ({
-                date: e.date,
-                value: Math.ceil((e.temp - baseTemp) * 100) / 100
-            })).map((e: { date: string, value: number }, idx: number, results: ({ date: string, value: number })[]) => {
-                degreeDaysSum += e.value;
-                return {
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                    y: degreeDaysSum
-                };
-            })
-        }])));
+                data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                    .filter((e: MeteoStatEntry) => e.tavg >= baseTemp).map((e: MeteoStatEntry, idx: number, array: MeteoStatEntry[]) => ({
+                        date: e.date,
+                        value: Math.ceil((e.tavg - baseTemp) * 100) / 100
+                    })).map((e: { date: string, value: number }, idx: number, results: ({ date: string, value: number })[]) => {
+                        degreeDaysSum += e.value;
+                        return {
+                            x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                            y: degreeDaysSum
+                        };
+                    })
+            }];
+        }));
     }
-    */
 
     getNormalizedDate(date: string): number {
         const actDate: Date = new Date(date);
