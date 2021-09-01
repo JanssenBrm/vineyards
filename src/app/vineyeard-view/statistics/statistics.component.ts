@@ -77,12 +77,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
 
     getStats(): void {
         if (this.vineyard) {
-            if (this._chart) {
-                this._chart.series.forEach(s => s.remove(false));
-            } else {
+            if (!this._chart) {
                 this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
                 this.setAxis();
             }
+            this.clearCharts();
+
             this.setGraphData();
         }
     }
@@ -100,12 +100,16 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         if (this.activeStats.includes(StatTypes.METEO)) {
-            series.push(...this.getMeteoTimelines());
+           series.push(...this.getMeteoTimelines());
         }
-        console.log(series);
-        this._chart.series.forEach(s => s.remove(false));
         series.forEach((s: any) => this._chart.addSeries(s));
 
+    }
+
+    clearCharts() {
+        while (this._chart.series.length) {
+            this._chart.series[0].remove();
+        }
     }
 
     updateActionStats() {
@@ -273,7 +277,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     setVarieties() {
-        this.updateActionStats();
+        this.getStats();
     }
 
 }
