@@ -1,56 +1,31 @@
 import * as functions from 'firebase-functions';
-import {getVineyard, getVineyardLocation, saveVineyard} from './services/utils.service';
+import {getUsers, getVineyard, getVineyardActions, getVineyardLocation, getVineyards, saveMeteo} from './services/utils.service';
 import {Vineyard} from './models/vineyard.model';
-import {MeteoStats} from './models/stats.model';
-import {getMeteo, getMeteoDates, updateMeteoStats} from './services/meteo.service';
-import * as cors from 'cors';
+import {getMeteo, getMeteoDates} from './services/meteo.service';
 
 
-const corsHandler = cors({origin: true});
+//exports.updateMeteoStatsHttp = functions.https.onRequest(async (req, res) => _updateMeteoStats());
+exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => _updateMeteoStats());
 
-exports.getVineyards = functions.https.onRequest(async(req, res) => {
-    return corsHandler(req, res, () => {
-        const userId = req.query.userId;
-        if (!userId) {
-            res.status(500).send({ error: 'no userid provided'});
-        } else {
-            res.status(200).send({ vineyards: []});
-        }
-    });
-});
-
-exports.updateTemp = functions.https.onRequest(async(req, res) => {
-    return corsHandler(req, res, () => {
-        const vineyardId = req.query.vineyardId;
-        if (!vineyardId) {
-            res.status(500).send({error: 'no vineyard id provided'});
-        } else {
-            ;
-            getVineyard(vineyardId).then((v: Vineyard) => {
-                let vineyard = v;
+const _updateMeteoStats = async () => {
+    const users: string[] = await getUsers();
+    console.log(`Found ${users.length} users to process`);
+    return users.map(async (uid: string) => {
+        const vineyards: string[] = await getVineyards(uid);
+        console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
+        return vineyards.map(async (id: string) => {
+            try {
+                const v: Vineyard = await getVineyard(uid, id);
                 const location = getVineyardLocation(v);
-                const dates = getMeteoDates(v);
-                console.log("Retrieving dates from " + dates.start + " to " + dates.end);
-                getMeteo(location[1], location[0], dates.start, dates.end)
-                    .then((stats: MeteoStats) => {
-                        vineyard = updateMeteoStats(vineyard, stats);
-                        saveVineyard(vineyardId, vineyard)
-                            .then(() => res.status(200).send(vineyard))
-                            .catch((error) => {
-                                console.error(error);
-                                res.status(500).send({error: 'Something went wrong when saving vineyard'})
-                            })
-
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        res.status(500).send({error: 'Something went wrong when retrieving meteo stats'})
-                    });
-                ;
-            }).catch((error) => {
-                console.error(error);
-                res.status(500).send({error: 'Something went wrong when lookup of vineyard'});
-            });
-        }
+                const actions = await getVineyardActions(uid, id);
+                const dates = getMeteoDates(actions);
+                console.log('Retrieving dates from ' + dates.start + ' to ' + dates.end);
+                const stats = await getMeteo(location[1], location[0], dates.start, dates.end);
+                return await saveMeteo(uid, id, stats);
+            } catch (error) {
+                console.error(`Error processing vineyard ${id} of ${uid}`, error);
+                return undefined;
+            }
+        });
     });
-});
+};

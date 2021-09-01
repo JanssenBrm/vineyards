@@ -1,12 +1,13 @@
 
 export interface Action {
+    id: string;
     type: ActionType;
     date: string;
     description: string;
     bbch?: string;
     variety?: string[];
-    id?: string;
-    files: string[];
+    value?: number;
+    files?: string[];
 }
 
 
@@ -18,4 +19,5 @@ export enum ActionType {
     Damage = 'damage',
     Prune = 'prune',
     Harvest = 'harvest',
+    Brix = 'brix'
 }

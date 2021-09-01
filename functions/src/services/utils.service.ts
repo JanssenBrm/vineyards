@@ -1,28 +1,38 @@
 import {Vineyard} from '../models/vineyard.model';
-import {Action} from '../models/action.model';
 
 import * as admin from 'firebase-admin';
 import * as turf from '@turf/turf';
+import {MeteoStats} from '../models/stats.model';
+import WriteResult = admin.firestore.WriteResult;
+import {Action} from '../models/action.model';
 
 admin.initializeApp();
 export const db = admin.firestore();
 
-export const getVineyard = (id: string): Promise<Vineyard> => {
+export const getUsers = (): Promise<string[]> => {
+    return db.collection('users').listDocuments()
+        .then((docs) =>
+            docs.map((doc) => doc.id));
+};
+
+export const getVineyards = (uid: string): Promise<string[]> => {
+    return db.collection('users').doc(uid).collection('vineyards').listDocuments()
+        .then((vdocs) => vdocs.map((vdoc) => vdoc.id));
+};
+
+export const getVineyard = (uid: string, id: string): Promise<Vineyard> => {
     return new Promise<Vineyard>((resolve, reject) => {
-        db.collection('vineyards').doc(id).get()
+        db.collection('users').doc(uid).collection('vineyards').doc(id).get()
             .then((value) => {
                 const data = value.data();
                 if (!data) {
                     reject('No data defined');
                 } else {
-                    resolve ({
+                    resolve({
                         name: data.name,
                         address: data.address,
-                        varieties: data.varieties,
                         location: JSON.parse(data.location),
-                        actions: data.actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1),
                         id: value.id,
-                        meteo: data.meteo
                     });
                 }
 
@@ -31,20 +41,30 @@ export const getVineyard = (id: string): Promise<Vineyard> => {
     });
 };
 
-export const saveVineyard = (id: string, v:Vineyard): Promise<boolean> => {
-    return new Promise<boolean>((resolve, reject) => {
-        db.collection('vineyards').doc(id).set({
-            ...v,
-            location: JSON.stringify(v.location)
-        })
-            .then((value) => {
-               resolve(true);
-            })
-            .catch((reason: any) => reject(reason));
-    });
+
+export const getVineyardActions = (uid: string, id: string): Promise<Action[]> => {
+    return db.collection('users').doc(uid).collection('vineyards').doc(id).collection('actions').listDocuments()
+            .then((docs) =>
+                Promise.all(docs.map((doc) => doc.get()))
+            )
+        .then((docs) => docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }) as Action))
+        .catch(() => []);
+};
+
+
+export const saveMeteo = (uid: string, id: string, stats: MeteoStats): Promise<WriteResult> => {
+    return db.collection('users').doc(uid)
+        .collection('vineyards')
+        .doc(id)
+        .collection('stats')
+        .doc('meteo')
+        .set(stats)
 };
 
 export const getVineyardLocation = (v: Vineyard): number[] => {
     const center = turf.center(turf.polygon(v.location.coordinates));
     return center.geometry ? center.geometry.coordinates : [];
-}
+};

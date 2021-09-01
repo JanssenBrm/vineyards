@@ -10,12 +10,13 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
     "@angular/fire": "^6.0.0",
     "@turf/turf": "^5.1.6",
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
