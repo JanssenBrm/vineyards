@@ -18,6 +18,14 @@ export interface MeteoStats {
 
 export interface MeteoStatEntry {
     date: string;
-    temp: number;
-    precip: number;
+    tavg: number;
+    tmin: number;
+    tmax: number;
+    prcp: number;
+    snow: number;
+    wdir: number;
+    wspd: number;
+    wpgt: number;
+    pres: number;
+    tsun: number;
 }

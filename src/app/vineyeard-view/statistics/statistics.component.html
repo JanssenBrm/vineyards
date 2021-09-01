@@ -1,5 +1,8 @@
 <div class="content-title">
   <span>Statistics</span>
+  <ion-select multiple="false" [(ngModel)]="activeStats" (ionChange)="getStats()" *ngIf="vineyard">
+    <ion-select-option *ngFor="let stat of stats" [value]="stat">{{stat}}</ion-select-option>
+  </ion-select>
     <ion-select multiple="true" [(ngModel)]="activeVarieties" (ionChange)="setVarieties()" *ngIf="vineyard">
       <ion-select-option *ngFor="let variety of varieties" [value]="variety.id">{{variety.name}}</ion-select-option>
     </ion-select>

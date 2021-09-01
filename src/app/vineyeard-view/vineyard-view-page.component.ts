@@ -15,6 +15,7 @@ import {SeasonsService} from '../services/seasons.service';
 import {Variety} from '../models/variety.model';
 import {AddVintageComponent} from './add-vintage/add-vintage.component';
 import {VineyardNotesService} from '../services/vineyardnotes.service';
+import {StatisticsService} from '../services/statistics.service';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -35,7 +36,8 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
                private actionService: ActionService,
                private seasonService: SeasonsService,
                private modalController: ModalController,
-               private noteService: VineyardNotesService) { }
+               private noteService: VineyardNotesService,
+               private statService: StatisticsService) { }
 
   public seasons$: BehaviorSubject<number[]>;
   public activeSeasons$: BehaviorSubject<number[]>;
@@ -78,6 +80,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
         this.actionService.getActions(this.activeVineyard);
         this.varietyService.getVarieties(this.activeVineyard);
         this.noteService.getNotes(this.activeVineyard);
+        this.statService.getMeteoStats(this.activeVineyard);
       }
     });
 

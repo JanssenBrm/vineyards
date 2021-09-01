@@ -5,12 +5,17 @@ import {STATS_OPTIONS} from './../../conf/statistics.config';
 import {StatisticsService} from './../../services/statistics.service';
 import {VineyardService} from './../../services/vineyard.service';
 import {MeteoStatEntry, Vineyard} from './../../models/vineyard.model';
-import {Component, OnInit, Input, OnChanges, SimpleChanges, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts/highstock';
 import {Action} from 'src/app/models/action.model';
 import {TitleCasePipe} from '@angular/common';
 import * as moment from 'moment';
 import {Variety} from '../../models/variety.model';
+
+enum StatTypes {
+    ACTIONS = 'Actions',
+    METEO = 'Meteo'
+}
 
 @Component({
     selector: 'app-statistics',
@@ -35,11 +40,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     content: ElementRef;
 
     public activeVarieties: string[];
+    public stats = Object.values(StatTypes);
+    public activeStats: StatTypes[] = [StatTypes.ACTIONS];
+    private _chart: Highcharts.Chart;
 
     constructor(private utilService: UtilService, private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) {
     }
-
-    private _chart: Highcharts.Chart;
 
     ngOnInit() {
     }
@@ -75,11 +81,31 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 this._chart.series.forEach(s => s.remove(false));
             } else {
                 this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
-                [this.getActionAxis()/* ...this.getMeteoAxis(), ...this.getAgriAxis()*/].forEach((a: any) => this._chart.addAxis(a));
+                this.setAxis();
             }
-            //[(...this.getMeteoTimelines),...this.getAgriTimelines()].forEach((s: any) => this._chart.addSeries(s));
+            this.setGraphData();
+        }
+    }
+
+    setAxis() {
+        const axes = [...this.getMeteoAxis(), this.getActionAxis()];
+        axes.forEach((a: any) => this._chart.addAxis(a));
+    }
+
+    setGraphData() {
+        const series = [];
+
+        if (this.activeStats.includes(StatTypes.ACTIONS)) {
             this.updateActionStats();
         }
+
+        if (this.activeStats.includes(StatTypes.METEO)) {
+            series.push(...this.getMeteoTimelines());
+        }
+        console.log(series);
+        this._chart.series.forEach(s => s.remove(false));
+        series.forEach((s: any) => this._chart.addSeries(s));
+
     }
 
     updateActionStats() {
@@ -165,7 +191,10 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     getMeteoTimelines(): any[] {
-        const years = this.vineyardService.getMeteoYears(this.vineyard);
+        const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
+        const years = stats.map((s: MeteoStatEntry) => moment(s.date).year())
+            .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
+
         return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
             id: `Temperature ${y}`,
             name: `Temperature ${y}`,
@@ -178,9 +207,11 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                     return `<span style="color:${point.color}">●</span>  <b>Temperature ${y}</b>: ${point.y} °C`;
                 },
             },
-            data: this.vineyardService.getMeteoByYears(this.vineyard, [y]).map((e: MeteoStatEntry) => ({
+            data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                .sort((e1: MeteoStatEntry, e2: MeteoStatEntry) => moment(e1.date).isSameOrBefore(moment(e2.date)) ? -1 : 1)
+                .map((e: MeteoStatEntry) => ({
                 x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                y: e.temp
+                y: e.tavg
             }))
         },
             {
@@ -195,13 +226,16 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                         return `<span style="color:${point.color}">●</span>  <b>Precipitation ${y}</b>: ${point.y.toFixed(2)} mm`;
                     },
                 },
-                data: this.vineyardService.getMeteoByYears(this.vineyard, [y]).map((e: MeteoStatEntry) => ({
+                data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                    .sort((e1: MeteoStatEntry, e2: MeteoStatEntry) => moment(e1.date).isSameOrBefore(moment(e2.date)) ? -1 : 1)
+                    .map((e: MeteoStatEntry) => ({
                     x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                    y: e.precip
+                    y: e.prcp
                 }))
             }])));
     }
 
+    /*
     getAgriTimelines(): any[] {
         const baseTemp = 10.0;
         const years = this.vineyardService.getMeteoYears(this.vineyard);
@@ -230,6 +264,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             })
         }])));
     }
+    */
 
     getNormalizedDate(date: string): number {
         const actDate: Date = new Date(date);
