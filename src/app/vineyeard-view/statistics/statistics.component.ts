@@ -217,7 +217,6 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
             },
             data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-                .sort((e1: MeteoStatEntry, e2: MeteoStatEntry) => moment(e1.date).isSameOrBefore(moment(e2.date)) ? -1 : 1)
                 .map((e: MeteoStatEntry) => ({
                 x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                 y: e.tavg
@@ -236,7 +235,6 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                     },
                 },
                 data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-                    .sort((e1: MeteoStatEntry, e2: MeteoStatEntry) => moment(e1.date).isSameOrBefore(moment(e2.date)) ? -1 : 1)
                     .map((e: MeteoStatEntry) => ({
                     x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                     y: e.prcp
