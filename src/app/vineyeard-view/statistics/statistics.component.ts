@@ -175,7 +175,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             type: 'scatter',
             yAxis: 'actions',
             marker: {
-                symbol: `url(/assets/icon/${a.toLowerCase()}_graph.png)`,
+                symbol: `url(/assets/icon/${a.toLowerCase()}.png)`,
                 width: 24,
                 height: 24,
                 fillColor: '#FFFFFF',
@@ -186,7 +186,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 .filter((action: Action) => action.type === ActionType[a])
                 .filter((action: Action) => this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 && this.activeVarieties.filter(v => action.variety.indexOf(v) >= 0).length > 0)
                 .map((action: Action) => ({
-                    label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.description}`,
+                    label: `${action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''}${action.value ? action.value + ' ' : ''}${action.description}`,
                     x: this.getNormalizedDate(action.date),
                     y: new Date(action.date).getFullYear()
                 }))
