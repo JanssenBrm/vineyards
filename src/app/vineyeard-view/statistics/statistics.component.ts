@@ -15,7 +15,8 @@ import {Variety} from '../../models/variety.model';
 enum StatTypes {
     ACTIONS = 'Actions',
     METEO = 'Meteo',
-    DGD = 'Growing Days'
+    DGD = 'Growing Days',
+    BRIX = 'Brix'
 }
 
 @Component({
@@ -89,7 +90,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     setAxis() {
-        const axes = [...this.getMeteoAxis(), this.getActionAxis(), ...this.getDgdAxis()];
+        const axes = [...this.getMeteoAxis(), this.getActionAxis(), ...this.getDgdAxis(), ...this.getBrixAxis()];
         axes.forEach((a: any) => this._chart.addAxis(a));
     }
 
@@ -107,6 +108,11 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         if (this.activeStats.includes(StatTypes.DGD)) {
             series.push(...this.getDgdTimelines());
         }
+
+        if (this.activeStats.includes(StatTypes.BRIX)) {
+            series.push(...this.getBrixTimelines());
+        }
+
         series.forEach((s: any) => this._chart.addSeries(s));
 
     }
@@ -169,6 +175,20 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
                 title: {
                     text: 'Degree days',
+                },
+                opposite: true,
+            }];
+    }
+
+    getBrixAxis(): any[] {
+        return [
+            {
+                id: 'brix',
+                labels: {
+                    format: '{value} degrees',
+                },
+                title: {
+                    text: 'Degree Brix',
                 },
                 opposite: true,
             }];
@@ -272,6 +292,36 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                         return {
                             x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                             y: degreeDaysSum
+                        };
+                    })
+            }];
+        }));
+    }
+
+    getBrixTimelines(): any[] {
+        const years = this.actions.map((a: Action) => moment(a.date).year())
+            .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => {
+            return [{
+                id: `Degrees Brix ${y}`,
+                name: `Degrees Brix ${y}`,
+                type: 'spline',
+                yAxis: 'brix',
+                color: 'purple',
+                showInNavigator: true,
+                tooltip: {
+                    formatter(point) {
+                        return `<span style="color:${point.color}">●</span>  <b>Degrees Brix ${y}</b>: ${point.y.toFixed(2)} Degrees`;
+                    },
+                },
+                data: this.actions.filter((a: Action) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
+                   .map((a: Action) => ({
+                        date: a.date,
+                        value: a.value
+                    })).map((e: { date: string, value: number }, idx: number, results: ({ date: string, value: number })[]) => {
+                        return {
+                            x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                            y: e.value
                         };
                     })
             }];
