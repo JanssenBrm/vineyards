@@ -31,6 +31,7 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/lab": "^3.1.1",
     "chart.js": "^2.9.3",
+    "color": "^3.2.1",
     "com-sarriaroman-photoviewer": "^1.2.4",
     "cordova-ios": "5.1.1",
     "cordova-plugin-browsertab": "^0.2.0",

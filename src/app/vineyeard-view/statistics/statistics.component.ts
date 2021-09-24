@@ -11,6 +11,7 @@ import {Action} from 'src/app/models/action.model';
 import {TitleCasePipe} from '@angular/common';
 import * as moment from 'moment';
 import {Variety} from '../../models/variety.model';
+import {COLOR, ColorService} from '../../services/color.service';
 
 enum StatTypes {
     ACTIONS = 'Actions',
@@ -46,7 +47,8 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     public activeStats: StatTypes[] = [StatTypes.ACTIONS];
     private _chart: Highcharts.Chart;
 
-    constructor(private utilService: UtilService, private vineyardService: VineyardService, private statService: StatisticsService, private titlecasePipe: TitleCasePipe, private platform: Platform) {
+    constructor(private utilService: UtilService, private vineyardService: VineyardService, private statService: StatisticsService,
+                private titlecasePipe: TitleCasePipe, private platform: Platform, private colorService: ColorService) {
     }
 
     ngOnInit() {
@@ -102,7 +104,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         if (this.activeStats.includes(StatTypes.METEO)) {
-           series.push(...this.getMeteoTimelines());
+            series.push(...this.getMeteoTimelines());
         }
 
         if (this.activeStats.includes(StatTypes.DGD)) {
@@ -224,12 +226,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         const years = stats.map((s: MeteoStatEntry) => moment(s.date).year())
             .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
 
-        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => ([{
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number, idx: number) => ([{
             id: `Temperature ${y}`,
             name: `Temperature ${y}`,
             type: 'spline',
             yAxis: 'temperature',
-            color: 'red',
+            color: this.colorService.darken(COLOR.TEMP, idx),
             showInNavigator: true,
             tooltip: {
                 formatter(point) {
@@ -238,16 +240,16 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
             },
             data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
                 .map((e: MeteoStatEntry) => ({
-                x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                y: e.tavg
-            }))
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    y: e.tavg
+                }))
         },
             {
                 id: `Precipitation ${y}`,
                 name: `Precipitation ${y}`,
                 type: 'bar',
                 yAxis: 'precipitation',
-                color: 'lightblue',
+                color: this.colorService.darken(COLOR.PERCIP, idx),
                 showInNavigator: true,
                 tooltip: {
                     formatter(point) {
@@ -256,9 +258,9 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                 },
                 data: stats.filter((s: MeteoStatEntry) => moment(s.date).year() === y)
                     .map((e: MeteoStatEntry) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                    y: e.prcp
-                }))
+                        x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                        y: e.prcp
+                    }))
             }])));
     }
 
@@ -269,14 +271,14 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
         const years = stats.map((s: MeteoStatEntry) => moment(s.date).year())
             .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
         let degreeDaysSum = 0;
-        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => {
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number, idx: number) => {
             degreeDaysSum = 0;
             return [{
                 id: `Degree days ${y}`,
                 name: `Degree days ${y}`,
                 type: 'spline',
                 yAxis: 'degreedays',
-                color: 'darkred',
+                color: this.colorService.darken(COLOR.GDD, idx),
                 showInNavigator: true,
                 tooltip: {
                     formatter(point) {
@@ -301,13 +303,13 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     getBrixTimelines(): any[] {
         const years = this.actions.map((a: Action) => moment(a.date).year())
             .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
-        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number) => {
+        return [].concat(...years.filter((y: number) => this.seasons.indexOf(y) >= 0).map((y: number, idx: number) => {
             return [{
                 id: `Degrees Brix ${y}`,
                 name: `Degrees Brix ${y}`,
                 type: 'spline',
                 yAxis: 'brix',
-                color: 'purple',
+                color: this.colorService.lighten(COLOR.BRIX, idx),
                 showInNavigator: true,
                 tooltip: {
                     formatter(point) {
@@ -315,7 +317,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
                     },
                 },
                 data: this.actions.filter((a: Action) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
-                   .map((a: Action) => ({
+                    .map((a: Action) => ({
                         date: a.date,
                         value: a.value
                     })).map((e: { date: string, value: number }, idx: number, results: ({ date: string, value: number })[]) => {
