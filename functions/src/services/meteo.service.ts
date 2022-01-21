@@ -3,8 +3,8 @@ import * as moment from 'moment';
 import axios from 'axios';
 import {Action} from '../models/action.model';
 
-export const API_HOST = 'meteostat.p.rapidapi.com';
-export const API_KEY = '8349406a1amsh92d052b6c1400e0p1d0a5bjsne615916215d6';
+export const API_HOST = process.env.METEOSTAT_API_HOST;
+export const API_KEY = process.env.METEOSTAT_API_KEY;
 
 export const getMeteo = (lat: number, lon: number, start: moment.Moment, end: moment.Moment): Promise<MeteoStats> => {
     console.log(`Retrieving meteo information for ${lat},${lon} from ${start.toISOString()} to ${end.toISOString()}`);
