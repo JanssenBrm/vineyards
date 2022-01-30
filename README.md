@@ -20,5 +20,5 @@ The latest version of the application is currently hosted at [https://myvineyard
 Feel free to play around in the online application at [https://myvineyards.tk](https://myvineyards.tk/)
 
 ![](https://github.com/JanssenBrm/vineyards/blob/master/screenshots/info.jpg?raw=true)
-![](https://github.com/JanssenBrm/vineyards/blob/master/screenshots/vineyard.png?raw=true)
+![](https://github.com/JanssenBrm/vineyards/blob/master/screenshots/vinetage.png?raw=true)
 
