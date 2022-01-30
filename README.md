@@ -1,5 +1,5 @@
 # Vineyards 🍇
-![](https://img.shields.io/badge/Ionic-3880FF?style=for-the-badge&logo=ionic&logoColor=white) ![](https://img.shields.io/github/last-commit/janssenbrm/winery?style=for-the-badge)
+![](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white) ![](https://img.shields.io/github/last-commit/janssenbrm/winery?style=for-the-badge)
 
 Since 2019 I started a new hobby and dove into the world of viniculture and winemaking. One thing I have quickly learned is that it is important to keep a log of all actions you do throughout the season and the wine making process. Winery was created to support grape growers and wine makers to support them in any step of the process.
 
