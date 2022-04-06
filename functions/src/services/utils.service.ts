@@ -5,15 +5,23 @@ import * as turf from '@turf/turf';
 import {MeteoStats} from '../models/stats.model';
 import WriteResult = admin.firestore.WriteResult;
 import {Action} from '../models/action.model';
+import UserRecord = admin.auth.UserRecord;
 
 admin.initializeApp();
 export const db = admin.firestore();
+export const auth = admin.auth();
+
 
 export const getUsers = (): Promise<string[]> => {
     return db.collection('users').listDocuments()
         .then((docs) =>
             docs.map((doc) => doc.id));
 };
+
+export const getUserEmail = (uid: string): Promise<string> => {
+    return auth.getUser(uid)
+        .then((record: UserRecord) => record.email)
+}
 
 export const getVineyards = (uid: string): Promise<string[]> => {
     return db.collection('users').doc(uid).collection('vineyards').listDocuments()
@@ -44,9 +52,9 @@ export const getVineyard = (uid: string, id: string): Promise<Vineyard> => {
 
 export const getVineyardActions = (uid: string, id: string): Promise<Action[]> => {
     return db.collection('users').doc(uid).collection('vineyards').doc(id).collection('actions').listDocuments()
-            .then((docs) =>
-                Promise.all(docs.map((doc) => doc.get()))
-            )
+        .then((docs) =>
+            Promise.all(docs.map((doc) => doc.get()))
+        )
         .then((docs) => docs.map(doc => ({
             id: doc.id,
             ...doc.data()

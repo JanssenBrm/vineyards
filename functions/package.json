@@ -12,9 +12,10 @@
   "engines": {
     "node": "10"
   },
-  "main": "lib/index.js",
+  "main": "lib/functions/src/index.js",
   "dependencies": {
     "@angular/fire": "^6.0.0",
+    "@sendgrid/mail": "^7.6.2",
     "@turf/turf": "^5.1.6",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
