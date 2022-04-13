@@ -37,6 +37,7 @@ const _updateMeteoStats = async () => {
                 const stats = await getMeteo(location[1], location[0], dates.start, dates.end);
                 const warnings = _calculateWarnings(stats.data);
                 if (warnings.length > 0 && email) {
+                    console.log('Sending email to ' + email);
                     await  _emailWarnings(email, v, warnings)
                 }
                 return await saveMeteo(uid, id, stats);
