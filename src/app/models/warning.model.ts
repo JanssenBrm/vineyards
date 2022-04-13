@@ -5,5 +5,5 @@ export interface Warning {
 }
 
 export enum WARNING_TYPE {
-    FROST
-};
+    FROST= 'FROST'
+}

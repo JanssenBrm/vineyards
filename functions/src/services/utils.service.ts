@@ -18,7 +18,7 @@ export const getUsers = (): Promise<string[]> => {
             docs.map((doc) => doc.id));
 };
 
-export const getUserEmail = (uid: string): Promise<string> => {
+export const getUserEmail = (uid: string): Promise<string | undefined> => {
     return auth.getUser(uid)
         .then((record: UserRecord) => record.email)
 }

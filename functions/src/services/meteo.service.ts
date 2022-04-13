@@ -22,7 +22,7 @@ export const getMeteoDates = (actions: Action[]): { start: moment.Moment, end: m
 };
 
 const getMeteoInfo = async (lat: number, lon: number, start: moment.Moment, end: moment.Moment): Promise<MeteoStats> => {
-    var options = {
+    const options = {
         params: {
             lat,
             lon,

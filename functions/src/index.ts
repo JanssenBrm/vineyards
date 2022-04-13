@@ -17,9 +17,8 @@ import * as sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '')
 
-exports.updateMeteoStatsHttp = functions.https.onRequest(async (req, res) => _updateMeteoStats());
-// exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *')
-//     .onRun(async (data, context) => _updateMeteoStats());
+exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *')
+    .onRun(async (context) => _updateMeteoStats());
 
 const _updateMeteoStats = async () => {
     const users: string[] = await getUsers();
@@ -29,7 +28,7 @@ const _updateMeteoStats = async () => {
         console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
         return vineyards.map(async (id: string) => {
             try {
-                const email: string = await getUserEmail(uid);
+                const email: string | undefined = await getUserEmail(uid);
                 const v: Vineyard = await getVineyard(uid, id);
                 const location = getVineyardLocation(v);
                 const actions = await getVineyardActions(uid, id);
@@ -49,15 +48,14 @@ const _updateMeteoStats = async () => {
     })
 };
 
-const _emailWarnings = (email: string, vineyard: Vineyard, warnings: { date: string, warnings: Warning[]}[]): Promise<any> => {
+export const _emailWarnings = (email: string, vineyard: Vineyard, warnings: { date: string, warnings: Warning[]}[]): Promise<any> => {
 
-    const msg = {
+    const msg: any = {
         to: email,
-        from: 'brm.janssen@gmail.com',
-        subject: `Warnings detected for ${vineyard.name}`,
-        text: 'and easy to do anywhere, even with Node.js',
-        templateId: ' d-1386a8dba74b4f15a54403b38e7ddc88 ',
+        from: process.env.emailSender,
+        templateId: 'd-1386a8dba74b4f15a54403b38e7ddc88',
         dynamicTemplateData: {
+            subject: `Warnings detected for ${vineyard.name}`,
             vineyard,
             warnings
         },
@@ -65,10 +63,10 @@ const _emailWarnings = (email: string, vineyard: Vineyard, warnings: { date: str
 
     return sgMail
         .send(msg)
-        .then((response) => {
+        .then((response: any) => {
             console.log('Email sent', response[0].headers);
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.error('Error while sending email', error);
         })
 }
