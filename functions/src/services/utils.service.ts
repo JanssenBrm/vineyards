@@ -6,6 +6,7 @@ import {MeteoStats} from '../models/stats.model';
 import WriteResult = admin.firestore.WriteResult;
 import {Action} from '../models/action.model';
 import UserRecord = admin.auth.UserRecord;
+import * as moment from 'moment';
 
 admin.initializeApp();
 export const db = admin.firestore();
@@ -63,6 +64,18 @@ export const getVineyardActions = (uid: string, id: string): Promise<Action[]> =
 };
 
 
+export const getVineyardStats = (uid: string, id: string): Promise<MeteoStats> => {
+    return db.collection('users')
+        .doc(uid).collection('vineyards')
+        .doc(id).collection('stats')
+        .doc('meteo')
+        .get()
+        .then((doc) => doc.data() as MeteoStats)
+        .catch(() => ({
+            data: []
+        }));
+};
+
 export const saveMeteo = (uid: string, id: string, stats: MeteoStats): Promise<WriteResult> => {
     return db.collection('users').doc(uid)
         .collection('vineyards')
@@ -76,3 +89,7 @@ export const getVineyardLocation = (v: Vineyard): number[] => {
     const center = turf.center(turf.polygon(v.location.coordinates));
     return center.geometry ? center.geometry.coordinates : [];
 };
+
+
+export const dateInArray = (date: moment.Moment, dates: moment.Moment[]): boolean =>
+    !!dates.find((d: moment.Moment) => d.isSame(date, 'day'));
