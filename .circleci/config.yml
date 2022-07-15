@@ -18,7 +18,7 @@ jobs:
           command: npm run semantic-release || circleci-agent step halt
       - run:
           name: Create environments file
-          command: sh create_env_file.sh
+          command: sh scripts/create_env_file.sh
       - run:
           name: Build application
           command: npm run build
