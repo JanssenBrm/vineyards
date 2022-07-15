@@ -18,7 +18,7 @@ import {Chart} from 'chart.js';
 })
 export class TimelineComponent implements OnInit, OnChanges {
 
-    @ViewChild('timelineChart', {static: false}) timelineChart;
+    @ViewChild('timelineChart') timelineChart;
 
     @Input()
     vineyard: Vineyard;

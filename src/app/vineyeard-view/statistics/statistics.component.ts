@@ -39,7 +39,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
     varieties: Variety[];
 
-    @ViewChild('content', {static: false})
+    @ViewChild('content')
     content: ElementRef;
 
     public activeVarieties: string[];
