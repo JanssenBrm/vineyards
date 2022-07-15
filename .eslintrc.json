@@ -58,6 +58,8 @@
         "unused-imports/no-unused-imports": "error",
         "no-use-before-define": "error",
         "@angular-eslint/no-output-on-prefix": "off",
+        "@angular-eslint/component-class-suffix": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
         "lines-between-class-members": [
           "error",
           "always",
