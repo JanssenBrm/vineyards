@@ -5,8 +5,8 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --configuration production --outputPath=public",
+    "start": "npm run config -- --environment=dev && ng serve",
+    "build": "npm run config -- --environment=prod && ng build --configuration production --outputPath=public",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

@@ -32,5 +32,6 @@ npm-debug.log*
 /www
 /public
 /ios
+src/environments/*
 
 .env
