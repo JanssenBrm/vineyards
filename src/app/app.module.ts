@@ -1,7 +1,7 @@
 import {HeaderComponent} from './shared/components/header/header.component';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouteReuseStrategy} from '@angular/router';
+import {Router, RouteReuseStrategy} from '@angular/router';
 
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
@@ -17,6 +17,8 @@ import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireAnalyticsModule} from '@angular/fire/analytics';
 
+import * as Sentry from "@sentry/angular";
+
 @NgModule({
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
@@ -31,7 +33,23 @@ import {AngularFireAnalyticsModule} from '@angular/fire/analytics';
         SplashScreen,
         HttpClientModule,
         HeaderComponent,
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        {
+            provide: ErrorHandler,
+            useValue: Sentry.createErrorHandler({
+                showDialog: true,
+            }),
+        },
+        {
+            provide: Sentry.TraceService,
+            deps: [Router],
+        },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: () => () => {},
+            deps: [Sentry.TraceService],
+            multi: true,
+        },
     ],
     bootstrap: [AppComponent]
 })
