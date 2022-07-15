@@ -25,7 +25,6 @@
       "git add"
     ]
   },
-  ,
   "private": true,
   "dependencies": {
     "@angular/common": "~13.3.11",
