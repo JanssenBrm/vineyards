@@ -1,6 +1,6 @@
 {
   "name": "vineyards",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -117,7 +117,8 @@
     "tslib": "^2.4.0",
     "tslint": "~6.1.0",
     "typescript": "~4.6.4",
-    "yargs": "^17.5.1"
+    "yargs": "^17.5.1",
+    "semantic-release": "^19.0.3"
   },
   "description": "An Ionic project",
   "cordova": {
@@ -136,5 +137,9 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {}
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JanssenBrm/winery.git"
   }
 }

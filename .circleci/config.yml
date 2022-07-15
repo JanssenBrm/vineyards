@@ -14,7 +14,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: release
+          name: Release
           command: npm run semantic-release || circleci-agent step halt
       - run:
           name: Create environments file
