@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/JanssenBrm/winery/compare/v1.0.0...v1.1.0) (2022-07-15)
+
+
+### Features
+
+* added an integrations service ([4a1683e](https://github.com/JanssenBrm/winery/commit/4a1683ec51739204d094cf3a772fc879327e02df))
+
 # 1.0.0 (2022-07-15)
 
 
