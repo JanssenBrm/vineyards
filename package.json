@@ -14,7 +14,8 @@
     "deploy": "npm run build && firebase deploy --only hosting",
     "deploy:ci": "npm run build && firebase --token $FIREBASE_TOKEN  deploy --only hosting",
     "deploy:ios": "ionic capacitor copy ios",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "semantic-release": "semantic-release"
   },
   "lint-staged": {
     "src/**/*.(ts|tsx)": [
