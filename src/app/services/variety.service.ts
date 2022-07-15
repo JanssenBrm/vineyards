@@ -58,7 +58,7 @@ export class VarietyService {
         map((data: DocumentChangeAction<Variety>[]) => data.map((d: DocumentChangeAction<Variety>) => (
             {
               ...d.payload.doc.data(),
-              id: d.payload.doc.id,
+              id: d.payload.doc['id']
             }))),
     ).subscribe((actions: Variety[]) => this._varieties.next(actions));
   }

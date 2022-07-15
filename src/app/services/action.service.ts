@@ -47,7 +47,7 @@ export class ActionService {
         map((data: DocumentChangeAction<Action>[]) => data.map((d: DocumentChangeAction<Action>) => (
             {
               ...d.payload.doc.data(),
-              id: d.payload.doc.id,
+              id: d.payload.doc['id'],
             }))),
         map((actions: Action[]) => actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime()) < (new Date(a2.date).getTime()) ? 1 : -1))
     ).subscribe((actions: Action[]) => this._actions.next(actions));
