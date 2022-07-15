@@ -21,7 +21,7 @@ import {AngularFireAnalyticsModule} from '@angular/fire/analytics';
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
         AngularFireModule.initializeApp(environment.firebase),
-        AngularFirestoreModule,
+         AngularFirestoreModule,
         AngularFireStorageModule,
         AngularFireAuthModule,
         AngularFireAnalyticsModule
