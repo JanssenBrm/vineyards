@@ -13,6 +13,19 @@
     "deploy": "npm run build && firebase deploy --only hosting",
     "deploy:ios": "ionic capacitor copy ios"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --edit \"$1\""
+    }
+  },
+  "lint-staged": {
+    "src/**/*.(ts|tsx)": [
+      "eslint --fix --ext .ts,.tsx",
+      "git add"
+    ]
+  },
+  ,
   "private": true,
   "dependencies": {
     "@angular/common": "~13.3.11",
@@ -58,19 +71,32 @@
     "@angular/compiler-cli": "~13.3.11",
     "@angular/language-service": "~13.3.11",
     "@capacitor/cli": "1.5.0",
+    "@commitlint/config-conventional": "^17.0.3",
     "@ionic/angular-toolkit": "^6.1.0",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
     "codelyzer": "^5.1.2",
+    "commitlint": "^17.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.2.1",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-whitelist": "^1.3.3",
+    "cypress": "^10.3.0",
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "firebase-tools": "^7.12.0",
     "fuzzy": "^0.1.3",
+    "husky": "^8.0.1",
     "inquirer": "^6.2.2",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "jasmine-core": "~3.5.0",
@@ -80,6 +106,8 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
     "protractor": "~7.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
