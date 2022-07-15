@@ -19,7 +19,6 @@ import {AngularFireAnalyticsModule} from '@angular/fire/analytics';
 
 @NgModule({
     declarations: [AppComponent],
-    entryComponents: [],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
@@ -32,7 +31,7 @@ import {AngularFireAnalyticsModule} from '@angular/fire/analytics';
         SplashScreen,
         HttpClientModule,
         HeaderComponent,
-        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]
 })

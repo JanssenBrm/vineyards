@@ -45,11 +45,6 @@ import {UserbuttonComponent} from './components/userbutton/userbutton.component'
         LayersComponent,
         ConfirmComponent,
         UserbuttonComponent
-    ],
-    entryComponents: [
-        UsermenuComponent,
-        LayersComponent,
-        ConfirmComponent
     ]
 })
 export class SharedModule {

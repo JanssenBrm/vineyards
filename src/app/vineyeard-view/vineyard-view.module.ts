@@ -87,12 +87,6 @@ theme(Highcharts);
         TitleCasePipe,
         UploadService,
         FilterNotesByFilterPipe
-    ],
-    entryComponents: [
-        AddActionComponent,
-        AddVintageComponent,
-        AddNoteComponent,
-        AddNoteNotebookComponent
     ]
 })
 export class VineyardViewPageModule {

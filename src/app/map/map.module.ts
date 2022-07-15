@@ -11,15 +11,14 @@ import { SharedModule } from '../shared/shared.module';
 import {AddVineyardComponent} from './addvineyard/addvineyard.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SharedModule,
-    MapPageRoutingModule,
-    ReactiveFormsModule
-  ],
-  declarations: [MapPage, AddVineyardComponent],
-  entryComponents: [ AddVineyardComponent ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SharedModule,
+        MapPageRoutingModule,
+        ReactiveFormsModule
+    ],
+    declarations: [MapPage, AddVineyardComponent]
 })
 export class MapPageModule {}
