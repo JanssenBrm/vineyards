@@ -8,14 +8,17 @@ orbs:
 jobs:
   build-and-release:
     docker:
-      - image: 'cimg/node:lts'
+      - image: 'cimg/node:16.10'
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
           name: release
-          command: npm run semantic-release || true
+          command: npm run semantic-release || circleci-agent step halt
+      - run:
+          name: Create environments file
+          command: sh create_env_file.sh
       - run:
           name: Build application
           command: npm run build
