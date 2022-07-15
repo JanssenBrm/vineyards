@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --outputPath=public",
+    "build": "ng build --configuration production --outputPath=public",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -15,13 +15,13 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "~11.2.14",
-    "@angular/core": "~11.2.14",
+    "@angular/common": "~12.2.16",
+    "@angular/core": "~12.2.16",
     "@angular/fire": "^6.1.5",
-    "@angular/forms": "~11.2.14",
-    "@angular/platform-browser": "~11.2.14",
-    "@angular/platform-browser-dynamic": "~11.2.14",
-    "@angular/router": "~11.2.14",
+    "@angular/forms": "~12.2.16",
+    "@angular/platform-browser": "~12.2.16",
+    "@angular/platform-browser-dynamic": "~12.2.16",
+    "@angular/router": "~12.2.16",
     "@capacitor/core": "1.5.0",
     "@capacitor/ios": "^2.4.7",
     "@ionic-native/core": "^5.0.0",
@@ -48,15 +48,15 @@
     "rxjs": "^6.5.4",
     "tslib": "^2.0.0",
     "uuid": "^7.0.2",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "0.1102.19",
-    "@angular-devkit/build-angular": "~0.1102.19",
-    "@angular/cli": "~11.2.19",
-    "@angular/compiler": "~11.2.14",
-    "@angular/compiler-cli": "~11.2.14",
-    "@angular/language-service": "~11.2.14",
+    "@angular-devkit/architect": "0.1202.17",
+    "@angular-devkit/build-angular": "~12.2.17",
+    "@angular/cli": "~12.2.17",
+    "@angular/compiler": "~12.2.16",
+    "@angular/compiler-cli": "~12.2.16",
+    "@angular/language-service": "~12.2.16",
     "@capacitor/cli": "1.5.0",
     "@ionic/angular-toolkit": "^6.1.0",
     "@types/jasmine": "~3.3.8",
@@ -83,7 +83,7 @@
     "protractor": "~7.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.8"
+    "typescript": "~4.3.5"
   },
   "description": "An Ionic project",
   "cordova": {
