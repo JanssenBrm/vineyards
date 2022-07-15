@@ -12,7 +12,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "deploy": "npm run build && firebase deploy --only hosting",
-    "deploy:ci": "npm run build && firebase --token $FIREBASE_TOKEN  deploy --only hosting",
+    "deploy:ci": "firebase --token $FIREBASE_TOKEN  deploy --only hosting",
     "deploy:ios": "ionic capacitor copy ios",
     "prepare": "husky install",
     "semantic-release": "semantic-release"
