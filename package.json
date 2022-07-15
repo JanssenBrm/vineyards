@@ -5,6 +5,7 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
+    "config": "ts-node ./scripts/setenv.ts",
     "start": "npm run config -- --environment=dev && ng serve",
     "build": "npm run config -- --environment=prod && ng build --configuration production --outputPath=public",
     "test": "ng test",
