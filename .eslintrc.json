@@ -1,0 +1,80 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*",
+    "src/test.ts",
+    "src/typings.d.ts",
+    "scripts/**",
+    "e2e/**"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:import/recommended",
+        "airbnb-typescript/base",
+        "plugin:prettier/recommended"
+      ],
+      "plugins": [
+        "unused-imports"
+      ],
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "bracketSpacing": true,
+            "semi": true,
+            "singleQuote": true,
+            "trailingComma": "es5",
+            "printWidth": 120,
+            "endOfLine": "auto"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "style": "kebab-case",
+            "type": "element"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ],
+        "unused-imports/no-unused-imports": "error",
+        "no-use-before-define": "error",
+        "@angular-eslint/no-output-on-prefix": "off",
+        "lines-between-class-members": [
+          "error",
+          "always",
+          {
+            "exceptAfterSingleLine": true
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
