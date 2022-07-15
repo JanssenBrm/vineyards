@@ -13,13 +13,8 @@
     "e2e": "ng e2e",
     "deploy": "npm run build && firebase deploy --only hosting",
     "deploy:ci": "npm run build && firebase --token $FIREBASE_TOKEN  deploy --only hosting",
-    "deploy:ios": "ionic capacitor copy ios"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint --edit \"$1\""
-    }
+    "deploy:ios": "ionic capacitor copy ios",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "src/**/*.(ts|tsx)": [
