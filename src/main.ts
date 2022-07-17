@@ -18,7 +18,7 @@ Sentry.init({
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
-  enabled: !!environment.production,
+  enabled: environment.production === 'true',
 });
 
 if (environment.production) {
