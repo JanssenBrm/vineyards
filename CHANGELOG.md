@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/JanssenBrm/winery/compare/v1.1.0...v1.2.0) (2022-07-17)
+
+
+### Features
+
+* started integration of weatherstation.service ([64d7aab](https://github.com/JanssenBrm/winery/commit/64d7aabd923a93f6b6caad9826e7f5f7b6083b09))
+
 # [1.1.0](https://github.com/JanssenBrm/winery/compare/v1.0.0...v1.1.0) (2022-07-15)
 
 
