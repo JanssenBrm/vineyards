@@ -12,10 +12,12 @@ import { TitleCasePipe } from '@angular/common';
 import * as moment from 'moment';
 import { Variety } from '../../models/variety.model';
 import { COLOR, ColorService } from '../../services/color.service';
-import { Integration } from '../../models/integration.model';
+import { Integration, IntegrationType } from '../../models/integration.model';
 import { IntegrationsService } from '../../services/integrations.service';
 import { WeatherStationService } from '../../services/weatherstation.service';
-import { merge, Observable } from 'rxjs';
+import { merge, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { WeatherStationInfo } from '../../models/weather.model';
 
 enum StatTypes {
   ACTIONS = 'Actions',
@@ -117,7 +119,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     }
 
     if (this.activeStats.includes(StatTypes.METEO)) {
-      requests.push(this.getMeteoTimelines());
+      requests.push(this.getWeatherStationData(), this.getMeteoTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.DGD)) {
@@ -130,8 +132,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
     merge(...requests).subscribe({
       next: (s: any) => {
-        console.log('Adding series', s);
-        this._chart.addSeries(s);
+        if (!!s) {
+          this._chart.addSeries(s);
+        }
       },
       error: (error: any) => {
         console.error('Could not fetch data series', error);
@@ -309,6 +312,51 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     );
   }
 
+  getWeatherStationData(): Observable<any> {
+    const integration: Integration = this.integrationsService.getIntegration(IntegrationType.WEATHER_STATION);
+
+    if (!integration) {
+      return of(undefined);
+    } else {
+      return this.weatherStationService.readWeatherData(integration).pipe(
+        switchMap((stats: WeatherStationInfo[]) => {
+          const years = stats
+            .map((s: WeatherStationInfo) => moment(s.date).year())
+            .filter((y: number) => this.seasons.indexOf(y) >= 0)
+            .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
+
+          return years.map((year: number) => ({
+            year,
+            stats: stats.filter((s: WeatherStationInfo) => moment(s.date).year() === year),
+          }));
+        }),
+        switchMap(({ year, stats }) => {
+          return [
+            {
+              id: `Station Temperature ${year} `,
+              name: `Station Temperature ${year}`,
+              type: 'spline',
+              yAxis: 'temperature',
+              color: this.colorService.darken(COLOR.TEMP, 5),
+              showInNavigator: true,
+              tooltip: {
+                formatter(point) {
+                  return `<span style="color:${point.color}">●</span>  <b>Station Temperature ${year}</b>: ${point.y} °C`;
+                },
+              },
+              data: stats
+                .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                .map((e: WeatherStationInfo) => ({
+                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  y: e.temperature,
+                })),
+            },
+          ];
+        })
+      );
+    }
+  }
+
   getDgdTimelines(): Observable<any> {
     const baseTemp = 10.0;
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
@@ -390,7 +438,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   }))
                   .map((e: { date: string; value: number }) => {
                     return {
-                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                       y: e.value,
                     };
                   }),
