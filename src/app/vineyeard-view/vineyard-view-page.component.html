@@ -46,7 +46,7 @@
                              [varieties]="(varieties$ | async)"
                 ></app-actions>
                 <app-statistics *ngIf="activePage === 'stats'" [seasons]="(activeSeasons$ | async)"
-                                [vineyard]="activeVineyard" [actions]="(actions$ | async)" [varieties]="(varieties$ | async)"></app-statistics>
+                                [vineyard]="activeVineyard" [actions]="(actions$ | async)" [varieties]="(varieties$ | async)" [integrations]="(integrations$ | async)"></app-statistics>
                 <app-notebook *ngIf="activePage === 'notes'"
                                 [vineyard]="activeVineyard"></app-notebook>
                 <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"

@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
-import { Integration } from '../models/integration.model';
+import { Integration, IntegrationType } from '../models/integration.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +39,13 @@ export class IntegrationsService {
         )
       )
       .subscribe((integrations: Integration[]) => this._integrations.next(integrations));
+  }
+
+  public getIntegration(type: IntegrationType): Integration {
+    return this._integrations.value.find((i: Integration) => i.type === type);
+  }
+
+  public hasIntegration(type: IntegrationType): boolean {
+    return !!this.getIntegration(type);
   }
 }
