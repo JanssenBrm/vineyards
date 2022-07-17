@@ -12,16 +12,16 @@ import { TitleCasePipe } from '@angular/common';
 import * as moment from 'moment';
 import { Variety } from '../../models/variety.model';
 import { COLOR, ColorService } from '../../services/color.service';
-import { Integration, IntegrationType } from '../../models/integration.model';
+import { Integration } from '../../models/integration.model';
 import { IntegrationsService } from '../../services/integrations.service';
 import { WeatherStationService } from '../../services/weatherstation.service';
+import { merge, Observable } from 'rxjs';
 
 enum StatTypes {
   ACTIONS = 'Actions',
   METEO = 'Meteo',
   DGD = 'Growing Days',
   BRIX = 'Brix',
-  WEATHER_STATION = 'Weather Station',
 }
 
 @Component({
@@ -50,7 +50,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   public activeVarieties: string[];
 
-  public stats = Object.values(StatTypes).filter((t: string) => ![StatTypes.WEATHER_STATION.valueOf()].includes(t));
+  public stats = Object.values(StatTypes);
 
   public activeStats: StatTypes[] = [StatTypes.ACTIONS];
 
@@ -72,15 +72,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       if (this.vineyard) {
         this.activeVarieties = this.varieties.map((v: Variety) => v.id);
         this.getStats();
-      }
-    }
-
-    if (changes.integrations) {
-      if (
-        !this.stats.includes(StatTypes.WEATHER_STATION) &&
-        this.integrationsService.hasIntegration(IntegrationType.WEATHER_STATION)
-      ) {
-        this.stats = [...this.stats, StatTypes.WEATHER_STATION];
       }
     }
   }
@@ -119,38 +110,36 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   }
 
   setGraphData() {
-    const series = [];
+    const requests: Observable<any>[] = [];
 
     if (this.activeStats.includes(StatTypes.ACTIONS)) {
       this.updateActionStats();
     }
 
     if (this.activeStats.includes(StatTypes.METEO)) {
-      series.push(...this.getMeteoTimelines());
+      requests.push(this.getMeteoTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.DGD)) {
-      series.push(...this.getDgdTimelines());
+      requests.push(this.getDgdTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.BRIX)) {
-      series.push(...this.getBrixTimelines());
+      requests.push(this.getBrixTimelines());
     }
 
-    if (this.activeStats.includes(StatTypes.WEATHER_STATION)) {
-      this.weatherStationService
-        .readWeatherData(this.integrationsService.getIntegration(IntegrationType.WEATHER_STATION))
-        .subscribe({
-          next: (data) => {
-            console.log(data);
-          },
-          error: (error) => {
-            console.error('Could not read weather data', error);
-          },
-        });
-    }
-
-    series.forEach((s: any) => this._chart.addSeries(s));
+    merge(...requests).subscribe({
+      next: (s: any) => {
+        console.log('Adding series', s);
+        this._chart.addSeries(s);
+      },
+      error: (error: any) => {
+        console.error('Could not fetch data series', error);
+      },
+      complete: () => {
+        console.log('Done');
+      },
+    });
   }
 
   clearCharts() {
@@ -264,145 +253,151 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     return result;
   }
 
-  getMeteoTimelines(): any[] {
+  getMeteoTimelines(): Observable<any> {
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
     const years = stats
       .map((s: MeteoStatEntry) => moment(s.date).year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
 
-    return [].concat(
-      ...years
-        .filter((y: number) => this.seasons.indexOf(y) >= 0)
-        .map((y: number, idx: number) => [
-          {
-            id: `Temperature ${y}`,
-            name: `Temperature ${y}`,
-            type: 'spline',
-            yAxis: 'temperature',
-            color: this.colorService.darken(COLOR.TEMP, idx),
-            showInNavigator: true,
-            tooltip: {
-              formatter(point) {
-                return `<span style="color:${point.color}">●</span>  <b>Temperature ${y}</b>: ${point.y} °C`;
+    return merge(
+      [].concat(
+        ...years
+          .filter((y: number) => this.seasons.indexOf(y) >= 0)
+          .map((y: number, idx: number) => [
+            {
+              id: `Temperature ${y}`,
+              name: `Temperature ${y}`,
+              type: 'spline',
+              yAxis: 'temperature',
+              color: this.colorService.darken(COLOR.TEMP, idx),
+              showInNavigator: true,
+              tooltip: {
+                formatter(point) {
+                  return `<span style="color:${point.color}">●</span>  <b>Temperature ${y}</b>: ${point.y} °C`;
+                },
               },
+              data: stats
+                .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                .map((e: MeteoStatEntry) => ({
+                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  y: e.tavg,
+                })),
             },
-            data: stats
-              .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-              .map((e: MeteoStatEntry) => ({
-                x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                y: e.tavg,
-              })),
-          },
-          {
-            id: `Precipitation ${y}`,
-            name: `Precipitation ${y}`,
-            type: 'bar',
-            yAxis: 'precipitation',
-            color: this.colorService.darken(COLOR.PERCIP, idx),
-            showInNavigator: true,
-            tooltip: {
-              formatter(point) {
-                return `<span style="color:${point.color}">●</span>  <b>Precipitation ${y}</b>: ${point.y.toFixed(
-                  2
-                )} mm`;
+            {
+              id: `Precipitation ${y}`,
+              name: `Precipitation ${y}`,
+              type: 'bar',
+              yAxis: 'precipitation',
+              color: this.colorService.darken(COLOR.PERCIP, idx),
+              showInNavigator: true,
+              tooltip: {
+                formatter(point) {
+                  return `<span style="color:${point.color}">●</span>  <b>Precipitation ${y}</b>: ${point.y.toFixed(
+                    2
+                  )} mm`;
+                },
               },
+              data: stats
+                .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                .map((e: MeteoStatEntry) => ({
+                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  y: e.prcp,
+                })),
             },
-            data: stats
-              .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-              .map((e: MeteoStatEntry) => ({
-                x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                y: e.prcp,
-              })),
-          },
-        ])
+          ])
+      )
     );
   }
 
-  getDgdTimelines(): any[] {
+  getDgdTimelines(): Observable<any> {
     const baseTemp = 10.0;
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
     const years = stats
       .map((s: MeteoStatEntry) => moment(s.date).year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
     let degreeDaysSum = 0;
-    return [].concat(
-      ...years
-        .filter((y: number) => this.seasons.indexOf(y) >= 0)
-        .map((y: number, idx: number) => {
-          degreeDaysSum = 0;
-          return [
-            {
-              id: `Degree days ${y}`,
-              name: `Degree days ${y}`,
-              type: 'spline',
-              yAxis: 'degreedays',
-              color: this.colorService.darken(COLOR.GDD, idx),
-              showInNavigator: true,
-              tooltip: {
-                formatter(point) {
-                  return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(
-                    2
-                  )} GGD`;
+    return merge(
+      [].concat(
+        ...years
+          .filter((y: number) => this.seasons.indexOf(y) >= 0)
+          .map((y: number, idx: number) => {
+            degreeDaysSum = 0;
+            return [
+              {
+                id: `Degree days ${y}`,
+                name: `Degree days ${y}`,
+                type: 'spline',
+                yAxis: 'degreedays',
+                color: this.colorService.darken(COLOR.GDD, idx),
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Degree days ${y}</b>: ${point.y.toFixed(
+                      2
+                    )} GGD`;
+                  },
                 },
+                data: stats
+                  .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                  .filter((e: MeteoStatEntry) => e.tavg >= baseTemp)
+                  .map((e: MeteoStatEntry) => ({
+                    date: e.date,
+                    value: Math.ceil((e.tavg - baseTemp) * 100) / 100,
+                  }))
+                  .map((e: { date: string; value: number }) => {
+                    degreeDaysSum += e.value;
+                    return {
+                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                      y: degreeDaysSum,
+                    };
+                  }),
               },
-              data: stats
-                .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-                .filter((e: MeteoStatEntry) => e.tavg >= baseTemp)
-                .map((e: MeteoStatEntry) => ({
-                  date: e.date,
-                  value: Math.ceil((e.tavg - baseTemp) * 100) / 100,
-                }))
-                .map((e: { date: string; value: number }) => {
-                  degreeDaysSum += e.value;
-                  return {
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                    y: degreeDaysSum,
-                  };
-                }),
-            },
-          ];
-        })
+            ];
+          })
+      )
     );
   }
 
-  getBrixTimelines(): any[] {
+  getBrixTimelines(): Observable<any> {
     const years = this.actions
       .map((a: Action) => moment(a.date).year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
-    return [].concat(
-      ...years
-        .filter((y: number) => this.seasons.indexOf(y) >= 0)
-        .map((y: number, idx: number) => {
-          return [
-            {
-              id: `Degrees Brix ${y}`,
-              name: `Degrees Brix ${y}`,
-              type: 'spline',
-              yAxis: 'brix',
-              color: this.colorService.lighten(COLOR.BRIX, idx),
-              showInNavigator: true,
-              tooltip: {
-                formatter(point) {
-                  return `<span style="color:${point.color}">●</span>  <b>Degrees Brix ${y}</b>: ${point.y.toFixed(
-                    2
-                  )} Degrees`;
+    return merge(
+      [].concat(
+        ...years
+          .filter((y: number) => this.seasons.indexOf(y) >= 0)
+          .map((y: number, idx: number) => {
+            return [
+              {
+                id: `Degrees Brix ${y}`,
+                name: `Degrees Brix ${y}`,
+                type: 'spline',
+                yAxis: 'brix',
+                color: this.colorService.lighten(COLOR.BRIX, idx),
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Degrees Brix ${y}</b>: ${point.y.toFixed(
+                      2
+                    )} Degrees`;
+                  },
                 },
+                data: this.actions
+                  .filter((a: Action) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
+                  .map((a: Action) => ({
+                    date: a.date,
+                    value: a.value,
+                  }))
+                  .map((e: { date: string; value: number }) => {
+                    return {
+                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                      y: e.value,
+                    };
+                  }),
               },
-              data: this.actions
-                .filter((a: Action) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
-                .map((a: Action) => ({
-                  date: a.date,
-                  value: a.value,
-                }))
-                .map((e: { date: string; value: number }) => {
-                  return {
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                    y: e.value,
-                  };
-                }),
-            },
-          ];
-        })
+            ];
+          })
+      )
     );
   }
 
