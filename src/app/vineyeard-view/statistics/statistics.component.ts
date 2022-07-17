@@ -1,5 +1,5 @@
 import { UtilService } from './../../services/util.service';
-import { Platform } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { ActionType } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
 import { StatisticsService } from './../../services/statistics.service';
@@ -58,6 +58,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   private _chart: Highcharts.Chart;
 
+  private _loading: HTMLIonLoadingElement;
+
   constructor(
     private utilService: UtilService,
     private vineyardService: VineyardService,
@@ -66,7 +68,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private platform: Platform,
     private colorService: ColorService,
     private integrationsService: IntegrationsService,
-    private weatherStationService: WeatherStationService
+    private weatherStationService: WeatherStationService,
+    private loadingController: LoadingController
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -130,19 +133,23 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       requests.push(this.getBrixTimelines());
     }
 
-    merge(...requests).subscribe({
-      next: (s: any) => {
-        if (!!s) {
-          this._chart.addSeries(s);
-        }
-      },
-      error: (error: any) => {
-        console.error('Could not fetch data series', error);
-      },
-      complete: () => {
-        console.log('Done');
-      },
-    });
+    if (requests.length > 0) {
+      this.presentLoading();
+      merge(...requests).subscribe({
+        next: (s: any) => {
+          if (!!s) {
+            this._chart.addSeries(s);
+          }
+        },
+        error: (error: any) => {
+          console.error('Could not fetch data series', error);
+          this.hideLoading();
+        },
+        complete: () => {
+          this.hideLoading();
+        },
+      });
+    }
   }
 
   clearCharts() {
@@ -447,6 +454,17 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
           })
       )
     );
+  }
+
+  async presentLoading() {
+    this._loading = await this.loadingController.create({
+      message: 'Retrieving data...',
+    });
+    this._loading.present();
+  }
+
+  async hideLoading() {
+    this._loading.dismiss();
   }
 
   getNormalizedDate(date: string): number {
