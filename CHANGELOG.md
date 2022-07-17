@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/JanssenBrm/winery/compare/v1.2.0...v1.3.0) (2022-07-17)
+
+
+### Features
+
+* integrated loading popup for statistics ([46b9ab9](https://github.com/JanssenBrm/winery/commit/46b9ab9c6e773fe675bd539446dd0179d9635932))
+* integrated weather station temperature in statistics ([e0197a3](https://github.com/JanssenBrm/winery/commit/e0197a389535c0cf18911d178b8685cd363e83bb))
+
 # [1.2.0](https://github.com/JanssenBrm/winery/compare/v1.1.0...v1.2.0) (2022-07-17)
 
 
