@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/JanssenBrm/winery/compare/v1.3.1...v1.3.2) (2022-07-18)
+
+
+### Bug Fixes
+
+* updated script to build application ([90805bd](https://github.com/JanssenBrm/winery/commit/90805bd73cf354cd2646af3e2fe6269b6b0e5d3d))
+
 ## [1.3.1](https://github.com/JanssenBrm/winery/compare/v1.3.0...v1.3.1) (2022-07-18)
 
 
