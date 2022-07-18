@@ -29,11 +29,11 @@ export const environment = {
 };
 `;
 
-closeSync(openSync(`${dir}/environment.ts`, 'w'))
-
 if (!existsSync(dir)){
     mkdirSync(dir, {recursive: true});
 }
+closeSync(openSync(`${dir}/environment.ts`, 'w'))
+
 
 writeFile(targetPath, environmentFileContent, function (err) {
     if (err) {
