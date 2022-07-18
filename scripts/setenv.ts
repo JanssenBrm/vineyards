@@ -1,14 +1,15 @@
-const {writeFile} = require('fs');
+const {writeFile, existsSync, mkdirSync, openSync, closeSync} = require('fs');
 const {argv} = require('yargs');
 
 require('dotenv').config();
 
 // read the command line arguments passed with yargs
+const dir = './src/environments';
 const environment = argv.environment;
 const isProduction = environment === 'prod';
 const targetPath = isProduction
-    ? `./src/environments/environment.prod.ts`
-    : `./src/environments/environment.ts`;
+    ? `${dir}/environment.prod.ts`
+    : `${dir}/environment.ts`;
 
 const environmentFileContent = `
 export const environment = {
@@ -27,6 +28,12 @@ export const environment = {
   owm_key: "${process.env.OWM_KEY}"
 };
 `;
+
+closeSync(openSync(`${dir}/environment.ts`, 'w'))
+
+if (!existsSync(dir)){
+    mkdirSync(dir, {recursive: true});
+}
 
 writeFile(targetPath, environmentFileContent, function (err) {
     if (err) {
