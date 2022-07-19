@@ -15,7 +15,7 @@ import { COLOR, ColorService } from '../../services/color.service';
 import { Integration, IntegrationType } from '../../models/integration.model';
 import { IntegrationsService } from '../../services/integrations.service';
 import { WeatherStationService } from '../../services/weatherstation.service';
-import { merge, Observable, of } from 'rxjs';
+import { from, merge, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
 
@@ -134,21 +134,22 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     }
 
     if (requests.length > 0) {
-      this.presentLoading();
-      merge(...requests).subscribe({
-        next: (s: any) => {
-          if (!!s) {
-            this._chart.addSeries(s);
-          }
-        },
-        error: (error: any) => {
-          console.error('Could not fetch data series', error);
-          this.hideLoading();
-        },
-        complete: () => {
-          this.hideLoading();
-        },
-      });
+      from(this.presentLoading())
+        .pipe(switchMap(() => merge(...requests)))
+        .subscribe({
+          next: (s: any) => {
+            if (!!s) {
+              this._chart.addSeries(s);
+            }
+          },
+          error: (error: any) => {
+            console.error('Could not fetch data series', error);
+            this.hideLoading();
+          },
+          complete: () => {
+            this.hideLoading();
+          },
+        });
     }
   }
 
