@@ -12,6 +12,6 @@ export interface WeatherStationInfo {
   date: string;
   heat: number;
   humidity: number;
-  light: number;
+  sunhours: number;
   temperature: number;
 }

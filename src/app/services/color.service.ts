@@ -10,6 +10,7 @@ export enum COLOR {
   GDD = '#90EE90',
   STATION_TEMP = '#f10202',
   STATION_GDD = '#00ef00',
+  STATION_SUNHOURS = '#efbf00',
 }
 
 @Injectable({

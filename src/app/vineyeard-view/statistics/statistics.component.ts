@@ -24,6 +24,7 @@ enum StatTypes {
   METEO = 'Meteo',
   DGD = 'Growing Days',
   BRIX = 'Brix',
+  SUNHOURS = 'Sun Hours',
 }
 
 @Component({
@@ -52,7 +53,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   public activeVarieties: string[];
 
-  public stats = Object.values(StatTypes);
+  public stats = Object.values(StatTypes).filter((t) => ![StatTypes.SUNHOURS].includes(t));
 
   public activeStats: StatTypes[] = [StatTypes.ACTIONS];
 
@@ -80,6 +81,14 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         this.activeVarieties = this.varieties.map((v: Variety) => v.id);
         this.getStats();
       }
+    }
+
+    if (changes.integrations) {
+      const stats = [...this.stats];
+      if (this.integrationsService.hasIntegration(IntegrationType.WEATHER_STATION)) {
+        stats.push(StatTypes.SUNHOURS);
+      }
+      this.stats = [...new Set(stats)];
     }
   }
 
@@ -112,7 +121,13 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   }
 
   setAxis() {
-    const axes = [...this.getMeteoAxis(), this.getActionAxis(), ...this.getDgdAxis(), ...this.getBrixAxis()];
+    const axes = [
+      ...this.getMeteoAxis(),
+      this.getActionAxis(),
+      ...this.getDgdAxis(),
+      ...this.getBrixAxis(),
+      ...this.getSunHoursAxis(),
+    ];
     axes.forEach((a: any) => this._chart.addAxis(a));
   }
 
@@ -133,6 +148,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
     if (this.activeStats.includes(StatTypes.BRIX)) {
       requests.push(this.getBrixTimelines());
+    }
+
+    if (this.activeStats.includes(StatTypes.SUNHOURS)) {
+      requests.push(this.getWeatherStationSunHours());
     }
 
     if (requests.length > 0) {
@@ -216,6 +235,21 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
           text: 'Degree days',
         },
         opposite: true,
+      },
+    ];
+  }
+
+  getSunHoursAxis(): any[] {
+    return [
+      {
+        id: 'sunhours',
+        labels: {
+          format: '{value} hours',
+        },
+        title: {
+          text: 'Sun Hours',
+        },
+        opposite: false,
       },
     ];
   }
@@ -342,6 +376,36 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         })
       );
     }
+  }
+
+  getWeatherStationSunHours(): Observable<any> {
+    return this.getWeatherStationData().pipe(
+      switchMap(({ year, stats }) => {
+        return year && stats
+          ? [
+              {
+                id: `Station Sunshine ${year} `,
+                name: `Station Sunshine ${year}`,
+                type: 'spline',
+                yAxis: 'sunhours',
+                color: COLOR.STATION_SUNHOURS,
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Station Sun Hours ${year}</b>: ${point.y} °C`;
+                  },
+                },
+                data: stats
+                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .map((e: WeatherStationInfo) => ({
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    y: e.sunhours,
+                  })),
+              },
+            ]
+          : [];
+      })
+    );
   }
 
   getWeatherStationMeteoGraphs(): Observable<any> {
