@@ -413,7 +413,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 showInNavigator: true,
                 tooltip: {
                   formatter(point) {
-                    return `<span style="color:${point.color}">●</span>  <b>Station Sun Hours ${year}</b>: ${point.y} °C`;
+                    return `<span style="color:${point.color}">●</span>  <b>Station Sun Hours ${year}</b>: ${point.y} hours`;
                   },
                 },
                 data: stats
