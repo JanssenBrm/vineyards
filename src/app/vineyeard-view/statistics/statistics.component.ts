@@ -60,6 +60,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   private _loading: HTMLIonLoadingElement;
 
+  private BASE_TEMP = 10.0;
+
   constructor(
     private utilService: UtilService,
     private vineyardService: VineyardService,
@@ -122,11 +124,11 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     }
 
     if (this.activeStats.includes(StatTypes.METEO)) {
-      requests.push(this.getWeatherStationData(), this.getMeteoTimelines());
+      requests.push(this.getWeatherStationMeteoGraphs(), this.getMeteoTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.DGD)) {
-      requests.push(this.getDgdTimelines());
+      requests.push(this.getWeatherStationDGDGraphs(), this.getDgdTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.BRIX)) {
@@ -320,11 +322,11 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     );
   }
 
-  getWeatherStationData(): Observable<any> {
+  getWeatherStationData(): Observable<{ year: number; stats: WeatherStationInfo[] }> {
     const integration: Integration = this.integrationsService.getIntegration(IntegrationType.WEATHER_STATION);
 
     if (!integration) {
-      return of(undefined);
+      return of({ year: undefined, stats: undefined });
     } else {
       return this.weatherStationService.readWeatherData(integration).pipe(
         switchMap((stats: WeatherStationInfo[]) => {
@@ -337,36 +339,83 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
             year,
             stats: stats.filter((s: WeatherStationInfo) => moment(s.date).year() === year),
           }));
-        }),
-        switchMap(({ year, stats }) => {
-          return [
-            {
-              id: `Station Temperature ${year} `,
-              name: `Station Temperature ${year}`,
-              type: 'spline',
-              yAxis: 'temperature',
-              color: this.colorService.darken(COLOR.TEMP, 5),
-              showInNavigator: true,
-              tooltip: {
-                formatter(point) {
-                  return `<span style="color:${point.color}">●</span>  <b>Station Temperature ${year}</b>: ${point.y} °C`;
-                },
-              },
-              data: stats
-                .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
-                .map((e: WeatherStationInfo) => ({
-                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                  y: e.temperature,
-                })),
-            },
-          ];
         })
       );
     }
   }
 
+  getWeatherStationMeteoGraphs(): Observable<any> {
+    return this.getWeatherStationData().pipe(
+      switchMap(({ year, stats }) => {
+        return year && stats
+          ? [
+              {
+                id: `Station Temperature ${year} `,
+                name: `Station Temperature ${year}`,
+                type: 'spline',
+                yAxis: 'temperature',
+                color: this.colorService.darken(COLOR.TEMP, 5),
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Station Temperature ${year}</b>: ${point.y} °C`;
+                  },
+                },
+                data: stats
+                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .map((e: WeatherStationInfo) => ({
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    y: e.temperature,
+                  })),
+              },
+            ]
+          : [];
+      })
+    );
+  }
+
+  getWeatherStationDGDGraphs(): Observable<any> {
+    let degreeDaysSum = 0;
+    return this.getWeatherStationData().pipe(
+      switchMap(({ year, stats }) => {
+        return year && stats
+          ? [
+              {
+                id: `Station Degree days ${year}`,
+                name: `Station Degree days ${year}`,
+                type: 'spline',
+                yAxis: 'degreedays',
+                color: COLOR.GDD,
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${
+                      point.color
+                    }">●</span>  <b>Station Degree days ${year}</b>: ${point.y.toFixed(2)} GGD`;
+                  },
+                },
+                data: stats
+                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .filter((e: WeatherStationInfo) => e.temperature >= this.BASE_TEMP)
+                  .map((e: WeatherStationInfo) => ({
+                    date: e.date,
+                    value: Math.ceil((e.temperature - this.BASE_TEMP) * 100) / 100,
+                  }))
+                  .map((e: { date: string; value: number }) => {
+                    degreeDaysSum += e.value;
+                    return {
+                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                      y: degreeDaysSum,
+                    };
+                  }),
+              },
+            ]
+          : [];
+      })
+    );
+  }
+
   getDgdTimelines(): Observable<any> {
-    const baseTemp = 10.0;
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
     const years = stats
       .map((s: MeteoStatEntry) => moment(s.date).year())
@@ -395,10 +444,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 },
                 data: stats
                   .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
-                  .filter((e: MeteoStatEntry) => e.tavg >= baseTemp)
+                  .filter((e: MeteoStatEntry) => e.tavg >= this.BASE_TEMP)
                   .map((e: MeteoStatEntry) => ({
                     date: e.date,
-                    value: Math.ceil((e.tavg - baseTemp) * 100) / 100,
+                    value: Math.ceil((e.tavg - this.BASE_TEMP) * 100) / 100,
                   }))
                   .map((e: { date: string; value: number }) => {
                     degreeDaysSum += e.value;
