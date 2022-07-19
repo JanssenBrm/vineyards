@@ -25,6 +25,7 @@ enum StatTypes {
   DGD = 'Growing Days',
   BRIX = 'Brix',
   SUNHOURS = 'Sun Hours',
+  HUMIDITY = 'Humidity',
 }
 
 @Component({
@@ -53,7 +54,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   public activeVarieties: string[];
 
-  public stats = Object.values(StatTypes).filter((t) => ![StatTypes.SUNHOURS].includes(t));
+  public stats = Object.values(StatTypes).filter((t) => ![StatTypes.SUNHOURS, StatTypes.HUMIDITY].includes(t));
 
   public activeStats: StatTypes[] = [StatTypes.ACTIONS];
 
@@ -86,7 +87,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     if (changes.integrations) {
       const stats = [...this.stats];
       if (this.integrationsService.hasIntegration(IntegrationType.WEATHER_STATION)) {
-        stats.push(StatTypes.SUNHOURS);
+        stats.push(...[StatTypes.SUNHOURS, StatTypes.HUMIDITY]);
       }
       this.stats = [...new Set(stats)];
     }
@@ -127,6 +128,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       ...this.getDgdAxis(),
       ...this.getBrixAxis(),
       ...this.getSunHoursAxis(),
+      ...this.getHumidityAxis(),
     ];
     axes.forEach((a: any) => this._chart.addAxis(a));
   }
@@ -152,6 +154,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
     if (this.activeStats.includes(StatTypes.SUNHOURS)) {
       requests.push(this.getWeatherStationSunHours());
+    }
+
+    if (this.activeStats.includes(StatTypes.HUMIDITY)) {
+      requests.push(this.getWeatherStationHumidity());
     }
 
     if (requests.length > 0) {
@@ -243,6 +249,21 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     return [
       {
         id: 'sunhours',
+        labels: {
+          format: '{value} hours',
+        },
+        title: {
+          text: 'Sun Hours',
+        },
+        opposite: false,
+      },
+    ];
+  }
+
+  getHumidityAxis(): any[] {
+    return [
+      {
+        id: 'humidity',
         labels: {
           format: '{value} hours',
         },
@@ -400,6 +421,36 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   .map((e: WeatherStationInfo) => ({
                     x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                     y: e.sunhours,
+                  })),
+              },
+            ]
+          : [];
+      })
+    );
+  }
+
+  getWeatherStationHumidity(): Observable<any> {
+    return this.getWeatherStationData().pipe(
+      switchMap(({ year, stats }) => {
+        return year && stats
+          ? [
+              {
+                id: `Station Humidity ${year} `,
+                name: `Station Humidity ${year}`,
+                type: 'spline',
+                yAxis: 'humidity',
+                color: COLOR.STATION_HUMIDITY,
+                showInNavigator: true,
+                tooltip: {
+                  formatter(point) {
+                    return `<span style="color:${point.color}">●</span>  <b>Station Humidity ${year}</b>: ${point.y}`;
+                  },
+                },
+                data: stats
+                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .map((e: WeatherStationInfo) => ({
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    y: e.humidity,
                   })),
               },
             ]
