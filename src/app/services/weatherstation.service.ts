@@ -11,6 +11,6 @@ export class WeatherStationService {
   constructor(private http: HttpClient) {}
 
   public readWeatherData(integration: Integration): Observable<WeatherStationInfo[]> {
-    return this.http.get<WeatherStationInfo[]>(`${integration.url}?apiKey=${integration.key}`);
+    return this.http.get<WeatherStationInfo[]>(`${integration.url}/daily?apiKey=${integration.key}`);
   }
 }
