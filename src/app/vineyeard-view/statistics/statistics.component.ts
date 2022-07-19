@@ -354,7 +354,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 name: `Station Temperature ${year}`,
                 type: 'spline',
                 yAxis: 'temperature',
-                color: this.colorService.darken(COLOR.TEMP, 5),
+                color: COLOR.STATION_TEMP,
                 showInNavigator: true,
                 tooltip: {
                   formatter(point) {
@@ -385,7 +385,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 name: `Station Degree days ${year}`,
                 type: 'spline',
                 yAxis: 'degreedays',
-                color: COLOR.GDD,
+                color: COLOR.STATION_GDD,
                 showInNavigator: true,
                 tooltip: {
                   formatter(point) {
