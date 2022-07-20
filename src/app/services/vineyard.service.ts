@@ -195,7 +195,9 @@ export class VineyardService {
   }
 
   async deleteVineyard(id: string): Promise<void> {
-    return this._vineyardCollection.doc(id).delete();
+    await this._vineyardCollection.doc(id).delete();
+    const vineyards: Vineyard[] = this._vineyards$.getValue().filter((v: Vineyard) => v.id !== id);
+    this._vineyards$.next(vineyards);
   }
 
   getMeteoYears(info: Vineyard): number[] {
