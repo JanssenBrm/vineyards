@@ -1,12 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SeasonsService} from '../../services/seasons.service';
-import {ModalController, NavController} from '@ionic/angular';
-import {Vineyard} from '../../models/vineyard.model';
-import {Location} from '@angular/common';
-import {Vintage} from '../../models/vintage.model';
-import {AddVintageComponent} from '../add-vintage/add-vintage.component';
-import {VintageService} from '../../services/vintage.service';
-import {VarietyService} from '../../services/variety.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SeasonsService } from '../../services/seasons.service';
+import { ModalController, NavController } from '@ionic/angular';
+import { Vineyard } from '../../models/vineyard.model';
+import { Location } from '@angular/common';
+import { Vintage } from '../../models/vintage.model';
+import { AddVintageComponent } from '../add-vintage/add-vintage.component';
+import { VintageService } from '../../services/vintage.service';
+import { VarietyService } from '../../services/variety.service';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +14,6 @@ import {VarietyService} from '../../services/variety.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-
   @Input()
   seasons: number[];
 
@@ -34,27 +33,29 @@ export class MenuComponent implements OnInit {
   seasonsUpdated: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   @Output()
-  tabUpdated: EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'> = new EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'>();
+  tabUpdated: EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'> = new EventEmitter<
+    'info' | 'actions' | 'stats' | 'vintages' | 'notes'
+  >();
 
   @Output()
   openVintage: EventEmitter<Vintage> = new EventEmitter<Vintage>();
 
   public activePage: string;
+
   public activeSubMenus: string[] = [];
 
   constructor(
-      private seasonService: SeasonsService,
-      private navController: NavController,
-      private location: Location,
-      private modalController: ModalController,
-      public vintageService: VintageService,
-      public varietyService: VarietyService
-  ) { }
+    private seasonService: SeasonsService,
+    private navController: NavController,
+    private location: Location,
+    private modalController: ModalController,
+    public vintageService: VintageService,
+    public varietyService: VarietyService
+  ) {}
 
   ngOnInit() {
     const path = this.location.path().split('/');
     this.activePage = path[path.length - 1];
-    console.log(this.activePage);
   }
 
   setSeasons(years: number[]): void {
@@ -85,7 +86,7 @@ export class MenuComponent implements OnInit {
       component: AddVintageComponent,
       componentProps: {
         vineyard: this.activeVineyard,
-      }
+      },
     });
     modal.present();
 
@@ -96,7 +97,7 @@ export class MenuComponent implements OnInit {
   }
 
   private parseVintage(vintage: Vintage) {
-     this.vintageService.addVintage(this.activeVineyard, vintage);
+    this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   viewVintage(vintage: Vintage) {
@@ -104,7 +105,4 @@ export class MenuComponent implements OnInit {
     this.activePage = undefined;
     this.openVintage.emit(vintage);
   }
-
-
-
 }
