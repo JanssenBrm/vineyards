@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
-import {AngularFirestore, AngularFirestoreCollection, DocumentChangeAction} from '@angular/fire/firestore';
-import {VineyardDoc} from '../models/vineyarddoc.model';
-import {BehaviorSubject} from 'rxjs';
-import {Action, ACTION_COLORS, ActionType} from '../models/action.model';
-import {AuthService} from './auth.service';
-import {User} from 'firebase';
-import {MeteoStatEntry, MeteoStats, Vineyard} from '../models/vineyard.model';
-import {map} from 'rxjs/operators';
-import {ACTION_COLLECTION} from './action.service';
-import {MeteoStat} from '../../../functions/src/models/stats.model';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { VineyardDoc } from '../models/vineyarddoc.model';
+import { BehaviorSubject } from 'rxjs';
+import { Action, ACTION_COLORS, ActionType } from '../models/action.model';
+import { AuthService } from './auth.service';
+import { User } from 'firebase';
+import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
+import { map } from 'rxjs/operators';
 
 export const STATS_COLLECTION = 'stats';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StatisticsService {
-
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
+
   private _meteoStats: BehaviorSubject<MeteoStatEntry[]>;
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService) {
@@ -33,12 +31,14 @@ export class StatisticsService {
     return this._meteoStats;
   }
 
-
   public getMeteoStats(vineyard: Vineyard): void {
-    this._vineyardCollection.doc(vineyard.id).collection<any>(STATS_COLLECTION)
-        .doc('meteo').snapshotChanges().pipe(
-        map((data) => (data.payload.data() as MeteoStats).data),
-    ).subscribe((entries: MeteoStatEntry[]) => this._meteoStats.next(entries));
+    this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<any>(STATS_COLLECTION)
+      .doc('meteo')
+      .snapshotChanges()
+      .pipe(map((data) => (data.payload.data() as MeteoStats)?.data || []))
+      .subscribe((entries: MeteoStatEntry[]) => this._meteoStats.next(entries));
   }
 
   public getLastUpdate(actions: Action[]): string {

@@ -33,7 +33,7 @@ export class IntegrationsService {
       .snapshotChanges()
       .pipe(
         map((data: DocumentChangeAction<Integration[]>[]) => (data ? data[0] : undefined)),
-        map((docs: DocumentChangeAction<Integration[]>) => [].concat(docs.payload.doc.data() ?? [])),
+        map((docs: DocumentChangeAction<Integration[]>) => [].concat(docs?.payload.doc.data() ?? [])),
         map((integrations: Integration[]) =>
           integrations.filter((i: Integration) => (i.vineyards || []).includes(vineyard.id))
         )
