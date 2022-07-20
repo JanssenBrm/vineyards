@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/JanssenBrm/winery/compare/v1.4.0...v1.5.0) (2022-07-20)
+
+
+### Bug Fixes
+
+* fixed issue for new vineyards ([e8a0e4c](https://github.com/JanssenBrm/winery/commit/e8a0e4cb19764ec88b2e2c565f566233d4c36777))
+* remove feature when deleting vineyard ([8518825](https://github.com/JanssenBrm/winery/commit/8518825b18c871da837aef22fbb662ee6b37625f))
+
+
+### Features
+
+* added support for entering address of new vineyard ([f95a241](https://github.com/JanssenBrm/winery/commit/f95a241f9a4852bd7932b11d7dbc67128a0294e8))
+
 # [1.4.0](https://github.com/JanssenBrm/winery/compare/v1.3.2...v1.4.0) (2022-07-19)
 
 
