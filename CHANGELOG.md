@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/JanssenBrm/winery/compare/v1.7.1...v1.7.2) (2022-07-25)
+
+
+### Bug Fixes
+
+* fixes after eslint fixes ([a782701](https://github.com/JanssenBrm/winery/commit/a782701ba5d3ac6db73104f8d7f49361139eca28))
+
 ## [1.7.1](https://github.com/JanssenBrm/winery/compare/v1.7.0...v1.7.1) (2022-07-25)
 
 
