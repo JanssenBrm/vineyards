@@ -1,3 +1,16 @@
+# [1.8.0](https://github.com/JanssenBrm/winery/compare/v1.7.3...v1.8.0) (2022-07-25)
+
+
+### Bug Fixes
+
+* filter bbch graphs based on active varieties ([01c2579](https://github.com/JanssenBrm/winery/commit/01c25795ecceaefc46f9a6418ddc6784d6760dc1))
+* fixed issue where loading kept showing ([26f92fd](https://github.com/JanssenBrm/winery/commit/26f92fda53b284aa8cf10b207954ba866455aa3d))
+
+
+### Features
+
+* added BBCH stages as a stepped graph ([9d3266c](https://github.com/JanssenBrm/winery/commit/9d3266c7c2bd4f7e5d8ab8bdaad9c6cc6dbe944a))
+
 ## [1.7.3](https://github.com/JanssenBrm/winery/compare/v1.7.2...v1.7.3) (2022-07-25)
 
 
