@@ -1,6 +1,6 @@
-import {Variety} from './variety.model';
+import { Variety } from './variety.model';
 
 export interface Season {
-    year: number;
-    varieties: Variety[];
+  year: number;
+  varieties: Variety[];
 }

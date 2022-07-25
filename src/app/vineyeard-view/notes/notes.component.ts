@@ -1,12 +1,12 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Note} from '../../models/note.model';
-import {NotesService} from '../../services/notes.service';
-import {Vineyard} from '../../models/vineyard.model';
-import {Vintage} from '../../models/vintage.model';
-import {AddNoteComponent} from '../add-note/add-note.component';
-import {ModalController} from '@ionic/angular';
-import {BehaviorSubject} from 'rxjs';
-import {VintageEvent, VINTAGEEVENT_COLORS} from '../../models/vintageevent.model';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Note } from '../../models/note.model';
+import { NotesService } from '../../services/notes.service';
+import { Vineyard } from '../../models/vineyard.model';
+import { Vintage } from '../../models/vintage.model';
+import { AddNoteComponent } from '../add-note/add-note.component';
+import { ModalController } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vintageevent.model';
 
 @Component({
   selector: 'app-notes',
@@ -14,7 +14,6 @@ import {VintageEvent, VINTAGEEVENT_COLORS} from '../../models/vintageevent.model
   styleUrls: ['./notes.component.scss'],
 })
 export class NotesComponent implements OnInit, OnChanges {
-
   @Input()
   vineyard: Vineyard;
 
@@ -22,20 +21,18 @@ export class NotesComponent implements OnInit, OnChanges {
   vintage: Vintage;
 
   public notes$: BehaviorSubject<Note[]> = null;
-  public  STAGE = VintageEvent;
+
+  public STAGE = VintageEvent;
 
   public activeTypes: string[] = Object.keys(VintageEvent);
 
-  constructor(
-      private notesService: NotesService,
-      private modalController: ModalController
-  ) { }
+  constructor(private notesService: NotesService, private modalController: ModalController) {}
 
   ngOnInit() {
     this.notes$ = this.notesService.getNotesListener();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.notesService.getNotes(this.vineyard, this.vintage);
   }
 
@@ -45,8 +42,8 @@ export class NotesComponent implements OnInit, OnChanges {
       componentProps: {
         vineyard: this.vineyard,
         vintage: this.vintage,
-        note
-      }
+        note,
+      },
     });
     modal.present();
 
@@ -57,7 +54,9 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   private parseNote(note: Note) {
-    note.id ?  this.notesService.updateNote(this.vineyard, this.vintage, note) : this.notesService.addNote(this.vineyard, this.vintage, note);
+    note.id
+      ? this.notesService.updateNote(this.vineyard, this.vintage, note)
+      : this.notesService.addNote(this.vineyard, this.vintage, note);
   }
 
   deleteNote(note: Note) {
@@ -70,7 +69,7 @@ export class NotesComponent implements OnInit, OnChanges {
 
   getEventTypeColor(stage: string): string {
     const idx = Object.keys(this.STAGE).findIndex((s: string) => s === stage);
-    if (idx >= 0 && this.activeTypes.find(s => s === stage)) {
+    if (idx >= 0 && this.activeTypes.find((s) => s === stage)) {
       return VINTAGEEVENT_COLORS[idx];
     } else {
       return 'lightgrey';
@@ -78,11 +77,10 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   toggleNoteType(stage: string) {
-    if (this.activeTypes.find(s => s === stage)) {
-      this.activeTypes = this.activeTypes.filter(s => s !== stage);
+    if (this.activeTypes.find((s) => s === stage)) {
+      this.activeTypes = this.activeTypes.filter((s) => s !== stage);
     } else {
       this.activeTypes = [...this.activeTypes, stage];
     }
   }
-
 }

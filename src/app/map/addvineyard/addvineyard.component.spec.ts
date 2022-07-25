@@ -9,8 +9,8 @@ describe('AddvineyardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddvineyardComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [AddvineyardComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddvineyardComponent);

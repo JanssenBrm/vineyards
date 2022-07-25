@@ -9,8 +9,8 @@ describe('UserbuttonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserbuttonComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [UserbuttonComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserbuttonComponent);

@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { VineyardViewPage } from './vineyard-view-page.component';
-import {BrixToAlcoholPipe} from '../pipes/brix-to-alcohol.pipe';
+import { BrixToAlcoholPipe } from '../pipes/brix-to-alcohol.pipe';
 
 const routes: Routes = [
   {
     path: ':id/:tab',
-    component: VineyardViewPage
+    component: VineyardViewPage,
   },
   {
     path: ':id/:tab/:subId',
-    component: VineyardViewPage
+    component: VineyardViewPage,
   },
 ];
 

@@ -3,13 +3,13 @@ import { BBCH_STAGES } from './../../conf/bbch.config';
 import { ActionType } from 'src/app/models/action.model';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {LoadingController, ModalController} from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
-import {Action} from '../../../../functions/src/models/action.model';
-import {BehaviorSubject, forkJoin} from 'rxjs';
-import {VarietyService} from '../../services/variety.service';
-import {Variety} from '../../models/variety.model';
-import {UploadService} from '../../services/upload.service';
+import { Action } from '../../../../functions/src/models/action.model';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { VarietyService } from '../../services/variety.service';
+import { Variety } from '../../models/variety.model';
+import { UploadService } from '../../services/upload.service';
 import * as moment from 'moment';
 
 @Component({
@@ -18,25 +18,29 @@ import * as moment from 'moment';
   styleUrls: ['./add-action.component.scss'],
 })
 export class AddActionComponent implements OnInit {
-
   @Input()
   vineyard: Vineyard;
 
   @Input()
   action: Action;
-  
-  constructor(private modalController: ModalController,
-              private varietyService: VarietyService,
-              private uploadService: UploadService,
-              private loadingController: LoadingController) { }
+
+  constructor(
+    private modalController: ModalController,
+    private varietyService: VarietyService,
+    private uploadService: UploadService,
+    private loadingController: LoadingController
+  ) {}
 
   public actionForm: FormGroup;
+
   public actionTypes: string[];
+
   public bbchCodes: BBCH[];
 
   public varieties: BehaviorSubject<Variety[]>;
 
   private _files: File[];
+
   private _loading: HTMLIonLoadingElement;
 
   ngOnInit() {
@@ -48,7 +52,10 @@ export class AddActionComponent implements OnInit {
     if (this.action) {
       console.log(this.action);
       this.actionForm = new FormGroup({
-        type: new FormControl(this.actionTypes.find((a: string) => ActionType[a] === this.action.type), [Validators.required]),
+        type: new FormControl(
+          this.actionTypes.find((a: string) => ActionType[a] === this.action.type),
+          [Validators.required]
+        ),
         date: new FormControl(this.action.date, [Validators.required]),
         description: new FormControl(this.action.description),
         bbch: new FormControl(this.action.bbch),
@@ -57,7 +64,7 @@ export class AddActionComponent implements OnInit {
         rows: new FormControl(''),
         plantsPerRow: new FormControl(''),
         value: new FormControl(''),
-        files: new FormControl([this.action.files])
+        files: new FormControl([this.action.files]),
       });
 
       if (this.action.type === 'planting') {
@@ -77,7 +84,7 @@ export class AddActionComponent implements OnInit {
         rows: new FormControl(''),
         plantsPerRow: new FormControl(''),
         value: new FormControl(''),
-        files: new FormControl([])
+        files: new FormControl([]),
       });
     }
 
@@ -91,7 +98,7 @@ export class AddActionComponent implements OnInit {
         this.actionForm.get('plantsPerRow').setValidators([Validators.required]);
         this.actionForm.get('varietyId').setValidators(null);
         this.actionForm.get('varietyId').setValue([]);
-      }  else if (type === 'Brix') {
+      } else if (type === 'Brix') {
         this.actionForm.get('value').setValidators([Validators.required]);
       } else {
         this.actionForm.get('bbch').setValidators(null);
@@ -112,7 +119,12 @@ export class AddActionComponent implements OnInit {
     if (this._files.length > 0) {
       this.presentLoading();
       forkJoin(
-          this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/actions/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
+        this._files.map((f) =>
+          this.uploadService.uploadFile(
+            `attachments/${this.vineyard.id}/actions/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`,
+            f
+          )
+        )
       ).subscribe((urls: string[]) => {
         this.hideLoading();
         this.closeDialog(urls);
@@ -144,14 +156,14 @@ export class AddActionComponent implements OnInit {
         id: this.action ? this.action.id : '',
         date: this.actionForm.value.date.split('T')[0],
         type: ActionType[this.actionForm.value.type],
-        files: files !== undefined ? files : []
-      }});
+        files: files !== undefined ? files : [],
+      },
+    });
   }
 
   discard() {
     this.modalController.dismiss({
-      action: undefined
+      action: undefined,
     });
   }
-
 }

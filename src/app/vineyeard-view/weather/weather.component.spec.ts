@@ -9,8 +9,8 @@ describe('WeatherComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WeatherComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [WeatherComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WeatherComponent);

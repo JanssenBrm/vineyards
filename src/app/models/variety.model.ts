@@ -1,6 +1,6 @@
 export interface Variety {
-    name: string;
-    rows: number;
-    plantsPerRow: number;
-    id?: string;
+  name: string;
+  rows: number;
+  plantsPerRow: number;
+  id?: string;
 }

@@ -4,15 +4,13 @@ import { Injectable } from '@angular/core';
 import { createEmpty, extend } from 'ol/extent';
 import Polygon from 'ol/geom/Polygon';
 import { BBCH } from '../models/bbch.model';
-import {Platform} from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilService {
-  constructor(
-      public platform: Platform
-  ) { }
+  constructor(public platform: Platform) {}
 
   getExtent(locations: Polygon[]): any {
     let extent = createEmpty();
@@ -20,13 +18,12 @@ export class UtilService {
       extent = extend(extent, p.getExtent());
     });
     return extent;
-
   }
 
   reproject(v: Vineyard, from: string, to: string): Vineyard {
     return {
       ...v,
-      location: new Polygon(v.location.coordinates).transform(from, to)
+      location: new Polygon(v.location.coordinates).transform(from, to),
     };
   }
 

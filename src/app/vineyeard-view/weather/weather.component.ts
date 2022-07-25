@@ -1,10 +1,10 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Vineyard} from '../../models/vineyard.model';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Vineyard } from '../../models/vineyard.model';
 
-import {HttpClient} from '@angular/common/http';
-import {WeatherInfo} from '../../models/weather.model';
-import {WeatherService} from '../../services/weather.service';
-import {BehaviorSubject} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { WeatherInfo } from '../../models/weather.model';
+import { WeatherService } from '../../services/weather.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-weather',
@@ -12,16 +12,12 @@ import {BehaviorSubject} from 'rxjs';
   styleUrls: ['./weather.component.scss'],
 })
 export class WeatherComponent implements OnChanges {
-
   @Input()
   vineyard: Vineyard;
 
   public conditions: BehaviorSubject<WeatherInfo[]>;
 
-  constructor(
-      private http: HttpClient,
-      private weatherService: WeatherService
-  ) { }
+  constructor(private http: HttpClient, private weatherService: WeatherService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.vineyard && this.vineyard) {

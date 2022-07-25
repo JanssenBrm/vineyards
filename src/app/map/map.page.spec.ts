@@ -9,8 +9,8 @@ describe('MapPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [MapPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapPage);

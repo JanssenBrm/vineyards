@@ -9,8 +9,8 @@ describe('VineyeardViewPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VineyardViewPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [VineyardViewPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VineyardViewPage);

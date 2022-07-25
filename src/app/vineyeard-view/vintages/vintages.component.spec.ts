@@ -9,8 +9,8 @@ describe('VintagesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VintagesComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [VintagesComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VintagesComponent);

@@ -1,35 +1,29 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {BACKGROUND_LAYERS} from '../../../../conf/layers.config';
-import {PopoverController} from '@ionic/angular';
-import {Layer} from '../../../../models/layer.model';
+import { Component, Input } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { Layer } from '../../../../models/layer.model';
 
 @Component({
   selector: 'app-layers',
   templateUrl: './layers.component.html',
   styleUrls: ['./layers.component.scss'],
 })
-export class LayersComponent implements OnInit {
-
+export class LayersComponent {
   @Input()
   public layers: Layer[];
 
-  constructor(
-      private popoverController: PopoverController
-  ) { }
-
-  ngOnInit() {}
+  constructor(private popoverController: PopoverController) {}
 
   toggleLayer(layer: Layer) {
-    this.layers = this.layers.map((l: Layer)  => ({
+    this.layers = this.layers.map((l: Layer) => ({
       ...l,
-      enabled: l.id === layer.id ? !l.enabled : l.enabled
+      enabled: l.id === layer.id ? !l.enabled : l.enabled,
     }));
     this.save();
   }
 
   save() {
     this.popoverController.dismiss({
-      layers: this.layers
+      layers: this.layers,
     });
   }
 }

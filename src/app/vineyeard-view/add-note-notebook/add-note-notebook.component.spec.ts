@@ -9,8 +9,8 @@ describe('AddNoteNotebookComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddNoteNotebookComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [AddNoteNotebookComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddNoteNotebookComponent);

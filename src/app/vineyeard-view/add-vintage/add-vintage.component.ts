@@ -1,16 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Vineyard} from '../../models/vineyard.model';
-import {ActionType} from '../../models/action.model';
-import {LoadingController, ModalController} from '@ionic/angular';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Vineyard } from '../../models/vineyard.model';
+import { LoadingController, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
-import {Vintage, VINTAGE_STATUS} from '../../models/vintage.model';
-import {VintageColor} from '../../models/vintagecolor.model';
-import {UploadService} from '../../services/upload.service';
-import {BehaviorSubject, forkJoin} from 'rxjs';
-import {VintageEvent} from '../../models/vintageevent.model';
-import {Variety} from '../../models/variety.model';
-import {VarietyService} from '../../services/variety.service';
+import { Vintage, VintageStatus } from '../../models/vintage.model';
+import { VintageColor } from '../../models/vintagecolor.model';
+import { UploadService } from '../../services/upload.service';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { Variety } from '../../models/variety.model';
+import { VarietyService } from '../../services/variety.service';
 
 @Component({
   selector: 'app-add-vintage',
@@ -18,7 +16,6 @@ import {VarietyService} from '../../services/variety.service';
   styleUrls: ['./add-vintage.component.scss'],
 })
 export class AddVintageComponent implements OnInit {
-
   @Input()
   vineyard: Vineyard;
 
@@ -26,22 +23,25 @@ export class AddVintageComponent implements OnInit {
   vintage: Vintage;
 
   public vintageForm: FormGroup;
+
   public colors: string[];
 
   private _files: File[];
+
   private _loading: HTMLIonLoadingElement;
 
-  public VINTAGE_STATUS = VINTAGE_STATUS;
-  public STATUSES = Object.keys(VINTAGE_STATUS);
+  public VINTAGE_STATUS = VintageStatus;
+
+  public STATUSES = Object.keys(VintageStatus);
 
   public varieties: BehaviorSubject<Variety[]>;
 
   constructor(
-      private modalController: ModalController,
-      private uploadService: UploadService,
-      private varietyService: VarietyService,
-      private loadingController: LoadingController
-  ) { }
+    private modalController: ModalController,
+    private uploadService: UploadService,
+    private varietyService: VarietyService,
+    private loadingController: LoadingController
+  ) {}
 
   ngOnInit() {
     this.colors = Object.keys(VintageColor);
@@ -53,7 +53,7 @@ export class AddVintageComponent implements OnInit {
         color: new FormControl(this.vintage.color, [Validators.required]),
         varieties: new FormControl(this.vintage.varieties, [Validators.required]),
         cover: new FormControl([this.vintage.cover]),
-        status: new FormControl(this.vintage.status, [Validators.required])
+        status: new FormControl(this.vintage.status, [Validators.required]),
       });
     } else {
       this.vintageForm = new FormGroup({
@@ -62,10 +62,9 @@ export class AddVintageComponent implements OnInit {
         color: new FormControl('', [Validators.required]),
         varieties: new FormControl([], [Validators.required]),
         cover: new FormControl([]),
-        status: new FormControl(this.STATUSES[0], [Validators.required])
+        status: new FormControl(this.STATUSES[0], [Validators.required]),
       });
     }
-
   }
 
   readFile(filelist: FileList) {
@@ -76,7 +75,12 @@ export class AddVintageComponent implements OnInit {
     if (this._files && this._files.length > 0) {
       this.presentLoading();
       forkJoin(
-          this._files.map(f => this.uploadService.uploadFile(`attachments/${this.vineyard.id}/${this.vintage.id}/cover/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`, f))
+        this._files.map((f) =>
+          this.uploadService.uploadFile(
+            `attachments/${this.vineyard.id}/${this.vintage.id}/cover/${f.name}_${moment().format('YYYYMMDD_HHmmSS')}`,
+            f
+          )
+        )
       ).subscribe((urls: string[]) => {
         this.hideLoading();
         this.closeDialog(urls);
@@ -88,9 +92,7 @@ export class AddVintageComponent implements OnInit {
         this.closeDialog([]);
       }
     }
-
   }
-
 
   async presentLoading() {
     this._loading = await this.loadingController.create({
@@ -108,17 +110,15 @@ export class AddVintageComponent implements OnInit {
       vintage: {
         id: this.vintage ? this.vintage.id : '',
         ...this.vintageForm.value,
-        year: moment(this.vintageForm.value.year.replace('\'', '')).year(),
-        cover: files !== undefined && files.length > 0 ? files[0] : 'assets/images/vintage.jpg'
-      }});
+        year: moment(this.vintageForm.value.year.replace("'", '')).year(),
+        cover: files !== undefined && files.length > 0 ? files[0] : 'assets/images/vintage.jpg',
+      },
+    });
   }
 
   discard() {
     this.modalController.dismiss({
-      vintage: undefined
+      vintage: undefined,
     });
   }
-
-
-
 }

@@ -1,11 +1,5 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Season } from 'src/app/models/season.model';
-import {MenuController, PopoverController} from '@ionic/angular';
-import {AuthService} from '../../../services/auth.service';
-import {BehaviorSubject} from 'rxjs';
-import {User} from 'firebase';
-import {UsermenuComponent} from '../usermenu/usermenu.component';
-import {UtilService} from '../../../services/util.service';
+import { Component, Input } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +7,6 @@ import {UtilService} from '../../../services/util.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-
   @Input()
   title: string;
 
@@ -23,13 +16,9 @@ export class HeaderComponent {
   @Input()
   showBackButton = true;
 
+  constructor(private menuController: MenuController) {}
 
-  constructor(
-      private menuController: MenuController,
-  ) { }
-
-  async toggleMenu(id: string) {
-      await this.menuController.open();
+  async toggleMenu() {
+    await this.menuController.open();
   }
-
 }

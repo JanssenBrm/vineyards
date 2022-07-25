@@ -1,27 +1,20 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActionType} from '../../../models/action.model';
-import {ModalController} from '@ionic/angular';
+import { Component, Input } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-confirm',
   templateUrl: './confirm.component.html',
   styleUrls: ['./confirm.component.scss'],
 })
-export class ConfirmComponent implements OnInit {
-
+export class ConfirmComponent {
   @Input()
   message: string;
 
-  constructor(
-      private modalController: ModalController
-  ) { }
-
-  ngOnInit() {}
+  constructor(private modalController: ModalController) {}
 
   close(confirm: boolean) {
     this.modalController.dismiss({
-      confirm});
+      confirm,
+    });
   }
-
-
 }

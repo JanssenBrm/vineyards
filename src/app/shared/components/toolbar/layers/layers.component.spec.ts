@@ -9,8 +9,8 @@ describe('LayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LayersComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [LayersComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LayersComponent);

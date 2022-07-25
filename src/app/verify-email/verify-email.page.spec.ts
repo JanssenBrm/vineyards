@@ -9,8 +9,8 @@ describe('VerifyEmailPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VerifyEmailPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [VerifyEmailPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerifyEmailPage);

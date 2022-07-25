@@ -9,8 +9,8 @@ describe('AddVintageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddVintageComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [AddVintageComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddVintageComponent);

@@ -1,6 +1,5 @@
-
 export enum VintageColor {
-    RED = 'red',
-    WHITE = 'white',
-    ROSE = 'rose'
+  RED = 'red',
+  WHITE = 'white',
+  ROSE = 'rose',
 }

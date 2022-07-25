@@ -1,12 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Vineyard} from '../../models/vineyard.model';
-import {Note} from '../../models/note.model';
-import {AddNoteComponent} from '../add-note/add-note.component';
-import {ModalController} from '@ionic/angular';
-import {VineyardNote} from '../../models/vineyardnote.model';
-import {VineyardNotesService} from '../../services/vineyardnotes.service';
-import {BehaviorSubject} from 'rxjs';
-import {AddNoteNotebookComponent} from '../add-note-notebook/add-note-notebook.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { Vineyard } from '../../models/vineyard.model';
+import { ModalController } from '@ionic/angular';
+import { VineyardNote } from '../../models/vineyardnote.model';
+import { VineyardNotesService } from '../../services/vineyardnotes.service';
+import { BehaviorSubject } from 'rxjs';
+import { AddNoteNotebookComponent } from '../add-note-notebook/add-note-notebook.component';
 
 @Component({
   selector: 'app-notebook',
@@ -14,14 +12,14 @@ import {AddNoteNotebookComponent} from '../add-note-notebook/add-note-notebook.c
   styleUrls: ['./notebook.component.scss'],
 })
 export class NotebookComponent implements OnInit {
-
   @Input()
   vineyard: Vineyard;
 
   public notes$: BehaviorSubject<VineyardNote[]> = null;
+
   public filter: string = '';
 
-  constructor(private modalController: ModalController, private notesService: VineyardNotesService) { }
+  constructor(private modalController: ModalController, private notesService: VineyardNotesService) {}
 
   ngOnInit() {
     this.notes$ = this.notesService.getNotesListener();
@@ -31,8 +29,8 @@ export class NotebookComponent implements OnInit {
     const modal = await this.modalController.create({
       component: AddNoteNotebookComponent,
       componentProps: {
-        note
-      }
+        note,
+      },
     });
     modal.present();
 
@@ -51,11 +49,10 @@ export class NotebookComponent implements OnInit {
   }
 
   private parseNote(note: VineyardNote) {
-    note.id ?  this.notesService.updateNote(this.vineyard, note) : this.notesService.addNote(this.vineyard, note);
+    note.id ? this.notesService.updateNote(this.vineyard, note) : this.notesService.addNote(this.vineyard, note);
   }
 
   setTagFilter(filter: string) {
     this.filter = `tag:${filter}`;
   }
-
 }

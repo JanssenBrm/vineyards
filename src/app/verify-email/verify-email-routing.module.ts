@@ -6,8 +6,8 @@ import { VerifyEmailPage } from './verify-email.page';
 const routes: Routes = [
   {
     path: '',
-    component: VerifyEmailPage
-  }
+    component: VerifyEmailPage,
+  },
 ];
 
 @NgModule({

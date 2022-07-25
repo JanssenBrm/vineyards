@@ -9,8 +9,8 @@ describe('WarningsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WarningsComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [WarningsComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WarningsComponent);

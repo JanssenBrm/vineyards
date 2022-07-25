@@ -1,10 +1,9 @@
 import { MapMode } from './../../../models/mapmode.model';
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import {UsermenuComponent} from '../usermenu/usermenu.component';
-import {PopoverController} from '@ionic/angular';
-import {LayersComponent} from './layers/layers.component';
-import {BACKGROUND_LAYERS} from '../../../conf/layers.config';
-import {Layer} from '../../../models/layer.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { LayersComponent } from './layers/layers.component';
+import { BACKGROUND_LAYERS } from '../../../conf/layers.config';
+import { Layer } from '../../../models/layer.model';
 import { OverlayEventDetail } from '@ionic/core';
 
 @Component({
@@ -12,8 +11,7 @@ import { OverlayEventDetail } from '@ionic/core';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
-export class ToolbarComponent implements OnInit, OnChanges {
-
+export class ToolbarComponent {
   @Input()
   dirty: boolean;
 
@@ -33,14 +31,7 @@ export class ToolbarComponent implements OnInit, OnChanges {
 
   public layers: Layer[] = [...BACKGROUND_LAYERS];
 
-  constructor(
-      private popoverController: PopoverController,
-  ) { }
-
-  ngOnInit() {}
-
-  ngOnChanges(changes: SimpleChanges) {
-  }
+  constructor(private popoverController: PopoverController) {}
 
   save(): void {
     this.updateState.emit(true);
@@ -61,8 +52,8 @@ export class ToolbarComponent implements OnInit, OnChanges {
       showBackdrop: false,
       translucent: true,
       componentProps: {
-        layers: this.layers
-      }
+        layers: this.layers,
+      },
     });
     popover.onDidDismiss().then((e: OverlayEventDetail<any>) => {
       if (e.data) {
@@ -70,7 +61,6 @@ export class ToolbarComponent implements OnInit, OnChanges {
         this.updateBackgroundLayers.emit(this.layers);
       }
     });
-    return await popover.present();
+    return popover.present();
   }
-
 }

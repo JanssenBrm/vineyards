@@ -1,5 +1,5 @@
 export enum MapMode {
-    Edit,
-    Add,
-    Remove
+  Edit,
+  Add,
+  Remove,
 }

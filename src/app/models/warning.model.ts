@@ -1,9 +1,8 @@
-export interface Warning {
-    date: string;
-    type: WARNING_TYPE;
-    description: string;
+export enum WarningType {
+  FROST = 'FROST',
 }
-
-export enum WARNING_TYPE {
-    FROST= 'FROST'
+export interface Warning {
+  date: string;
+  type: WarningType;
+  description: string;
 }

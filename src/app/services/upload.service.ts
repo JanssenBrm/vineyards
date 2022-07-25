@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {Observable, of} from 'rxjs';
-import {FileChangeEvent} from '@angular/compiler-cli/src/perform_watch';
-import {AngularFireStorage} from '@angular/fire/storage';
-import {delay, finalize, skipWhile, switchMap, tap} from 'rxjs/operators';
-import {UploadTaskSnapshot} from '@angular/fire/storage/interfaces';
+import { Observable } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { delay, skipWhile, switchMap } from 'rxjs/operators';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadService {
-
-  constructor(
-      private storage: AngularFireStorage
-  ) { }
+  constructor(private storage: AngularFireStorage) {}
 
   public readFileList(list: FileList): File[] {
     return [...new Array(list.length)].fill(1).map((val, idx) => list.item(idx));
@@ -23,9 +18,9 @@ export class UploadService {
     const ref = this.storage.ref(path);
     const task = ref.put(file);
     return task.snapshotChanges().pipe(
-        skipWhile((change: UploadTaskSnapshot) => change.bytesTransferred !== change.totalBytes),
-        delay(1000),
-        switchMap( (change: UploadTaskSnapshot) => ref.getDownloadURL())
+      skipWhile((change: UploadTaskSnapshot) => change.bytesTransferred !== change.totalBytes),
+      delay(1000),
+      switchMap(() => ref.getDownloadURL())
     );
   }
 }

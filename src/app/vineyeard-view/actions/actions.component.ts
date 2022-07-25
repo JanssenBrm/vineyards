@@ -1,27 +1,22 @@
 import { UtilService } from './../../services/util.service';
-import {Action, ACTION_COLORS, ActionType} from 'src/app/models/action.model';
-import {ModalController, Platform} from '@ionic/angular';
+import { Action, ActionType } from 'src/app/models/action.model';
+import { ModalController, Platform } from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
-import {Component, OnInit, Input, SimpleChanges, OnChanges} from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Vineyard } from 'src/app/models/vineyard.model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Router } from '@angular/router';
-import {AddActionComponent} from '../add-action/add-action.component';
-import * as uuid from 'uuid';
-import {BehaviorSubject} from 'rxjs';
-import {ActionService} from '../../services/action.service';
-import {VarietyService} from '../../services/variety.service';
-import {Variety} from '../../models/variety.model';
-import {SeasonsService} from '../../services/seasons.service';
-import {VINTAGEEVENT_COLORS} from '../../models/vintageevent.model';
+import { AddActionComponent } from '../add-action/add-action.component';
+import { ActionService } from '../../services/action.service';
+import { VarietyService } from '../../services/variety.service';
+import { Variety } from '../../models/variety.model';
 
 @Component({
   selector: 'app-actions',
   templateUrl: './actions.component.html',
   styleUrls: ['./actions.component.scss'],
 })
-export class ActionsComponent implements OnInit, OnChanges {
-
+export class ActionsComponent implements OnChanges {
   @Input()
   vineyard: Vineyard;
 
@@ -32,18 +27,25 @@ export class ActionsComponent implements OnInit, OnChanges {
   varieties: Variety[];
 
   ACTIONTYPES = ActionType;
+
   actionTypes = Object.keys(ActionType);
+
   activeTypes: string[] = Object.keys(ActionType);
+
   activeVarieties: string[];
 
-  constructor(public utilService: UtilService, public vineyardService: VineyardService, private photoViewer: PhotoViewer, private platform: Platform,
-              private router: Router,  private modalController: ModalController,
-              public actionService: ActionService,
-              public varietyService: VarietyService) { }
+  constructor(
+    public utilService: UtilService,
+    public vineyardService: VineyardService,
+    private photoViewer: PhotoViewer,
+    private platform: Platform,
+    private router: Router,
+    private modalController: ModalController,
+    public actionService: ActionService,
+    public varietyService: VarietyService
+  ) {}
 
-  ngOnInit() {}
-
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.activeVarieties = this.varieties.map((v: Variety) => v.id);
   }
 
@@ -53,7 +55,7 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   showPicture(url: string) {
     if (!this.platform.is('cordova')) {
-      window.location.href =  url;
+      window.location.href = url;
     } else {
       this.photoViewer.show(url);
     }
@@ -65,7 +67,7 @@ export class ActionsComponent implements OnInit, OnChanges {
 
   getActionTypeColor(stage: string): string {
     const color = this.actionService.getActionTypeColor(stage);
-    if (color && this.activeTypes.find(s => s === stage)) {
+    if (color && this.activeTypes.find((s) => s === stage)) {
       return color;
     } else {
       return 'lightgrey';
@@ -73,8 +75,8 @@ export class ActionsComponent implements OnInit, OnChanges {
   }
 
   toggleActionType(stage: string) {
-    if (this.activeTypes.find(s => s === stage)) {
-      this.activeTypes = this.activeTypes.filter(s => s !== stage);
+    if (this.activeTypes.find((s) => s === stage)) {
+      this.activeTypes = this.activeTypes.filter((s) => s !== stage);
     } else {
       this.activeTypes = [...this.activeTypes, stage];
     }
@@ -85,8 +87,8 @@ export class ActionsComponent implements OnInit, OnChanges {
       component: AddActionComponent,
       componentProps: {
         vineyard: this.vineyard,
-        action
-      }
+        action,
+      },
     });
     modal.present();
 
@@ -100,26 +102,30 @@ export class ActionsComponent implements OnInit, OnChanges {
     if (data.type === 'planting') {
       const variety = this.varietyService.getVarietyByName(data.variety);
       if (!variety) {
-        this.varietyService.addVariety(this.vineyard, {
-          plantsPerRow: data.plantsPerRow,
-          name: data.variety,
-          rows: data.rows
-        }).then((id: string ) => this.addAction({
-          id: data.id,
-          type: data.type,
-          date: data.date,
-          description: data.description,
-          bbch: data.bbch,
-          variety: [id],
-          value: data.value,
-          files: data.files
-        }));
+        this.varietyService
+          .addVariety(this.vineyard, {
+            plantsPerRow: data.plantsPerRow,
+            name: data.variety,
+            rows: data.rows,
+          })
+          .then((id: string) =>
+            this.addAction({
+              id: data.id,
+              type: data.type,
+              date: data.date,
+              description: data.description,
+              bbch: data.bbch,
+              variety: [id],
+              value: data.value,
+              files: data.files,
+            })
+          );
       } else {
         this.varietyService.updateVariety(this.vineyard, {
           ...variety,
           plantsPerRow: data.plantsPerRow,
           name: data.variety,
-          rows: data.rows
+          rows: data.rows,
         });
         data.varietyId = [variety.id];
         this.addAction({
@@ -130,7 +136,7 @@ export class ActionsComponent implements OnInit, OnChanges {
           bbch: data.bbch,
           variety: data.varietyId,
           value: data.value,
-          files: data.files
+          files: data.files,
         });
       }
     } else {
@@ -142,10 +148,9 @@ export class ActionsComponent implements OnInit, OnChanges {
         bbch: data.bbch,
         variety: data.varietyId,
         value: data.value,
-        files: data.files
+        files: data.files,
       });
     }
-
   }
 
   addAction(action: Action) {
@@ -157,9 +162,8 @@ export class ActionsComponent implements OnInit, OnChanges {
   }
 
   getVarieties(varieties: string[] | undefined): Variety[] {
-    return varieties ? varieties.map((v: string) => this.varietyService.getVarietyByID(v)).filter((v: Variety) => !!v) : [];
+    return varieties
+      ? varieties.map((v: string) => this.varietyService.getVarietyByID(v)).filter((v: Variety) => !!v)
+      : [];
   }
-
-
-
 }

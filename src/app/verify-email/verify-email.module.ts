@@ -9,12 +9,7 @@ import { VerifyEmailPageRoutingModule } from './verify-email-routing.module';
 import { VerifyEmailPage } from './verify-email.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    VerifyEmailPageRoutingModule
-  ],
-  declarations: [VerifyEmailPage]
+  imports: [CommonModule, FormsModule, IonicModule, VerifyEmailPageRoutingModule],
+  declarations: [VerifyEmailPage],
 })
 export class VerifyEmailPageModule {}
