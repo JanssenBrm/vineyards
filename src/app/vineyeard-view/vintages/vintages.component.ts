@@ -50,7 +50,7 @@ export class VintagesComponent implements OnChanges {
         vintage,
       },
     });
-    modal.present();
+    await modal.present();
 
     const data = await modal.onWillDismiss();
     if (data.data.vintage) {
@@ -67,7 +67,9 @@ export class VintagesComponent implements OnChanges {
           text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: () => {},
+          handler: () => {
+            // This is intentional
+          },
         },
         {
           text: 'Okay',

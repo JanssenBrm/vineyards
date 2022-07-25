@@ -5,6 +5,7 @@
 #vineyard-map {
   height: 15rem;
   width: 100%;
+  flex: 1;
 }
 
 
@@ -69,10 +70,6 @@ table {
   }
 }
 
-
-#vineyard-map {
-  flex: 1;
-}
 
 .actions-container {
   display: flex;

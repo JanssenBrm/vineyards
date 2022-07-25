@@ -73,6 +73,7 @@ h1 {
   margin-right: .5rem;
   display: flex;
   align-items: center;
+  margin-top: .25rem !important;
 }
 
 .year {
@@ -84,10 +85,6 @@ h1 {
 .icon {
   width: 16px;
   height: 16px;
-}
-
-.variety {
-  margin-top: .25rem !important;
 }
 
 .status {

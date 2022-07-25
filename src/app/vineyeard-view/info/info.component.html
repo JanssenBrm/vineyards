@@ -65,9 +65,6 @@
                     <div *ngIf="vineyard" class="actions-container">
                         <div *ngFor="let action of actions.slice(0, 5)" [class.mobile]="utilService.isMobile()"
                              class="action">
-                            <!--<div class="icon">
-                              <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
-                            </div>-->
                             <div class="text">
                 <span class="title">
                   {{action.date | date: "dd MMMM yyyy"}}
@@ -93,9 +90,6 @@
                         <span class="subtext">Last year</span>
                         <div *ngFor="let action of historicActions.slice(0, 5)" [class.mobile]="utilService.isMobile()"
                              class="action">
-                            <!--<div class="icon">
-                              <img [src]="'assets/icon/' + (type) + '.png'" [title]="type"/>
-                            </div>-->
                             <div class="text">
                 <span class="title">
                   {{action.date | date: "dd MMMM yyyy"}}

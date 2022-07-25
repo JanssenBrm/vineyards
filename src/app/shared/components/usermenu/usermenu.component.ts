@@ -5,7 +5,7 @@ import { AuthService } from '../../../services/auth.service';
 @Component({
   selector: 'app-usermenu',
   templateUrl: './usermenu.component.html',
-  styleUrls: ['./usermenu.component.scss'],
+  styleUrls: [],
 })
 export class UsermenuComponent {
   constructor(private popoverController: PopoverController, private authService: AuthService) {}

@@ -11,7 +11,7 @@ export class UploadService {
   constructor(private storage: AngularFireStorage) {}
 
   public readFileList(list: FileList): File[] {
-    return [...new Array(list.length)].fill(1).map((val, idx) => list.item(idx));
+    return [...new Array(list.length)].fill(1).map((_, idx) => list.item(idx));
   }
 
   public uploadFile(path: string, file: File): Observable<string> {

@@ -171,8 +171,6 @@ export class MapPage implements OnInit, AfterViewInit {
     this._modify = this._getModifyInteraction();
     this._draw = this._getDrawInteraction();
     this._remove = this._getRemoveInteraction();
-    /*this._snap = this._getSnapInteraction();
-        this._map.addInteraction(this._snap);*/
 
     setTimeout(() => {
       this._map.updateSize();

@@ -18,6 +18,7 @@ import { VineyardNotesService } from '../services/vineyardnotes.service';
 import { StatisticsService } from '../services/statistics.service';
 import { IntegrationsService } from '../services/integrations.service';
 import { Integration } from '../models/integration.model';
+import { MenuTab } from './menu/menu.component';
 
 @Component({
   selector: 'app-vineyeard-view',
@@ -55,7 +56,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   public vintages$: BehaviorSubject<Vintage[]> = null;
 
-  public activePage: 'info' | 'actions' | 'stats' | 'vintages' | 'notes';
+  public activePage: MenuTab;
 
   public activeVintage: Vintage;
 
@@ -76,7 +77,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.varieties$ = this.varietyService.getVarietyListener();
     this.integrations$ = this.integrationsService.getIntegrationListener();
 
-    this.activePage = 'info';
+    this.activePage = MenuTab.INFO;
   }
 
   ngAfterViewInit() {
@@ -114,7 +115,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.closeMenu();
   }
 
-  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages' | 'notes'): void {
+  openTab(tab: MenuTab): void {
     if (tab !== this.activePage) {
       this.activePage = tab;
       if (tab !== 'vintages') {
@@ -166,7 +167,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
   openVintage(vintage: Vintage) {
     this.activeVintage = vintage;
-    this.openTab('vintages');
+    this.openTab(MenuTab.VINTAGES);
     this.location.go(`/vineyard/view/${this.activeVineyard.id}/vintages/${vintage.id}`);
   }
 }

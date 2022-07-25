@@ -34,9 +34,6 @@
 }
 
 
-ion-toolbar {
-    padding-right: 1.5rem;
-}
 
 h1, .header {
     display: flex;
@@ -74,6 +71,7 @@ ion-toolbar, ion-header, {
 }
 
 ion-toolbar {
+    padding-right: 1.5rem;
     ion-title {
         background: var( --ion-primary-gradient-2);
     }

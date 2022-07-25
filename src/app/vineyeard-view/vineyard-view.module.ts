@@ -34,7 +34,7 @@ import { NotebookComponent } from './notebook/notebook.component';
 import { AddNoteNotebookComponent } from './add-note-notebook/add-note-notebook.component';
 import { FilterNotesByFilterPipe } from '../pipes/filter-notes-by-filter.pipe';
 
-declare var require: any;
+declare const require: any;
 const Boost = require('highcharts/modules/boost');
 const noData = require('highcharts/modules/no-data-to-display');
 const More = require('highcharts/highcharts-more');

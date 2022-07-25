@@ -23,19 +23,19 @@
     <ion-label>Information</ion-label>
   </div>
   <div class="items">
-    <div class="item" (click)="openTab('info')"  [class.selected]="activePage === 'info'">
+    <div class="item" (click)="openTab(MenuTab.INFO)"  [class.selected]="activePage === 'info'">
       <ion-icon name="information-circle" slot="start"></ion-icon>
       <ion-label>Info</ion-label>
     </div>
-    <div class="item" (click)="openTab('notes')"   [class.selected]="activePage === 'notes'">
+    <div class="item" (click)="openTab(MenuTab.NOTES)"   [class.selected]="activePage === 'notes'">
       <ion-icon name="create" slot="start"></ion-icon>
       <ion-label>Notes</ion-label>
     </div>
-    <div class="item"  (click)="openTab('actions')"  [class.selected]="activePage === 'actions'">
+    <div class="item"  (click)="openTab(MenuTab.ACTIONS)"  [class.selected]="activePage === 'actions'">
       <ion-icon name="calendar-outline" slot="start"></ion-icon>
       <ion-label>History</ion-label>
     </div>
-    <div class="item" (click)="openTab('stats')"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
+    <div class="item" (click)="openTab(MenuTab.STATS)"   [class.selected]="activePage === 'stats'" *appHideOnPlatform="['mobile']">
       <ion-icon name="stats-chart" slot="start"></ion-icon>
       <ion-label>Statistics</ion-label>
     </div>

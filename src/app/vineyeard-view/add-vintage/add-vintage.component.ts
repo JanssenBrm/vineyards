@@ -13,7 +13,7 @@ import { VarietyService } from '../../services/variety.service';
 @Component({
   selector: 'app-add-vintage',
   templateUrl: './add-vintage.component.html',
-  styleUrls: ['./add-vintage.component.scss'],
+  styleUrls: [],
 })
 export class AddVintageComponent implements OnInit {
   @Input()

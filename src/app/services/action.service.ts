@@ -55,7 +55,9 @@ export class ActionService {
           }))
         ),
         map((actions: Action[]) =>
-          actions.sort((a1: Action, a2: Action) => (new Date(a1.date).getTime() < new Date(a2.date).getTime() ? 1 : -1))
+          [...actions].sort((a1: Action, a2: Action) =>
+            new Date(a1.date).getTime() < new Date(a2.date).getTime() ? 1 : -1
+          )
         )
       )
       .subscribe((actions: Action[]) => this._actions.next(actions));

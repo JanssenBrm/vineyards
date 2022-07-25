@@ -5,7 +5,6 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { Note } from '../../models/note.model';
 import { SINGLE_DATES, VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vintageevent.model';
 import { NotesService } from '../../services/notes.service';
-import { ModalController } from '@ionic/angular';
 import { skipWhile } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Chart } from 'chart.js';
@@ -34,7 +33,7 @@ export class TimelineComponent implements OnInit, OnChanges {
 
   private containerReady: BehaviorSubject<boolean>;
 
-  constructor(private notesService: NotesService, private modalController: ModalController) {}
+  constructor(private notesService: NotesService) {}
 
   createChart(notes: Note[]) {
     if (notes.length > 0) {
@@ -159,10 +158,10 @@ export class TimelineComponent implements OnInit, OnChanges {
     this.containerReady = new BehaviorSubject<boolean>(false);
     this.checkContainerReady();
 
-    combineLatest(
+    combineLatest([
       this.containerReady.pipe(skipWhile((value) => !value)),
-      this.notesService.getNotesListener()
-    ).subscribe((value) => {
+      this.notesService.getNotesListener(),
+    ]).subscribe((value) => {
       this.createChart(value[1]);
       this.totalDays = this.calculateTotalDays(value[1]);
     });

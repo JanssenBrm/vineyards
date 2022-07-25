@@ -8,6 +8,14 @@ import { AddVintageComponent } from '../add-vintage/add-vintage.component';
 import { VintageService } from '../../services/vintage.service';
 import { VarietyService } from '../../services/variety.service';
 
+export enum MenuTab {
+  INFO = 'info',
+  ACTIONS = 'actions',
+  STATS = 'stats',
+  VINTAGES = 'vintages',
+  NOTES = 'notes',
+}
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -33,9 +41,7 @@ export class MenuComponent implements OnInit {
   seasonsUpdated: EventEmitter<number[]> = new EventEmitter<number[]>();
 
   @Output()
-  tabUpdated: EventEmitter<'info' | 'actions' | 'stats' | 'vintages' | 'notes'> = new EventEmitter<
-    'info' | 'actions' | 'stats' | 'vintages' | 'notes'
-  >();
+  tabUpdated: EventEmitter<MenuTab> = new EventEmitter<MenuTab>();
 
   @Output()
   openVintage: EventEmitter<Vintage> = new EventEmitter<Vintage>();
@@ -43,6 +49,8 @@ export class MenuComponent implements OnInit {
   public activePage: string;
 
   public activeSubMenus: string[] = [];
+
+  MenuTab = MenuTab;
 
   constructor(
     private seasonService: SeasonsService,
@@ -67,7 +75,7 @@ export class MenuComponent implements OnInit {
     this.navController.navigateBack('/');
   }
 
-  openTab(tab: 'info' | 'actions' | 'stats' | 'vintages' | 'notes'): void {
+  openTab(tab: MenuTab): void {
     this.activePage = tab;
     this.activeVintage = undefined;
     this.tabUpdated.emit(tab);

@@ -291,7 +291,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   }
 
   getActionTimelines(): any[] {
-    const result = Object.keys(ActionType).map((a: string) => ({
+    return Object.keys(ActionType).map((a: string) => ({
       name: `${a}`,
       type: 'scatter',
       yAxis: 'actions',
@@ -318,7 +318,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
           y: new Date(action.date).getFullYear(),
         })),
     }));
-    return result;
   }
 
   getMeteoTimelines(): Observable<any> {
@@ -628,8 +627,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     this._loading.present();
   }
 
-  async hideLoading() {
-    this._loading.dismiss();
+  hideLoading() {
+    this._loading.dismiss().then(() => {
+      console.log('Hide loading');
+    });
   }
 
   getNormalizedDate(date: string): number {
