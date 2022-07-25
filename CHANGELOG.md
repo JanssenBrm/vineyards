@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/JanssenBrm/winery/compare/v1.6.0...v1.6.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* fixed path to version ([8a49208](https://github.com/JanssenBrm/winery/commit/8a49208240cce2ec39052ede5d6388927c624eae))
+
 # [1.6.0](https://github.com/JanssenBrm/winery/compare/v1.5.0...v1.6.0) (2022-07-25)
 
 
