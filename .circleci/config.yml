@@ -32,4 +32,5 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-and-release
+      - build-and-release:
+          context: SonarCloud
