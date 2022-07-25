@@ -1,6 +1,6 @@
 <ion-chip slot="end" *ngIf="(user | async)" (click)="showUserMenu($event)">
   <ion-avatar>
-    <img [src]="(user |async).photoURL ? (user |async).photoURL : 'assets/avatar.svg' ">
+    <img alt="avatar" [src]="(user |async).photoURL ? (user |async).photoURL : 'assets/avatar.svg' ">
   </ion-avatar>
   <ion-label *ngIf="!utilService.isMobile()">{{(user |async).displayName}}</ion-label>
 </ion-chip>

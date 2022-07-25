@@ -14,7 +14,7 @@
         <div class="cover" [style.background]="'url(/assets/images/vintage.jpg)'">
             <div class="text">
                 <div class="variety">
-                        <img class="icon"
+                        <img alt="varietyIcon" class="icon"
                              [src]="'assets/icon/grape_' + vintage.color.toLowerCase() +'.png'"/>{{varietyService.getVintageVarietiesLabel(vintage)}}
                 </div>
                 <div class="title">{{vintage.name}}<span class="year">{{vintage.year}}</span></div>

@@ -4,9 +4,6 @@
 <div class="list">
   <ion-card *ngFor="let note of (notes$ | async) | filterNotesByTypes: activeTypes  | orderBy:{key: 'date', type: 'dateString', desc: true} ">
     <ion-card-header >
-      <!--<div class="cover" *ngIf="note.files && note.files.length > 0">
-        <img [src]="note.files[0]"/>
-      </div>-->
       <ion-card-subtitle>{{STAGE[note.stage]}}</ion-card-subtitle>
       <ion-card-title>
         <div class="subtitle">
@@ -19,7 +16,7 @@
       <div class="description">{{note.description}}</div>
       <div class="files">
         <div class="file" *ngFor="let file of note.files">
-          <a target="_blank" [href]="file"><img [src]="file" width="50" /></a>
+          <a target="_blank" [href]="file"><img alt="file" [src]="file" width="50" /></a>
         </div>
       </div>
     </ion-card-content>
