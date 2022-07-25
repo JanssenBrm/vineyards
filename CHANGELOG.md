@@ -1,3 +1,13 @@
+## [1.7.3](https://github.com/JanssenBrm/winery/compare/v1.7.2...v1.7.3) (2022-07-25)
+
+
+### Bug Fixes
+
+* fixed bugs in code ([e572877](https://github.com/JanssenBrm/winery/commit/e5728773e24a24a53ce854daea60bfd8e1282313))
+* fixed code smell ([d84f867](https://github.com/JanssenBrm/winery/commit/d84f86712abc01def1688fe26584cf55b6faa4af))
+* fixed code smell ([89ab87c](https://github.com/JanssenBrm/winery/commit/89ab87cfdaa75ed7eb92eccc49bf38f65843c739))
+* removed empty css ([21f8a17](https://github.com/JanssenBrm/winery/commit/21f8a17e54270a8ec7a4b88aeb1c9c1339654951))
+
 ## [1.7.2](https://github.com/JanssenBrm/winery/compare/v1.7.1...v1.7.2) (2022-07-25)
 
 
