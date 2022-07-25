@@ -6,7 +6,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 export declare let require: any;
-const { version: appVersion } = require('../../package.json');
+const { version: appVersion } = require('../package.json');
 
 Sentry.init({
   dsn: 'https://094234f9e1024595801515548fd3d9cc@o1319586.ingest.sentry.io/6575225',
