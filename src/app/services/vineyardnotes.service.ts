@@ -51,7 +51,7 @@ export class VineyardNotesService {
         map((data: DocumentChangeAction<VineyardNote>[]) =>
           data.map((d: DocumentChangeAction<VineyardNote>) => ({
             ...d.payload.doc.data(),
-            id: d.payload.doc.id,
+            id: (d.payload.doc as any).id,
           }))
         )
       )

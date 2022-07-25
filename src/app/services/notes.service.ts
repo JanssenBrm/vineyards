@@ -72,7 +72,7 @@ export class NotesService {
         map((data: DocumentChangeAction<Note>[]) =>
           data.map((d: DocumentChangeAction<Note>) => ({
             ...d.payload.doc.data(),
-            id: d.payload.doc.id,
+            id: (d.payload.doc as any).id,
           }))
         )
       )

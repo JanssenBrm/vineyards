@@ -52,7 +52,7 @@ export class VintageService {
         map((data: DocumentChangeAction<Vintage>[]) =>
           data.map((d: DocumentChangeAction<Vintage>) => ({
             ...d.payload.doc.data(),
-            id: d.payload.doc.id,
+            id: (d.payload.doc as any).id,
           }))
         )
       )

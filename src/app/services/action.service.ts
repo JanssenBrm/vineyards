@@ -51,7 +51,7 @@ export class ActionService {
         map((data: DocumentChangeAction<Action>[]) =>
           data.map((d: DocumentChangeAction<Action>) => ({
             ...d.payload.doc.data(),
-            id: d.payload.doc.id,
+            id: (d.payload.doc as any).id,
           }))
         ),
         map((actions: Action[]) =>
