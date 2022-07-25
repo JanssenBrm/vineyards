@@ -18,9 +18,11 @@ import { WeatherStationService } from '../../services/weatherstation.service';
 import { from, merge, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
+import { VarietyService } from '../../services/variety.service';
 
 enum StatTypes {
   ACTIONS = 'Actions',
+  BBCH = 'BBCH',
   METEO = 'Meteo',
   DGD = 'Growing Days',
   BRIX = 'Brix',
@@ -73,7 +75,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private colorService: ColorService,
     private integrationsService: IntegrationsService,
     private weatherStationService: WeatherStationService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private varietyService: VarietyService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -129,6 +132,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       ...this.getBrixAxis(),
       ...this.getSunHoursAxis(),
       ...this.getHumidityAxis(),
+      ...this.getBBCHAxis(),
     ];
     axes.forEach((a: any) => this._chart.addAxis(a));
   }
@@ -158,6 +162,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
     if (this.activeStats.includes(StatTypes.HUMIDITY)) {
       requests.push(this.getWeatherStationHumidity());
+    }
+
+    if (this.activeStats.includes(StatTypes.BBCH)) {
+      requests.push(this.getBBCHGraphs());
     }
 
     if (requests.length > 0) {
@@ -275,6 +283,21 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     ];
   }
 
+  getBBCHAxis(): any[] {
+    return [
+      {
+        id: 'bbch',
+        labels: {
+          format: '{value}s',
+        },
+        title: {
+          text: 'Stage',
+        },
+        opposite: false,
+      },
+    ];
+  }
+
   getBrixAxis(): any[] {
     return [
       {
@@ -288,6 +311,65 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         opposite: true,
       },
     ];
+  }
+
+  getBBCHGraphs(): Observable<any[]> {
+    const actions = this.actions
+      .filter((a: Action) => a.type === ActionType.BBCH)
+      .sort((a: Action, b: Action) => (moment(a.date).isBefore(moment(b.date)) ? -1 : 1));
+    const varieties = []
+      .concat(...actions.map((a: Action) => a.variety))
+      .filter((v: string, idx: number, vs: string[]) => vs.indexOf(v) === idx)
+      .map((v: string) => this.varietyService.getVarietyByID(v)?.name);
+    const years: { year: number; variety: string }[] = [].concat(
+      ...this.actions
+        .filter((a: Action) => a.type === ActionType.BBCH)
+        .map((a: Action) => moment(a.date).year())
+        .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx)
+        .map((year: number) =>
+          varieties.map((variety: string) => ({
+            year,
+            variety,
+          }))
+        )
+    );
+
+    return merge(
+      [].concat(
+        ...years
+          .filter(({ year }) => this.seasons.indexOf(year) >= 0)
+          .map(({ year, variety }, idx: number) => [
+            {
+              id: `BBCH ${year} - ${variety}`,
+              name: `BBCH ${year} - ${variety}`,
+              type: 'line',
+              yAxis: 'bbch',
+              step: true,
+              color: this.colorService.darken(COLOR.BBCH, idx),
+              showInNavigator: true,
+              tooltip: {
+                formatter: (point) => {
+                  return `<span style="color:${
+                    point.color
+                  }">●</span>  <b>BBCH ${year} - ${variety}</b>: ${this.utilService.getBBCHDescription(
+                    point.y.toString()
+                  )}`;
+                },
+              },
+              data: actions
+                .filter(
+                  (a: Action) =>
+                    moment(a.date).year() === year &&
+                    (a.variety || []).includes(this.varietyService.getVarietyByName(variety)?.id)
+                )
+                .map((a: Action) => ({
+                  x: this.getNormalizedDate(moment(a.date).format('YYYY-MM-DD')),
+                  y: +a.bbch,
+                })),
+            },
+          ])
+      )
+    );
   }
 
   getActionTimelines(): any[] {

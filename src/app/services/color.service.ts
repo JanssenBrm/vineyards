@@ -5,6 +5,7 @@ export const ACTION_COLLECTION = 'actions';
 
 export enum COLOR {
   BRIX = '#800080',
+  BBCH = '#d4fb22',
   TEMP = '#F08080',
   PERCIP = '#ADD8E6',
   GDD = '#90EE90',
@@ -26,7 +27,7 @@ export class ColorService {
   public lighten(color: COLOR, multiplier: number): string {
     let c = Color(color).hsl();
     new Array(multiplier).fill(1).forEach(() => {
-      c = c.lighten(0.5);
+      c = c.lighten(0.25);
     });
     return c.hex();
   }
@@ -39,7 +40,7 @@ export class ColorService {
   public darken(color: COLOR, multiplier: number): string {
     let c = Color(color).hsl();
     new Array(multiplier).fill(1).forEach(() => {
-      c = c.darken(0.5);
+      c = c.darken(0.25);
     });
     return c.hex();
   }
