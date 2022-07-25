@@ -83,7 +83,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     if (changes.vineyard || changes.seasons) {
       if (this.vineyard) {
         this.activeVarieties = this.varieties.map((v: Variety) => v.id);
-        this.getStats();
       }
     }
 
@@ -141,7 +140,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     const requests: Observable<any>[] = [];
 
     if (this.activeStats.includes(StatTypes.ACTIONS)) {
-      this.updateActionStats();
+      requests.push(this.getActionTimelines());
     }
 
     if (this.activeStats.includes(StatTypes.METEO)) {
@@ -192,11 +191,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     while (this._chart.series.length) {
       this._chart.series[0].remove(false, false, false);
     }
-  }
-
-  updateActionStats() {
-    this._chart.series.filter((s) => s.type === 'scatter').forEach((s) => s.remove(false));
-    [...this.getActionTimelines()].forEach((s: any) => this._chart.addSeries(s));
   }
 
   getActionAxis(): any {
@@ -372,34 +366,36 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     );
   }
 
-  getActionTimelines(): any[] {
-    return Object.keys(ActionType).map((a: string) => ({
-      name: `${a}`,
-      type: 'scatter',
-      yAxis: 'actions',
-      marker: {
-        symbol: `url(/assets/icon/${a.toLowerCase()}.png)`,
-        width: 24,
-        height: 24,
-        fillColor: '#FFFFFF',
-        lineWidth: 2,
-        lineColor: '#FFFFFF',
-      },
-      data: this.actions
-        .filter((action: Action) => action.type === ActionType[a])
-        .filter(
-          (action: Action) =>
-            this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 &&
-            this.activeVarieties.filter((v) => action.variety.indexOf(v) >= 0).length > 0
-        )
-        .map((action: Action) => ({
-          label: `${
-            action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''
-          }${action.value ? action.value + ' ' : ''}${action.description}`,
-          x: this.getNormalizedDate(action.date),
-          y: new Date(action.date).getFullYear(),
-        })),
-    }));
+  getActionTimelines(): Observable<any> {
+    return merge(
+      Object.keys(ActionType).map((a: string) => ({
+        name: `${a}`,
+        type: 'scatter',
+        yAxis: 'actions',
+        marker: {
+          symbol: `url(/assets/icon/${a.toLowerCase()}.png)`,
+          width: 24,
+          height: 24,
+          fillColor: '#FFFFFF',
+          lineWidth: 2,
+          lineColor: '#FFFFFF',
+        },
+        data: this.actions
+          .filter((action: Action) => action.type === ActionType[a])
+          .filter(
+            (action: Action) =>
+              this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 &&
+              this.activeVarieties.filter((v) => action.variety.indexOf(v) >= 0).length > 0
+          )
+          .map((action: Action) => ({
+            label: `${
+              action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''
+            }${action.value ? action.value + ' ' : ''}${action.description}`,
+            x: this.getNormalizedDate(action.date),
+            y: new Date(action.date).getFullYear(),
+          })),
+      }))
+    );
   }
 
   getMeteoTimelines(): Observable<any> {
@@ -706,7 +702,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     this._loading = await this.loadingController.create({
       message: 'Retrieving data...',
     });
-    this._loading.present();
+    await this._loading.present();
   }
 
   hideLoading() {
