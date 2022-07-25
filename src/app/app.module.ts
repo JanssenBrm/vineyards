@@ -50,7 +50,9 @@ import * as Sentry from '@sentry/angular';
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: () => () => {},
+      useFactory: () => () => {
+        //this is intentional
+      },
       deps: [Sentry.TraceService],
       multi: true,
     },
