@@ -313,7 +313,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       .sort((a: Action, b: Action) => (moment(a.date).isBefore(moment(b.date)) ? -1 : 1));
     const varieties = []
       .concat(...actions.map((a: Action) => a.variety))
-      .filter((v: string, idx: number, vs: string[]) => vs.indexOf(v) === idx)
+      .filter((v: string, idx: number, vs: string[]) => this.activeVarieties.includes(v) && vs.indexOf(v) === idx)
       .map((v: string) => this.varietyService.getVarietyByID(v)?.name);
     const years: { year: number; variety: string }[] = [].concat(
       ...this.actions
