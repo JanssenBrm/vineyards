@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/JanssenBrm/winery/compare/v1.6.1...v1.7.0) (2022-07-25)
+
+
+### Features
+
+* added sonarcloud scan to build ([fbc707a](https://github.com/JanssenBrm/winery/commit/fbc707afb14f552e070fb28e775110d08c04c3e1))
+
 ## [1.6.1](https://github.com/JanssenBrm/winery/compare/v1.6.0...v1.6.1) (2022-07-25)
 
 
