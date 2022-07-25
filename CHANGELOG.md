@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/JanssenBrm/winery/compare/v1.5.0...v1.6.0) (2022-07-25)
+
+
+### Features
+
+* added releases to sentry ([f84c275](https://github.com/JanssenBrm/winery/commit/f84c27504176edc2e14b37b59c8c072db7902926))
+
 # [1.5.0](https://github.com/JanssenBrm/winery/compare/v1.4.0...v1.5.0) (2022-07-20)
 
 
