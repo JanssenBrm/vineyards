@@ -15,8 +15,8 @@ import { COLOR, ColorService } from '../../services/color.service';
 import { Integration, IntegrationType } from '../../models/integration.model';
 import { IntegrationsService } from '../../services/integrations.service';
 import { WeatherStationService } from '../../services/weatherstation.service';
-import { from, merge, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, from, merge, Observable, of } from 'rxjs';
+import { debounceTime, switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
 import { VarietyService } from '../../services/variety.service';
 
@@ -66,6 +66,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   private BASE_TEMP = 10.0;
 
+  private loadStats: BehaviorSubject<void>;
+
   constructor(
     private utilService: UtilService,
     private vineyardService: VineyardService,
@@ -77,13 +79,28 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private weatherStationService: WeatherStationService,
     private loadingController: LoadingController,
     private varietyService: VarietyService
-  ) {}
+  ) {
+    this.loadStats = new BehaviorSubject<void>(undefined);
+
+    this.loadStats.pipe(debounceTime(250)).subscribe({
+      next: () => {
+        if (this._chart) {
+          this.clearCharts();
+          this.setGraphData();
+        }
+      },
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.vineyard || changes.seasons) {
+    if (changes.vineyard) {
       if (this.vineyard) {
-        this.activeVarieties = this.varieties.map((v: Variety) => v.id);
+        this.getStats();
       }
+    }
+
+    if (changes.varieties) {
+      this.activeVarieties = this.varieties.map((v: Variety) => v.id);
     }
 
     if (changes.integrations) {
@@ -117,9 +134,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
         this.setAxis();
       }
-      this.clearCharts();
 
-      this.setGraphData();
+      this.loadStats.next();
     }
   }
 
