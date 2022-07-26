@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/JanssenBrm/winery/compare/v1.10.0...v1.10.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* fixed issue where chart axis were repeating ([dcf940c](https://github.com/JanssenBrm/winery/commit/dcf940c905c20dbf7c154c358c935c11276d654b))
+
 # [1.10.0](https://github.com/JanssenBrm/winery/compare/v1.9.2...v1.10.0) (2022-07-26)
 
 
