@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/JanssenBrm/winery/compare/v1.9.2...v1.10.0) (2022-07-26)
+
+
+### Features
+
+* only release on master branch ([2b852c3](https://github.com/JanssenBrm/winery/commit/2b852c3d3939c30cac168e953e09abcff8f9f9ed))
+
 ## [1.9.2](https://github.com/JanssenBrm/winery/compare/v1.9.1...v1.9.2) (2022-07-26)
 
 
