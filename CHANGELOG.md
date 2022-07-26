@@ -1,3 +1,17 @@
+# [1.9.0](https://github.com/JanssenBrm/winery/compare/v1.8.0...v1.9.0) (2022-07-26)
+
+
+### Bug Fixes
+
+* fixed code smells ([de5cda0](https://github.com/JanssenBrm/winery/commit/de5cda055f919457a7384252d134ef7db42ead80))
+* fixed issue with function ([df5995f](https://github.com/JanssenBrm/winery/commit/df5995f217565432584b25183e5edb41b3ed7740))
+
+
+### Features
+
+* added version to user menu ([b091770](https://github.com/JanssenBrm/winery/commit/b0917703bd7b6e0cbb208e31c5f091f8e6caa37b))
+* introduced roles and hidden some features for premium users only ([18dde2a](https://github.com/JanssenBrm/winery/commit/18dde2ae34250e1461ae6b06813a1d35461c493d))
+
 # [1.8.0](https://github.com/JanssenBrm/winery/compare/v1.7.3...v1.8.0) (2022-07-25)
 
 
