@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/JanssenBrm/winery/compare/v1.9.1...v1.9.2) (2022-07-26)
+
+
+### Bug Fixes
+
+* fixed behavior of statistics ([f27a10c](https://github.com/JanssenBrm/winery/commit/f27a10cc780d22394dcd62032929da1ac841fecf))
+
 ## [1.9.1](https://github.com/JanssenBrm/winery/compare/v1.9.0...v1.9.1) (2022-07-26)
 
 
