@@ -7,12 +7,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { LastActionPipe } from './pipes/last-action.pipe';
 import { ActiveTypePipe } from './pipes/active-type.pipe';
-import { HideOnPlatformDirective } from '../directives/hide-on-platform.directive';
+import { HideOnPlatformDirective } from './directives/hide-on-platform.directive';
 import { FilterActionsBySeasonPipe } from '../pipes/filter-actions-by-season.pipe';
 import { UsermenuComponent } from './components/usermenu/usermenu.component';
 import { LayersComponent } from './components/toolbar/layers/layers.component';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { UserbuttonComponent } from './components/userbutton/userbutton.component';
+import { PremiumFeatureDirective } from './directives/premium-feature.directive';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { UserbuttonComponent } from './components/userbutton/userbutton.componen
     LayersComponent,
     ConfirmComponent,
     UserbuttonComponent,
+    PremiumFeatureDirective,
   ],
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule],
   exports: [
@@ -39,6 +41,7 @@ import { UserbuttonComponent } from './components/userbutton/userbutton.componen
     LayersComponent,
     ConfirmComponent,
     UserbuttonComponent,
+    PremiumFeatureDirective,
   ],
 })
 export class SharedModule {}

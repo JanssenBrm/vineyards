@@ -2,16 +2,19 @@ import { Injectable } from '@angular/core';
 import { auth, User } from 'firebase';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { UserData } from '../models/userdata.model';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
+import { UserData, UserRole } from '../models/userdata.model';
 import { AngularFireAnalytics } from '@angular/fire/analytics';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private user: BehaviorSubject<User>;
+
+  private userData: BehaviorSubject<UserData>;
 
   constructor(
     public fbAuth: AngularFireAuth,
@@ -20,24 +23,66 @@ export class AuthService {
     private analytics: AngularFireAnalytics
   ) {
     this.user = new BehaviorSubject<User>(undefined);
-    this.fbAuth.authState.subscribe((user: User) => {
-      this.user.next(user);
-      if (user) {
-        localStorage.setItem('user', JSON.stringify(user));
-        this.updateUser(user).then(() => {
-          console.log('User updated', user);
-        });
-      } else {
-        localStorage.removeItem('user');
-      }
-    });
+    this.userData = new BehaviorSubject<UserData>(undefined);
+    this.fbAuth.authState
+      .pipe(
+        switchMap((user: User) => {
+          if (user) {
+            return this.readUserData(user.uid).pipe(
+              map((data: UserData) => ({
+                user,
+                data,
+              }))
+            );
+          } else {
+            return of({ user, data: undefined });
+          }
+        })
+      )
+      .subscribe(({ user, data }) => {
+        this.user.next(user);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.updateUser(user, data?.role).then(() => {
+            console.log('User updated', user);
+          });
+        } else {
+          localStorage.removeItem('user');
+        }
+      });
   }
 
-  private async updateUser(user: User) {
-    await this.fireStore.collection<UserData>('users').doc(user.uid).set({
-      id: user.uid,
-      name: user.displayName,
-    });
+  private async updateUser(user: User, role: UserRole) {
+    await this.fireStore
+      .collection<UserData>('users')
+      .doc(user.uid)
+      .set({
+        id: user.uid,
+        name: user.displayName,
+        role: role || UserRole.BASIC,
+      });
+  }
+
+  private readUserData(uid: string): Observable<UserData> {
+    return this.fireStore
+      .collection<UserData>('users')
+      .doc(uid)
+      .get()
+      .pipe(
+        take(1),
+        map((data: DocumentSnapshot<UserData>) => data.data()),
+        catchError((error: any) => {
+          console.error('Could not retrieve user data', error);
+          return of(undefined);
+        }),
+        tap((data: UserData) => {
+          this.userData.next(data);
+        })
+      );
+  }
+
+  getUserData(): BehaviorSubject<UserData> {
+    return this.userData;
   }
 
   getUser(): BehaviorSubject<User> {

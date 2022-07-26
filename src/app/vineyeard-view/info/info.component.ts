@@ -15,6 +15,7 @@ import { Action, ActionType } from 'src/app/models/action.model';
 import { VarietyService } from '../../services/variety.service';
 import { ActionService } from '../../services/action.service';
 import * as moment from 'moment';
+import { FeaturesService } from '../../services/features.service';
 
 @Component({
   selector: 'app-info',
@@ -44,7 +45,8 @@ export class InfoComponent implements OnChanges, AfterViewInit {
     public vineyardService: VineyardService,
     private platform: Platform,
     public varietyService: VarietyService,
-    public actionService: ActionService
+    public actionService: ActionService,
+    public featuresService: FeaturesService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
