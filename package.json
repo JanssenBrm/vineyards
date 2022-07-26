@@ -84,6 +84,7 @@
     "@typescript-eslint/eslint-plugin-tslint": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "codelyzer": "^5.1.2",
+    "commit-analyzer-fail-on-no-release": "^1.0.1",
     "commitlint": "^17.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
