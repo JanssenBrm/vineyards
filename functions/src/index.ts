@@ -18,46 +18,7 @@ import * as sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
-exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => _updateMeteoStats());
-
-export const _updateMeteoStats = async () => {
-  const users: string[] = await getUsers();
-  console.log(`Found ${users.length} users to process`);
-
-  for (const uid of users) {
-    const vineyards: string[] = await getVineyards(uid);
-    console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
-    for (const id of vineyards) {
-      try {
-        const email: string | undefined = await getUserEmail(uid);
-        const v: Vineyard = await getVineyard(uid, id);
-        const location = getVineyardLocation(v);
-        const actions = await getVineyardActions(uid, id);
-        const stats = await getVineyardStats(uid, id);
-        const dates: { start: moment.Moment; end: moment.Moment }[] = getMeteoDates(actions, stats);
-        for (const date of dates) {
-          console.log('Retrieving dates from ' + date.start + ' to ' + date.end);
-          const newStats = await getMeteo(location[1], location[0], date.start, date.end);
-          stats.data = [...stats.data, ...newStats.data];
-        }
-        stats.data = stats.data.sort((d1: MeteoStat, d2: MeteoStat) =>
-          moment(d1.date).isBefore(moment(d2.date), 'day') ? -1 : 1
-        );
-        const warnings = _calculateWarnings(stats.data);
-        if (warnings.length > 0 && email) {
-          console.log('Sending email to ' + email);
-          await _emailWarnings(email, v, warnings);
-        }
-        await saveMeteo(uid, id, stats);
-      } catch (error) {
-        console.error(`Error processing vineyard ${id} of ${uid}`, error);
-      }
-    }
-  }
-  return true;
-};
-
-export const _emailWarnings = (
+export const emailWarnings = (
   email: string,
   vineyard: Vineyard,
   warnings: { date: string; warnings: Warning[] }[]
@@ -83,8 +44,19 @@ export const _emailWarnings = (
     });
 };
 
-const _calculateWarnings = (meteo: MeteoStat[]): { date: string; warnings: Warning[] }[] => {
-  const warnings: Warning[] = [..._getFrostWarnings(meteo)];
+const getFrostWarnings = (info: MeteoStat[]): Warning[] => {
+  return info
+    .filter((i: MeteoStat) => moment(i.date).isAfter(moment()))
+    .filter((i: MeteoStat) => Math.round(i.tmin) < 0)
+    .map((i: MeteoStat) => ({
+      type: WarningType.FROST,
+      date: i.date,
+      description: `Freezing temperatures of ${Math.round(i.tmin)}°C detected`,
+    }));
+};
+
+const calculateWarnings = (meteo: MeteoStat[]): { date: string; warnings: Warning[] }[] => {
+  const warnings: Warning[] = [...getFrostWarnings(meteo)];
   if (warnings.length > 0) {
     return warnings.reduce((list: { date: string; warnings: Warning[] }[], warning: Warning) => {
       const hit = list.find((l) => l.date === warning.date);
@@ -103,13 +75,40 @@ const _calculateWarnings = (meteo: MeteoStat[]): { date: string; warnings: Warni
   }
 };
 
-const _getFrostWarnings = (info: MeteoStat[]): Warning[] => {
-  return info
-    .filter((i: MeteoStat) => moment(i.date).isAfter(moment()))
-    .filter((i: MeteoStat) => Math.round(i.tmin) < 0)
-    .map((i: MeteoStat) => ({
-      type: WarningType.FROST,
-      date: i.date,
-      description: `Freezing temperatures of ${Math.round(i.tmin)}°C detected`,
-    }));
+export const updateMeteoStats = async () => {
+  const users: string[] = await getUsers();
+  console.log(`Found ${users.length} users to process`);
+
+  for (const uid of users) {
+    const vineyards: string[] = await getVineyards(uid);
+    console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
+    for (const id of vineyards) {
+      try {
+        const email: string | undefined = await getUserEmail(uid);
+        const v: Vineyard = await getVineyard(uid, id);
+        const location = getVineyardLocation(v);
+        const actions = await getVineyardActions(uid, id);
+        const stats = await getVineyardStats(uid, id);
+        const dates: { start: moment.Moment; end: moment.Moment }[] = getMeteoDates(actions, stats);
+        for (const date of dates) {
+          console.log('Retrieving dates from ' + date.start + ' to ' + date.end);
+          const newStats = await getMeteo(location[1], location[0], date.start, date.end);
+          stats.data = [...stats.data, ...newStats.data];
+        }
+        stats.data = stats.data.sort((d1: MeteoStat, d2: MeteoStat) =>
+          moment(d1.date).isBefore(moment(d2.date), 'day') ? -1 : 1
+        );
+        const warnings = calculateWarnings(stats.data);
+        if (warnings.length > 0 && email) {
+          console.log('Sending email to ' + email);
+          await emailWarnings(email, v, warnings);
+        }
+        await saveMeteo(uid, id, stats);
+      } catch (error) {
+        console.error(`Error processing vineyard ${id} of ${uid}`, error);
+      }
+    }
+  }
+  return true;
 };
+exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async () => updateMeteoStats());
