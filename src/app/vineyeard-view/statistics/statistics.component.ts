@@ -131,7 +131,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   getStats(): void {
     if (this.vineyard) {
       if (!this._chart) {
-        this._chart = Highcharts.stockChart('graph-container', STATS_OPTIONS);
+        this._chart = Highcharts.stockChart('graph-container', { ...STATS_OPTIONS });
         this.setAxis();
       }
 
