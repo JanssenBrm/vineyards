@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/JanssenBrm/winery/compare/v1.9.0...v1.9.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* updated tracing origins for sentry ([6e4a25f](https://github.com/JanssenBrm/winery/commit/6e4a25f6066a95eb80d5b06c079300db6a01db10))
+
 # [1.9.0](https://github.com/JanssenBrm/winery/compare/v1.8.0...v1.9.0) (2022-07-26)
 
 
