@@ -15,18 +15,22 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - sonarcloud/scan
-      - run:
-          name: Release
-          command: npm run semantic-release || circleci-agent step halt
-      - run:
-          name: Create environments file
-          command: sh scripts/create_env_file.sh
-      - run:
-          name: Build application
-          command: npm run build
-      - run:
-          name: Deploy on firebase
-          command: npm run deploy:ci
+      - when:
+          condition:
+            equal: [ master ]
+          steps:
+            - run:
+                name: Release
+                command: npm run semantic-release || circleci-agent step halt
+            - run:
+                name: Create environments file
+                command: sh scripts/create_env_file.sh
+            - run:
+                name: Build application
+                command: npm run build
+            - run:
+                name: Deploy on firebase
+                command: npm run deploy:ci
 
 
 workflows:
