@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/JanssenBrm/winery/compare/v1.10.1...v1.11.0) (2022-07-26)
+
+
+### Features
+
+* updated background map ([bbc6b6b](https://github.com/JanssenBrm/winery/commit/bbc6b6b5823ae50996b22d905ed3000ed51c37ff))
+
 ## [1.10.1](https://github.com/JanssenBrm/winery/compare/v1.10.0...v1.10.1) (2022-07-26)
 
 
