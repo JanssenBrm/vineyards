@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/JanssenBrm/winery/compare/v1.12.0...v1.12.1) (2022-07-29)
+
+
+### Bug Fixes
+
+* updated tracing origin to new domain ([ac15901](https://github.com/JanssenBrm/winery/commit/ac1590180830325fa49db967b9ee7c49b33cf2ea))
+
 # [1.12.0](https://github.com/JanssenBrm/winery/compare/v1.11.0...v1.12.0) (2022-07-29)
 
 
