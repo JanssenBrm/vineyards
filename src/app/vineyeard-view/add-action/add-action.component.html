@@ -10,7 +10,7 @@
         <ion-label position="stacked">Type</ion-label>
         <ion-select required formControlName="type">
           <ion-select-option *ngFor="let type of actionTypes" [value]="type">{{
-            type
+            type | titlecase
           }}</ion-select-option>
         </ion-select>
       </ion-item>
@@ -18,7 +18,7 @@
         <ion-label position="stacked">Date</ion-label>
         <ion-datetime required formControlName="date"></ion-datetime>
       </ion-item>
-      <ion-item *ngIf="actionForm.value.type === 'BBCH'">
+      <ion-item *ngIf="actionForm.value.type === ActionType.BBCH">
         <ion-label position="stacked">BBCH</ion-label>
         <ion-select required formControlName="bbch" interface="action-sheet">
           <ion-select-option *ngFor="let stage of bbchCodes" [value]="stage.code">{{stage.code}} - {{
@@ -28,28 +28,28 @@
       </ion-item>
       <ion-item>
         <ion-label position="stacked">Variety</ion-label>
-        <ion-select required  [multiple]="actionForm.value.type !== 'Planting'"  formControlName="varietyId">
+        <ion-select required  [multiple]="actionForm.value.type !== ActionType.Planting"  formControlName="varietyId">
           <ion-select-option *ngFor="let variety of (varieties | async)" [value]="variety.id">{{
             variety.name
           }}</ion-select-option>
-          <ion-select-option *ngIf="actionForm.value.type === 'Planting'" [value]="'_new_variety'">
+          <ion-select-option *ngIf="actionForm.value.type === ActionType.Planting" [value]="'_new_variety'">
             Create new variety
           </ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item  *ngIf="actionForm.value.type === 'Planting' && createNewVariety">
+      <ion-item  *ngIf="actionForm.value.type === ActionType.Planting && createNewVariety">
         <ion-label position="stacked">New variety</ion-label>
         <ion-input type="text" required formControlName="variety"></ion-input>
       </ion-item>
-      <ion-item  *ngIf="actionForm.value.type === 'Planting'" class="col">
+      <ion-item  *ngIf="actionForm.value.type === ActionType.Planting" class="col">
         <ion-label position="stacked">Rows</ion-label>
         <ion-input type="number" required formControlName="rows"></ion-input>
       </ion-item>
-      <ion-item  *ngIf="actionForm.value.type === 'Planting'" class="col">
+      <ion-item  *ngIf="actionForm.value.type === ActionType.Planting" class="col">
         <ion-label position="stacked">Plants per row</ion-label>
         <ion-input type="number" required formControlName="plantsPerRow"></ion-input>
       </ion-item>
-      <ion-item  *ngIf="actionForm.value.type === 'Brix'" class="col">
+      <ion-item  *ngIf="actionForm.value.type === ActionType.Brix" class="col">
         <ion-label position="stacked">Brix</ion-label>
         <ion-input type="number" required formControlName="value"></ion-input>
       </ion-item>

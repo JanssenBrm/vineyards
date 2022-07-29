@@ -10,7 +10,7 @@ import { AddActionComponent } from '../add-action/add-action.component';
 import { ActionService } from '../../services/action.service';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
-import { PlantingAction } from '../../../../functions/src/models/action.model';
+import { BBCHAction, BrixAction, PlantingAction } from '../../../../functions/src/models/action.model';
 
 @Component({
   selector: 'app-actions',
@@ -100,7 +100,7 @@ export class ActionsComponent implements OnChanges {
   }
 
   async parseAction(data: any) {
-    if (data.type === 'planting') {
+    if (data.type === ActionType.Planting) {
       const variety = data.variety
         ? this.varietyService.getVarietyByName(data.variety)
         : this.varietyService.getVarietyByID(data.varietyId);
@@ -117,14 +117,12 @@ export class ActionsComponent implements OnChanges {
         type: data.type,
         date: data.date,
         description: data.description,
-        bbch: data.bbch,
         variety: [varietyId],
-        value: data.value,
         files: data.files,
         rows: data.rows,
         plantsPerRow: data.plantsPerRow,
       } as PlantingAction);
-    } else {
+    } else if (data.type === ActionType.BBCH) {
       this.addAction({
         id: data.id,
         type: data.type,
@@ -132,7 +130,25 @@ export class ActionsComponent implements OnChanges {
         description: data.description,
         bbch: data.bbch,
         variety: data.varietyId,
+        files: data.files,
+      } as BBCHAction);
+    } else if (data.type === ActionType.Brix) {
+      this.addAction({
+        id: data.id,
+        type: data.type,
+        date: data.date,
+        description: data.description,
+        variety: data.varietyId,
         value: data.value,
+        files: data.files,
+      } as BrixAction);
+    } else {
+      this.addAction({
+        id: data.id,
+        type: data.type,
+        date: data.date,
+        description: data.description,
+        variety: data.varietyId,
         files: data.files,
       });
     }

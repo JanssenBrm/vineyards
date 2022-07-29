@@ -1,11 +1,16 @@
 import { Vineyard } from 'src/app/models/vineyard.model';
 import { BBCH_STAGES } from './../../conf/bbch.config';
-import { ActionType } from 'src/app/models/action.model';
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
-import { Action, PlantingAction } from '../../../../functions/src/models/action.model';
+import {
+  Action,
+  ActionType,
+  BBCHAction,
+  BrixAction,
+  PlantingAction,
+} from '../../../../functions/src/models/action.model';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
@@ -45,9 +50,11 @@ export class AddActionComponent implements OnInit {
 
   public createNewVariety: boolean;
 
+  public ActionType = ActionType;
+
   ngOnInit() {
     this._files = [];
-    this.actionTypes = Object.keys(ActionType);
+    this.actionTypes = Object.values(ActionType);
     this.bbchCodes = BBCH_STAGES;
     this.varieties = this.varietyService.getVarietyListener();
     this.createNewVariety = false;
@@ -55,12 +62,12 @@ export class AddActionComponent implements OnInit {
     if (this.action) {
       this.actionForm = new FormGroup({
         type: new FormControl(
-          this.actionTypes.find((a: string) => ActionType[a] === this.action.type),
+          this.actionTypes.find((a: string) => a === this.action.type),
           [Validators.required]
         ),
         date: new FormControl(this.action.date, [Validators.required]),
         description: new FormControl(this.action.description),
-        bbch: new FormControl(this.action.bbch),
+        bbch: new FormControl(''),
         varietyId: new FormControl(this.action.variety || []),
         variety: new FormControl(''),
         rows: new FormControl(''),
@@ -69,11 +76,19 @@ export class AddActionComponent implements OnInit {
         files: new FormControl([this.action.files]),
       });
 
-      if (this.action.type === 'planting') {
+      if (this.action.type === ActionType.BBCH) {
+        this.actionForm.get('bbch').setValue((this.action as BBCHAction).bbch);
+      }
+
+      if (this.action.type === ActionType.Planting) {
         const variety: Variety = this.varietyService.getVarietyByID(this.action.variety[0]);
         this.actionForm.get('rows').setValue((this.action as PlantingAction).rows);
         this.actionForm.get('plantsPerRow').setValue((this.action as PlantingAction).plantsPerRow);
         this.actionForm.get('variety').setValue(variety.name);
+      }
+
+      if (this.action.type === ActionType.Brix) {
+        this.actionForm.get('value').setValue((this.action as BrixAction).value);
       }
     } else {
       this.actionForm = new FormGroup({
@@ -92,7 +107,7 @@ export class AddActionComponent implements OnInit {
 
     this.actionForm.get('varietyId').valueChanges.subscribe({
       next: (value: string) => {
-        if (value === '_new_variety' && this.actionForm.get('type').value === 'Planting') {
+        if (value === '_new_variety' && this.actionForm.get('type').value === ActionType.Planting) {
           this.createNewVariety = true;
         } else {
           this.createNewVariety = false;
@@ -101,16 +116,16 @@ export class AddActionComponent implements OnInit {
     });
 
     this.actionForm.get('type').valueChanges.subscribe((type: string) => {
-      if (type === 'BBCH') {
+      if (type === ActionType.BBCH) {
         this.actionForm.get('bbch').setValidators([Validators.required]);
         this.actionForm.get('varietyId').setValidators([Validators.required]);
-      } else if (type === 'Planting') {
+      } else if (type === ActionType.Planting) {
         this.actionForm.get('variety').setValidators([Validators.required]);
         this.actionForm.get('rows').setValidators([Validators.required]);
         this.actionForm.get('plantsPerRow').setValidators([Validators.required]);
         this.actionForm.get('varietyId').setValidators(null);
         this.actionForm.get('varietyId').setValue([]);
-      } else if (type === 'Brix') {
+      } else if (type === ActionType.Brix) {
         this.actionForm.get('value').setValidators([Validators.required]);
       } else {
         this.actionForm.get('bbch').setValidators(null);
@@ -167,7 +182,7 @@ export class AddActionComponent implements OnInit {
         ...this.actionForm.value,
         id: this.action ? this.action.id : '',
         date: this.actionForm.value.date.split('T')[0],
-        type: ActionType[this.actionForm.value.type],
+        type: this.actionForm.value.type,
         files: files !== undefined ? files : [],
       },
     });
