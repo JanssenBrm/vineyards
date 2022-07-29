@@ -25,7 +25,7 @@
     <ion-card-content>
       <div class="description">
         <p  *ngIf="activity.type === 'brix'">{{activity.value}} degrees ({{activity.value | brixToAlcohol }}%)</p>
-        <p *ngIf="activity.description">{{activity.description}}</p>
+        <p *ngIf="activity.description" [innerHTML]="activity.html"></p>
         <p *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
         <p  *ngIf="activity.type === 'planting'">
           <span> Planted {{activity.rows * activity.plantsPerRow}} plants</span>

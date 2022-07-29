@@ -1,5 +1,5 @@
 import { UtilService } from './../../services/util.service';
-import { Action, ActionType, BBCHAction, BrixAction, PlantingAction } from 'src/app/models/action.model';
+import { Action, ActionType, BaseAction, BBCHAction, BrixAction, PlantingAction } from 'src/app/models/action.model';
 import { ModalController, Platform } from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
 import { Component, Input, OnChanges } from '@angular/core';
@@ -53,16 +53,8 @@ export class ActionsComponent implements OnChanges {
     return `/assets/icon/${type}.png`;
   }
 
-  showPicture(url: string) {
-    if (!this.platform.is('cordova')) {
-      window.location.href = url;
-    } else {
-      this.photoViewer.show(url);
-    }
-  }
-
-  removeAction(action: Action) {
-    this.actionService.removeAction(this.vineyard, action);
+  async removeAction(action: Action) {
+    await this.actionService.removeAction(this.vineyard, action);
   }
 
   getActionTypeColor(stage: string): string {
@@ -90,7 +82,7 @@ export class ActionsComponent implements OnChanges {
         action,
       },
     });
-    modal.present();
+    await modal.present();
 
     const data = await modal.onWillDismiss();
     if (data.data.action) {
@@ -103,7 +95,7 @@ export class ActionsComponent implements OnChanges {
       const variety = data.variety
         ? this.varietyService.getVarietyByName(data.variety)
         : this.varietyService.getVarietyByID(data.varietyId);
-      let varietyId: string = undefined;
+      let varietyId: string;
       if (!variety) {
         varietyId = await this.varietyService.addVariety(this.vineyard, {
           name: data.variety,
@@ -111,7 +103,7 @@ export class ActionsComponent implements OnChanges {
       } else {
         varietyId = variety.id;
       }
-      this.addAction({
+      await this.addAction({
         id: data.id,
         type: data.type,
         date: data.date,
@@ -122,7 +114,7 @@ export class ActionsComponent implements OnChanges {
         plantsPerRow: data.plantsPerRow,
       } as PlantingAction);
     } else if (data.type === ActionType.BBCH) {
-      this.addAction({
+      await this.addAction({
         id: data.id,
         type: data.type,
         date: data.date,
@@ -132,7 +124,7 @@ export class ActionsComponent implements OnChanges {
         files: data.files,
       } as BBCHAction);
     } else if (data.type === ActionType.Brix) {
-      this.addAction({
+      await this.addAction({
         id: data.id,
         type: data.type,
         date: data.date,
@@ -142,7 +134,7 @@ export class ActionsComponent implements OnChanges {
         files: data.files,
       } as BrixAction);
     } else {
-      this.addAction({
+      await this.addAction({
         id: data.id,
         type: data.type,
         date: data.date,
@@ -153,11 +145,11 @@ export class ActionsComponent implements OnChanges {
     }
   }
 
-  addAction(action: Action) {
+  async addAction(action: BaseAction) {
     if (action.id !== '') {
-      this.actionService.updateAction(this.vineyard, action);
+      await this.actionService.updateAction(this.vineyard, action);
     } else {
-      this.actionService.addAction(this.vineyard, action);
+      await this.actionService.addAction(this.vineyard, action);
     }
   }
 

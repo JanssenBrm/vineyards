@@ -1,6 +1,6 @@
 import { UtilService } from './../../services/util.service';
 import { LoadingController, Platform } from '@ionic/angular';
-import { ActionType } from './../../models/action.model';
+import { ActionType, BBCHAction, BrixAction } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
 import { StatisticsService } from './../../services/statistics.service';
 import { VineyardService } from './../../services/vineyard.service';
@@ -354,7 +354,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   }
 
   getBBCHGraphs(): Observable<any[]> {
-    const actions = this.actions
+    const actions: BBCHAction[] = this.actions
       .filter((a: Action) => a.type === ActionType.BBCH)
       .sort((a: Action, b: Action) => (moment(a.date).isBefore(moment(b.date)) ? -1 : 1));
     const varieties = []
@@ -402,7 +402,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                     moment(a.date).year() === year &&
                     (a.variety || []).includes(this.varietyService.getVarietyByName(variety)?.id)
                 )
-                .map((a: Action) => ({
+                .map((a: BBCHAction) => ({
                   x: this.getNormalizedDate(moment(a.date).format('YYYY-MM-DD')),
                   y: +a.bbch,
                 })),
@@ -435,8 +435,13 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
           )
           .map((action: Action) => ({
             label: `${
-              action.bbch ? action.bbch + ' - ' + this.utilService.getBBCHDescription(action.bbch) + '<br />' : ''
-            }${action.value ? action.value + ' ' : ''}${action.description}`,
+              (action as BBCHAction).bbch
+                ? (action as BBCHAction).bbch +
+                  ' - ' +
+                  this.utilService.getBBCHDescription((action as BBCHAction).bbch) +
+                  '<br />'
+                : ''
+            }${(action as BrixAction).value ? (action as BrixAction).value + ' ' : ''}${action.description}`,
             x: this.getNormalizedDate(action.date),
             y: new Date(action.date).getFullYear(),
           })),
@@ -726,8 +731,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   },
                 },
                 data: this.actions
-                  .filter((a: Action) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
-                  .map((a: Action) => ({
+                  .filter((a: BrixAction) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
+                  .map((a: BrixAction) => ({
                     date: a.date,
                     value: a.value,
                   }))
