@@ -3,12 +3,13 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } fr
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { BehaviorSubject } from 'rxjs';
 import { Vintage } from '../models/vintage.model';
-import { Note } from '../models/note.model';
+import { Note, NoteBase } from '../models/note.model';
 import { Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import { VINTAGE_COLLECTION } from './vintage.service';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
+import * as marked from 'marked';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -32,31 +33,42 @@ export class NotesService {
     return this._notes;
   }
 
-  public addNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
-    this._vineyardCollection
+  public async addNote(vineyard: Vineyard, vintage: Vintage, note: NoteBase): Promise<Note> {
+    const doc = await this._vineyardCollection
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<Note>(NOTE_COLLECTION)
+      .collection<NoteBase>(NOTE_COLLECTION)
       .add(note);
+
+    return {
+      ...note,
+      id: doc.id,
+      html: marked.parse(note.description),
+    };
   }
 
-  public updateNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
-    this._vineyardCollection
+  public async updateNote(vineyard: Vineyard, vintage: Vintage, note: NoteBase): Promise<Note> {
+    await this._vineyardCollection
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<Note>(NOTE_COLLECTION)
+      .collection<NoteBase>(NOTE_COLLECTION)
       .doc(note.id)
       .set(note);
+
+    return {
+      ...note,
+      html: marked.parse(note.description),
+    };
   }
 
-  public removeNote(vineyard: Vineyard, vintage: Vintage, note: Note): void {
-    this._vineyardCollection
+  public async removeNote(vineyard: Vineyard, vintage: Vintage, note: NoteBase): Promise<void> {
+    await this._vineyardCollection
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<Note>(NOTE_COLLECTION)
+      .collection<NoteBase>(NOTE_COLLECTION)
       .doc(note.id)
       .delete();
   }
@@ -66,13 +78,19 @@ export class NotesService {
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<Note>(NOTE_COLLECTION)
+      .collection<NoteBase>(NOTE_COLLECTION)
       .snapshotChanges()
       .pipe(
-        map((data: DocumentChangeAction<Note>[]) =>
-          data.map((d: DocumentChangeAction<Note>) => ({
+        map((data: DocumentChangeAction<NoteBase>[]) =>
+          data.map((d: DocumentChangeAction<NoteBase>) => ({
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
+          }))
+        ),
+        map((notes: NoteBase[]) =>
+          notes.map((n: NoteBase) => ({
+            ...n,
+            html: marked.parse(n.description),
           }))
         )
       )

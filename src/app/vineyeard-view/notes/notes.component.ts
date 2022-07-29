@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Note } from '../../models/note.model';
+import { NoteBase } from '../../models/note.model';
 import { NotesService } from '../../services/notes.service';
 import { Vineyard } from '../../models/vineyard.model';
 import { Vintage } from '../../models/vintage.model';
@@ -20,7 +20,7 @@ export class NotesComponent implements OnInit, OnChanges {
   @Input()
   vintage: Vintage;
 
-  public notes$: BehaviorSubject<Note[]> = null;
+  public notes$: BehaviorSubject<NoteBase[]> = null;
 
   public STAGE = VintageEvent;
 
@@ -36,7 +36,7 @@ export class NotesComponent implements OnInit, OnChanges {
     this.notesService.getNotes(this.vineyard, this.vintage);
   }
 
-  async openAddNoteModal(note?: Note) {
+  async openAddNoteModal(note?: NoteBase) {
     const modal = await this.modalController.create({
       component: AddNoteComponent,
       componentProps: {
@@ -53,17 +53,17 @@ export class NotesComponent implements OnInit, OnChanges {
     }
   }
 
-  private parseNote(note: Note) {
+  private parseNote(note: NoteBase) {
     note.id
       ? this.notesService.updateNote(this.vineyard, this.vintage, note)
       : this.notesService.addNote(this.vineyard, this.vintage, note);
   }
 
-  deleteNote(note: Note) {
+  deleteNote(note: NoteBase) {
     this.notesService.removeNote(this.vineyard, this.vintage, note);
   }
 
-  editNote(note: Note) {
+  editNote(note: NoteBase) {
     this.openAddNoteModal(note);
   }
 

@@ -7,7 +7,7 @@ import { UploadService } from '../../services/upload.service';
 import { Vineyard } from '../../models/vineyard.model';
 import { Vintage } from '../../models/vintage.model';
 import { forkJoin } from 'rxjs';
-import { Note } from '../../models/note.model';
+import { NoteBase } from '../../models/note.model';
 
 @Component({
   selector: 'app-add-note',
@@ -22,7 +22,7 @@ export class AddNoteComponent implements OnInit {
   vintage: Vintage;
 
   @Input()
-  note: Note;
+  note: NoteBase;
 
   public VINTAGE_STAGES = VintageEvent;
 

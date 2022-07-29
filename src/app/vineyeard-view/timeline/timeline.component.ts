@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Vineyard } from '../../models/vineyard.model';
 import { Vintage } from '../../models/vintage.model';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { Note } from '../../models/note.model';
+import { NoteBase } from '../../models/note.model';
 import { SINGLE_DATES, VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vintageevent.model';
 import { NotesService } from '../../services/notes.service';
 import { skipWhile } from 'rxjs/operators';
@@ -35,18 +35,18 @@ export class TimelineComponent implements OnInit, OnChanges {
 
   constructor(private notesService: NotesService) {}
 
-  createChart(notes: Note[]) {
+  createChart(notes: NoteBase[]) {
     if (notes.length > 0) {
       this.chart = new Chart(this.timelineChart.nativeElement, {
         type: 'scatter',
         data: {
           datasets: Object.keys(this.STAGE)
-            .filter((stage: string) => notes.filter((n: Note) => n.stage === stage).length > 0)
+            .filter((stage: string) => notes.filter((n: NoteBase) => n.stage === stage).length > 0)
             .map((stage: string, idx: number) => ({
               label: stage,
               data: notes
-                .filter((n: Note) => n.stage === stage)
-                .map((n: Note) => ({
+                .filter((n: NoteBase) => n.stage === stage)
+                .map((n: NoteBase) => ({
                   x: moment(n.date),
                   y: stage,
                   description: n.description,
@@ -131,25 +131,25 @@ export class TimelineComponent implements OnInit, OnChanges {
     }
   }
 
-  getMaxDate(notes: Note[], stage: VintageEvent): moment.Moment {
+  getMaxDate(notes: NoteBase[], stage: VintageEvent): moment.Moment {
     const dates = this.getStageDates(notes, stage);
     return dates[dates.length - 1];
   }
 
-  getMinDate(notes: Note[], stage: VintageEvent): moment.Moment {
+  getMinDate(notes: NoteBase[], stage: VintageEvent): moment.Moment {
     return this.getStageDates(notes, stage)[0];
   }
 
-  getStageDates(notes: Note[], stage: VintageEvent): moment.Moment[] {
+  getStageDates(notes: NoteBase[], stage: VintageEvent): moment.Moment[] {
     return notes
-      .filter((n: Note) => n.stage === stage)
-      .map((n: Note) => moment(n.date))
+      .filter((n: NoteBase) => n.stage === stage)
+      .map((n: NoteBase) => moment(n.date))
       .sort((d1: moment.Moment, d2: moment.Moment) => (d1.isSameOrBefore(d2) ? -1 : 1));
   }
 
-  calculateTotalDays(notes: Note[]): number {
+  calculateTotalDays(notes: NoteBase[]): number {
     const dates = notes
-      .map((n: Note) => moment(n.date))
+      .map((n: NoteBase) => moment(n.date))
       .sort((d1: moment.Moment, d2: moment.Moment) => (d1.isSameOrBefore(d2) ? -1 : 1));
     return dates.length > 0 ? dates[dates.length - 1].diff(dates[0], 'days') : 0;
   }
