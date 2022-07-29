@@ -12,7 +12,7 @@ Sentry.init({
   dsn: 'https://094234f9e1024595801515548fd3d9cc@o1319586.ingest.sentry.io/6575225',
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ['https://myvineyards.tk/'],
+      tracingOrigins: ['https://myvineyards.org/'],
       routingInstrumentation: Sentry.routingInstrumentation,
     }),
   ],
