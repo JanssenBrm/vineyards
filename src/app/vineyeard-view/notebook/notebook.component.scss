@@ -16,3 +16,10 @@ ion-card-subtitle {
 .search {
   padding: 0.25rem 0.5rem;
 }
+
+.description {
+  th, td {
+    padding: .5rem !important;
+    text-align: left;
+  }
+}

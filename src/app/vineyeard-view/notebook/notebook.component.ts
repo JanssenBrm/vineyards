@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Vineyard } from '../../models/vineyard.model';
 import { ModalController } from '@ionic/angular';
 import { VineyardBaseNote, VineyardNote } from '../../models/vineyardnote.model';
@@ -10,6 +10,7 @@ import { AddNoteNotebookComponent } from '../add-note-notebook/add-note-notebook
   selector: 'app-notebook',
   templateUrl: './notebook.component.html',
   styleUrls: ['./notebook.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class NotebookComponent implements OnInit {
   @Input()
