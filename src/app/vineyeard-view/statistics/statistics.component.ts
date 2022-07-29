@@ -16,9 +16,10 @@ import { Integration, IntegrationType } from '../../models/integration.model';
 import { IntegrationsService } from '../../services/integrations.service';
 import { WeatherStationService } from '../../services/weatherstation.service';
 import { BehaviorSubject, from, merge, Observable, of } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
 import { VarietyService } from '../../services/variety.service';
+import { FeaturesService } from '../../services/features.service';
 
 enum StatTypes {
   ACTIONS = 'Actions',
@@ -29,6 +30,8 @@ enum StatTypes {
   SUNHOURS = 'Sun Hours',
   HUMIDITY = 'Humidity',
 }
+
+const PREMIUM_TYPES: StatTypes[] = [StatTypes.METEO, StatTypes.DGD];
 
 @Component({
   selector: 'app-statistics',
@@ -56,7 +59,12 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   public activeVarieties: string[];
 
-  public stats = Object.values(StatTypes).filter((t) => ![StatTypes.SUNHOURS, StatTypes.HUMIDITY].includes(t));
+  public stats: { type: StatTypes; premium: boolean }[] = Object.keys(StatTypes)
+    .filter((t) => ![StatTypes.SUNHOURS, StatTypes.HUMIDITY].includes(StatTypes[t]))
+    .map((t: string) => ({
+      type: StatTypes[t],
+      premium: PREMIUM_TYPES.includes(StatTypes[t]),
+    }));
 
   public activeStats: StatTypes[] = [StatTypes.ACTIONS];
 
@@ -78,7 +86,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private integrationsService: IntegrationsService,
     private weatherStationService: WeatherStationService,
     private loadingController: LoadingController,
-    private varietyService: VarietyService
+    private varietyService: VarietyService,
+    private featureService: FeaturesService
   ) {
     this.loadStats = new BehaviorSubject<void>(undefined);
 
@@ -90,6 +99,22 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         }
       },
     });
+
+    this.featureService
+      .isUserPremium()
+      .pipe(
+        map((premium: boolean) => {
+          if (!premium) {
+            throw new Error('User is not premium');
+          }
+          return premium;
+        })
+      )
+      .subscribe({
+        error: () => {
+          this.stats = this.stats.filter((s) => !s.premium);
+        },
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -106,9 +131,14 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     if (changes.integrations) {
       const stats = [...this.stats];
       if (this.integrationsService.hasIntegration(IntegrationType.WEATHER_STATION)) {
-        stats.push(...[StatTypes.SUNHOURS, StatTypes.HUMIDITY]);
+        stats.push(
+          ...[StatTypes.SUNHOURS, StatTypes.HUMIDITY].map((type: StatTypes) => ({
+            type,
+            premium: PREMIUM_TYPES.includes(type),
+          }))
+        );
       }
-      this.stats = [...new Set(stats)];
+      this.stats = stats.filter((stat, idx, statarr) => statarr.findIndex((s) => s.type === stat.type) === idx);
     }
   }
 
