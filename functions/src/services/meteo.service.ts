@@ -65,7 +65,6 @@ const getMeteoInfo = async (
   start: moment.Moment,
   end: moment.Moment
 ): Promise<MeteoStats> => {
-  console.log('Retrieving meteo information', start, end, API_HOST, API_KEY, process.env);
   const options = {
     params: {
       lat,
