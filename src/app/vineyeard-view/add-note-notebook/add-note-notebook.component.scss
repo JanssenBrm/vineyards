@@ -8,8 +8,17 @@ form {
     display: flex;
     flex-direction: column;
 
-    .tags {
+    .description {
       flex: 1;
+      display: flex;
+
+      ion-textarea {
+        flex: 1;
+        display: flex;
+      }
+    }
+
+    .tags {
       padding: .5rem;
     }
   }
