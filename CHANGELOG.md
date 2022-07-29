@@ -1,3 +1,16 @@
+# [1.12.0](https://github.com/JanssenBrm/winery/compare/v1.11.0...v1.12.0) (2022-07-29)
+
+
+### Bug Fixes
+
+* fixed function ([c410386](https://github.com/JanssenBrm/winery/commit/c4103860070799180b392941671182a980672ce6))
+
+
+### Features
+
+* made meteo information a premium feature ([1b26c13](https://github.com/JanssenBrm/winery/commit/1b26c13c84ca679ad311d2c41c97099f80673bde))
+* updated background map on info component ([8d591f3](https://github.com/JanssenBrm/winery/commit/8d591f33817972aac361a4b68c4e8323dc213ddc))
+
 # [1.11.0](https://github.com/JanssenBrm/winery/compare/v1.10.1...v1.11.0) (2022-07-26)
 
 
