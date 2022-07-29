@@ -5,7 +5,7 @@ Since 2019 I started a new hobby and dove into the world of viniculture and wine
 
 In first place, it allows users to keep track of the different actions during the grape growing season. When the grapes have been harvestes, the application allows you to create and follow up different vintages from harvest to bottling.
 
-The latest version of the application is currently hosted at [https://myvineyards.tk](https://myvineyards.tk/)
+The latest version of the application is currently hosted at [https://myvineyards.org/](https://myvineyards.org/)
 
 ## Key features
 * Tracking of the different actions during the grape growing season such as planting, pruning, fertilization, growing stages, general observations, ...
