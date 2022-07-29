@@ -28,7 +28,7 @@
         <p *ngIf="activity.description">{{activity.description}}</p>
         <p *ngIf="activity.bbch">{{utilService.getBBCHDescription(activity.bbch)}}</p>
         <p  *ngIf="activity.type === 'planting'">
-          <span *ngFor="let variety of getVarieties(activity.variety)"> Planted {{variety.rows * variety.plantsPerRow}} plants</span>
+          <span> Planted {{activity.rows * activity.plantsPerRow}} plants</span>
         </p>
       </div>
       <div class="files">

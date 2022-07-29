@@ -9,11 +9,14 @@ import { Vineyard } from '../models/vineyard.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { Action } from '../models/action.model';
+import { Action, ActionType } from '../models/action.model';
 import { Variety } from '../models/variety.model';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { Vintage } from '../models/vintage.model';
+import { ActionService } from './action.service';
+import { PlantingAction } from '../../../functions/src/models/action.model';
+
 export const VARIETY_COLLECTION = 'varieties';
 
 @Injectable({
@@ -24,7 +27,11 @@ export class VarietyService {
 
   private _varieties: BehaviorSubject<Variety[]>;
 
-  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
+  constructor(
+    private fireStore: AngularFirestore,
+    private actionService: ActionService,
+    private authService: AuthService
+  ) {
     this._varieties = new BehaviorSubject<Variety[]>([]);
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
@@ -78,8 +85,21 @@ export class VarietyService {
   }
 
   public getPlantCount(varieties: Variety[]): number {
+    const ids = varieties.map((v: Variety) => v.id);
+    const actions: PlantingAction[] = this.actionService
+      .getActionListener()
+      .getValue()
+      .filter((a: Action) => a.type === ActionType.Planting && ids.includes(a.variety[0])) as PlantingAction[];
     return varieties.length > 0
-      ? varieties.map((v: Variety) => v.plantsPerRow * v.rows).reduce((sum: number, count: number) => sum + count)
+      ? []
+          .concat(
+            ...varieties.map((v: Variety) =>
+              actions
+                .filter((a: PlantingAction) => a.variety[0] === v.id)
+                .map((a: PlantingAction) => a.plantsPerRow * a.rows)
+            )
+          )
+          .reduce((sum: number, count: number) => sum + count, 0)
       : 0;
   }
 

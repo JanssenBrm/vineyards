@@ -26,16 +26,19 @@
           }}</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item *ngIf="actionForm.value.type !== 'Planting'">
+      <ion-item>
         <ion-label position="stacked">Variety</ion-label>
-        <ion-select required  multiple="true"  formControlName="varietyId">
+        <ion-select required  [multiple]="actionForm.value.type !== 'Planting'"  formControlName="varietyId">
           <ion-select-option *ngFor="let variety of (varieties | async)" [value]="variety.id">{{
             variety.name
           }}</ion-select-option>
+          <ion-select-option *ngIf="actionForm.value.type === 'Planting'" [value]="'_new_variety'">
+            Create new variety
+          </ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item  *ngIf="actionForm.value.type === 'Planting'">
-        <ion-label position="stacked">Variety</ion-label>
+      <ion-item  *ngIf="actionForm.value.type === 'Planting' && createNewVariety">
+        <ion-label position="stacked">New variety</ion-label>
         <ion-input type="text" required formControlName="variety"></ion-input>
       </ion-item>
       <ion-item  *ngIf="actionForm.value.type === 'Planting'" class="col">

@@ -10,6 +10,7 @@ import { AddActionComponent } from '../add-action/add-action.component';
 import { ActionService } from '../../services/action.service';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
+import { PlantingAction } from '../../../../functions/src/models/action.model';
 
 @Component({
   selector: 'app-actions',
@@ -94,51 +95,35 @@ export class ActionsComponent implements OnChanges {
 
     const data = await modal.onWillDismiss();
     if (data.data.action) {
-      this.parseAction(data.data.action);
+      await this.parseAction(data.data.action);
     }
   }
 
-  parseAction(data: any) {
+  async parseAction(data: any) {
     if (data.type === 'planting') {
-      const variety = this.varietyService.getVarietyByName(data.variety);
+      const variety = data.variety
+        ? this.varietyService.getVarietyByName(data.variety)
+        : this.varietyService.getVarietyByID(data.varietyId);
+      let varietyId: string = undefined;
       if (!variety) {
-        this.varietyService
-          .addVariety(this.vineyard, {
-            plantsPerRow: data.plantsPerRow,
-            name: data.variety,
-            rows: data.rows,
-          })
-          .then((id: string) =>
-            this.addAction({
-              id: data.id,
-              type: data.type,
-              date: data.date,
-              description: data.description,
-              bbch: data.bbch,
-              variety: [id],
-              value: data.value,
-              files: data.files,
-            })
-          );
-      } else {
-        this.varietyService.updateVariety(this.vineyard, {
-          ...variety,
-          plantsPerRow: data.plantsPerRow,
+        varietyId = await this.varietyService.addVariety(this.vineyard, {
           name: data.variety,
-          rows: data.rows,
         });
-        data.varietyId = [variety.id];
-        this.addAction({
-          id: data.id,
-          type: data.type,
-          date: data.date,
-          description: data.description,
-          bbch: data.bbch,
-          variety: data.varietyId,
-          value: data.value,
-          files: data.files,
-        });
+      } else {
+        varietyId = variety.id;
       }
+      this.addAction({
+        id: data.id,
+        type: data.type,
+        date: data.date,
+        description: data.description,
+        bbch: data.bbch,
+        variety: [varietyId],
+        value: data.value,
+        files: data.files,
+        rows: data.rows,
+        plantsPerRow: data.plantsPerRow,
+      } as PlantingAction);
     } else {
       this.addAction({
         id: data.id,

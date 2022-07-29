@@ -5,7 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
-import { Action } from '../../../../functions/src/models/action.model';
+import { Action, PlantingAction } from '../../../../functions/src/models/action.model';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
@@ -43,14 +43,16 @@ export class AddActionComponent implements OnInit {
 
   private _loading: HTMLIonLoadingElement;
 
+  public createNewVariety: boolean;
+
   ngOnInit() {
     this._files = [];
     this.actionTypes = Object.keys(ActionType);
     this.bbchCodes = BBCH_STAGES;
     this.varieties = this.varietyService.getVarietyListener();
+    this.createNewVariety = false;
 
     if (this.action) {
-      console.log(this.action);
       this.actionForm = new FormGroup({
         type: new FormControl(
           this.actionTypes.find((a: string) => ActionType[a] === this.action.type),
@@ -69,8 +71,8 @@ export class AddActionComponent implements OnInit {
 
       if (this.action.type === 'planting') {
         const variety: Variety = this.varietyService.getVarietyByID(this.action.variety[0]);
-        this.actionForm.get('rows').setValue(variety.rows);
-        this.actionForm.get('plantsPerRow').setValue(variety.plantsPerRow);
+        this.actionForm.get('rows').setValue((this.action as PlantingAction).rows);
+        this.actionForm.get('plantsPerRow').setValue((this.action as PlantingAction).plantsPerRow);
         this.actionForm.get('variety').setValue(variety.name);
       }
     } else {
@@ -87,6 +89,16 @@ export class AddActionComponent implements OnInit {
         files: new FormControl([]),
       });
     }
+
+    this.actionForm.get('varietyId').valueChanges.subscribe({
+      next: (value: string) => {
+        if (value === '_new_variety' && this.actionForm.get('type').value === 'Planting') {
+          this.createNewVariety = true;
+        } else {
+          this.createNewVariety = false;
+        }
+      },
+    });
 
     this.actionForm.get('type').valueChanges.subscribe((type: string) => {
       if (type === 'BBCH') {

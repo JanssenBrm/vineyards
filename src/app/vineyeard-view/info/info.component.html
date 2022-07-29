@@ -30,7 +30,7 @@
                         </div>
                         <div>
                             <span *ngFor="let variety of varieties">{{variety.name}}
-                                - {{variety.rows * variety.plantsPerRow}} plants<br/></span>
+                                - {{varietyService.getPlantCount([variety])}} plants<br/></span>
                         </div>
                     </div>
                 </ion-card-content>
@@ -82,7 +82,7 @@
                                 <span *ngIf="action.type === 'brix'" class="description">{{action.value}}
                                     ({{action.value | brixToAlcohol}}%)</span>
                                 <span *ngIf="action.type === 'planting'"
-                                      class="description">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}}
+                                      class="description">{{action?.rows * action?.plantsPerRow}}
                                     plants</span>
                                 <span *ngIf="action.variety" class="description variety">
                         {{varietyService.getVarietiesLabel(action)}}
@@ -107,7 +107,7 @@
                                 <span *ngIf="action.type === 'brix'" class="description">{{action.value}}
                                     ({{action.value | brixToAlcohol}}%)</span>
                                 <span *ngIf="action.type === 'planting'"
-                                      class="description">{{varietyService.getVariety(action.variety)[0].rows * varietyService.getVariety(action.variety)[0].plantsPerRow}}
+                                      class="description">{{action?.rows * action?.plantsPerRow}}
                                     plants</span>
                                 <span *ngIf="action.variety" class="description variety">
                         {{varietyService.getVarietiesLabel(action)}}
