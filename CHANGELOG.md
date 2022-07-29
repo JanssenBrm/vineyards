@@ -1,3 +1,18 @@
+# [1.13.0](https://github.com/JanssenBrm/winery/compare/v1.12.1...v1.13.0) (2022-07-29)
+
+
+### Bug Fixes
+
+* fixed imports of actions ([7e29579](https://github.com/JanssenBrm/winery/commit/7e29579faf9d61c6185dfaba80cfd03ce33f5670))
+
+
+### Features
+
+* added markdown support for actions ([e2c9d32](https://github.com/JanssenBrm/winery/commit/e2c9d32bb8a14d13af4f1781c82c7590db942d6a))
+* added markdown support for vineyard notes ([a70d142](https://github.com/JanssenBrm/winery/commit/a70d142d89188d2b854f21891854fd24e32248cd))
+* added markdown support to vintage notes ([d5ae0e9](https://github.com/JanssenBrm/winery/commit/d5ae0e95022e2a642fa20c990dd084dd625ddec2))
+* updated styling of tables in the notes section ([161f941](https://github.com/JanssenBrm/winery/commit/161f9410e53fb525a70cf1b3655d76d441cbe0fb))
+
 ## [1.12.1](https://github.com/JanssenBrm/winery/compare/v1.12.0...v1.12.1) (2022-07-29)
 
 
