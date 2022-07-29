@@ -5,12 +5,9 @@ import * as turf from '@turf/turf';
 import {MeteoStats} from '../models/stats.model';
 import {Action} from '../models/action.model';
 import * as moment from 'moment';
-import * as firebase from 'firebase';
 import {UserRole} from '../models/userdata.model';
 import WriteResult = admin.firestore.WriteResult;
 import UserRecord = admin.auth.UserRecord;
-import DocumentSnapshot = admin.firestore.DocumentSnapshot;
-import DocumentData = firebase.firestore.DocumentData;
 
 admin.initializeApp();
 export const db = admin.firestore();
@@ -40,7 +37,7 @@ export const isUserPremium = (uid: string): Promise<boolean> => {
     return db
         .collection('users')
         .doc(uid).get()
-        .then((doc: DocumentSnapshot<DocumentData>) => doc.exists ? [UserRole.PREMIUM, UserRole.ADMIN].includes(doc.data()?.role || UserRole.BASIC) : false)
+        .then((doc) => doc.exists ? [UserRole.PREMIUM, UserRole.ADMIN].includes(doc.data()?.role || UserRole.BASIC) : false)
         .catch((error) => {
             console.error(`Could not detect if user ${uid} is premium`, error);
             return false;
