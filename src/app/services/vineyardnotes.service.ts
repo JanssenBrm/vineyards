@@ -6,7 +6,8 @@ import { Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
-import { VineyardNote } from '../models/vineyardnote.model';
+import { VineyardBaseNote, VineyardNote } from '../models/vineyardnote.model';
+import * as marked from 'marked';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -30,28 +31,47 @@ export class VineyardNotesService {
     return this._notes;
   }
 
-  public addNote(vineyard: Vineyard, note: VineyardNote): void {
-    this._vineyardCollection.doc(vineyard.id).collection<VineyardNote>(NOTE_COLLECTION).add(note);
+  public async addNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<VineyardNote> {
+    const doc = await this._vineyardCollection.doc(vineyard.id).collection<VineyardBaseNote>(NOTE_COLLECTION).add(note);
+    return {
+      ...note,
+      id: doc.id,
+      html: marked.parse(note.description),
+    };
   }
 
-  public updateNote(vineyard: Vineyard, note: VineyardNote): void {
-    this._vineyardCollection.doc(vineyard.id).collection<VineyardNote>(NOTE_COLLECTION).doc(note.id).set(note);
+  public async updateNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<VineyardNote> {
+    await this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<VineyardBaseNote>(NOTE_COLLECTION)
+      .doc(note.id)
+      .set(note);
+    return {
+      ...note,
+      html: marked.parse(note.description),
+    };
   }
 
-  public removeNote(vineyard: Vineyard, note: VineyardNote): void {
-    this._vineyardCollection.doc(vineyard.id).collection<VineyardNote>(NOTE_COLLECTION).doc(note.id).delete();
+  public async removeNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<void> {
+    await this._vineyardCollection.doc(vineyard.id).collection<VineyardBaseNote>(NOTE_COLLECTION).doc(note.id).delete();
   }
 
   public getNotes(vineyard: Vineyard): void {
     this._vineyardCollection
       .doc(vineyard.id)
-      .collection<VineyardNote>(NOTE_COLLECTION)
+      .collection<VineyardBaseNote>(NOTE_COLLECTION)
       .snapshotChanges()
       .pipe(
-        map((data: DocumentChangeAction<VineyardNote>[]) =>
-          data.map((d: DocumentChangeAction<VineyardNote>) => ({
+        map((data: DocumentChangeAction<VineyardBaseNote>[]) =>
+          data.map((d: DocumentChangeAction<VineyardBaseNote>) => ({
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
+          }))
+        ),
+        map((notes: VineyardBaseNote[]) =>
+          notes.map((n: VineyardNote) => ({
+            ...n,
+            html: marked.parse(n.description),
           }))
         )
       )

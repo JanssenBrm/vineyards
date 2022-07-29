@@ -27,8 +27,7 @@
           </ion-card-subtitle>
 
         </ion-card-header>
-        <ion-card-content>
-          {{note.description}}
+        <ion-card-content [innerHTML]="note.html">
         </ion-card-content>
       </ion-card>
     </ion-col>

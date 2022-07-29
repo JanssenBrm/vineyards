@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Vineyard } from '../../models/vineyard.model';
 import { ModalController } from '@ionic/angular';
-import { VineyardNote } from '../../models/vineyardnote.model';
+import { VineyardBaseNote, VineyardNote } from '../../models/vineyardnote.model';
 import { VineyardNotesService } from '../../services/vineyardnotes.service';
 import { BehaviorSubject } from 'rxjs';
 import { AddNoteNotebookComponent } from '../add-note-notebook/add-note-notebook.component';
@@ -25,7 +25,7 @@ export class NotebookComponent implements OnInit {
     this.notes$ = this.notesService.getNotesListener();
   }
 
-  async openAddNoteModal(note?: VineyardNote) {
+  async openAddNoteModal(note?: VineyardBaseNote) {
     const modal = await this.modalController.create({
       component: AddNoteNotebookComponent,
       componentProps: {
@@ -40,15 +40,15 @@ export class NotebookComponent implements OnInit {
     }
   }
 
-  deleteNote(note: VineyardNote) {
+  deleteNote(note: VineyardBaseNote) {
     this.notesService.removeNote(this.vineyard, note);
   }
 
-  editNote(note: VineyardNote) {
+  editNote(note: VineyardBaseNote) {
     this.openAddNoteModal(note);
   }
 
-  private parseNote(note: VineyardNote) {
+  private parseNote(note: VineyardBaseNote) {
     note.id ? this.notesService.updateNote(this.vineyard, note) : this.notesService.addNote(this.vineyard, note);
   }
 

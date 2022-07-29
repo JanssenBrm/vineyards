@@ -3,7 +3,7 @@ import { Vineyard } from '../../models/vineyard.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UploadService } from '../../services/upload.service';
-import { VineyardNote } from '../../models/vineyardnote.model';
+import { VineyardBaseNote } from '../../models/vineyardnote.model';
 
 @Component({
   selector: 'app-add-note-notebook',
@@ -15,7 +15,7 @@ export class AddNoteNotebookComponent implements OnInit {
   vineyard: Vineyard;
 
   @Input()
-  note: VineyardNote;
+  note: VineyardBaseNote;
 
   public tags: string[];
 
