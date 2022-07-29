@@ -88,7 +88,7 @@ export class InfoComponent implements OnChanges, AfterViewInit {
         layers: [
           new TileLayer({
             source: new XYZ({
-              url: 'https://api.mapbox.com/styles/v1/bramjanssen/ck77to6kv269x1ipk96lk1udu/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJhbWphbnNzZW4iLCJhIjoiY2s3N3RraXY1MDlqYTNmcGQ5MXRlc253MyJ9.nivXa7rSweT_gUHI80CKIw',
+              url: 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
             }),
           }),
           this._featureLayer,
