@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { VineyardBaseNote, VineyardNote } from '../models/vineyardnote.model';
-import * as marked from 'marked';
+import { UtilService } from './util.service';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -36,7 +36,7 @@ export class VineyardNotesService {
     return {
       ...note,
       id: doc.id,
-      html: marked.parse(note.description),
+      html: UtilService.parseMarkdown(note.description),
     };
   }
 
@@ -48,7 +48,7 @@ export class VineyardNotesService {
       .set(note);
     return {
       ...note,
-      html: marked.parse(note.description),
+      html: UtilService.parseMarkdown(note.description),
     };
   }
 
@@ -71,7 +71,7 @@ export class VineyardNotesService {
         map((notes: VineyardBaseNote[]) =>
           notes.map((n: VineyardNote) => ({
             ...n,
-            html: marked.parse(n.description),
+            html: UtilService.parseMarkdown(n.description),
           }))
         )
       )

@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Action, ACTION_COLORS, ActionType, BaseAction } from '../models/action.model';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
-import * as marked from 'marked';
+import { UtilService } from './util.service';
 
 export const ACTION_COLLECTION = 'actions';
 
@@ -37,7 +37,7 @@ export class ActionService {
     return {
       ...action,
       id: doc.id,
-      html: marked.parse(action.description),
+      html: UtilService.parseMarkdown(action.description),
     };
   }
 
@@ -49,7 +49,7 @@ export class ActionService {
       .set(action);
     return {
       ...action,
-      html: marked.parse(action.description),
+      html: UtilService.parseMarkdown(action.description),
     };
   }
 
@@ -77,7 +77,7 @@ export class ActionService {
         map((actions: BaseAction[]) =>
           actions.map((a: BaseAction) => ({
             ...a,
-            html: marked.parse(a.description),
+            html: UtilService.parseMarkdown(a.description),
           }))
         )
       )

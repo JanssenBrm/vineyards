@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 import { VINTAGE_COLLECTION } from './vintage.service';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
-import * as marked from 'marked';
+import { UtilService } from './util.service';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -44,7 +44,7 @@ export class NotesService {
     return {
       ...note,
       id: doc.id,
-      html: marked.parse(note.description),
+      html: UtilService.parseMarkdown(note.description),
     };
   }
 
@@ -59,7 +59,7 @@ export class NotesService {
 
     return {
       ...note,
-      html: marked.parse(note.description),
+      html: UtilService.parseMarkdown(note.description),
     };
   }
 
@@ -90,7 +90,7 @@ export class NotesService {
         map((notes: NoteBase[]) =>
           notes.map((n: NoteBase) => ({
             ...n,
-            html: marked.parse(n.description),
+            html: UtilService.parseMarkdown(n.description),
           }))
         )
       )

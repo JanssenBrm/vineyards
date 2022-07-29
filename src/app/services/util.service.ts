@@ -5,6 +5,7 @@ import { createEmpty, extend } from 'ol/extent';
 import Polygon from 'ol/geom/Polygon';
 import { BBCH } from '../models/bbch.model';
 import { Platform } from '@ionic/angular';
+import * as marked from 'marked';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +39,9 @@ export class UtilService {
     } else {
       return false;
     }
+  }
+
+  static parseMarkdown(text: string): string {
+    return marked.parse(text);
   }
 }
