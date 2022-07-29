@@ -9,13 +9,12 @@ import { Vineyard } from '../models/vineyard.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { Action, ActionType } from '../models/action.model';
+import { Action, ActionType, PlantingAction } from '../models/action.model';
 import { Variety } from '../models/variety.model';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { Vintage } from '../models/vintage.model';
 import { ActionService } from './action.service';
-import { PlantingAction } from '../../../functions/src/models/action.model';
 
 export const VARIETY_COLLECTION = 'varieties';
 

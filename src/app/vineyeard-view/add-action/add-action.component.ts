@@ -1,21 +1,15 @@
 import { Vineyard } from 'src/app/models/vineyard.model';
-import { BBCH_STAGES } from './../../conf/bbch.config';
+import { BBCH_STAGES } from '../../conf/bbch.config';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
-import {
-  Action,
-  ActionType,
-  BBCHAction,
-  BrixAction,
-  PlantingAction,
-} from '../../../../functions/src/models/action.model';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
 import { UploadService } from '../../services/upload.service';
 import * as moment from 'moment';
+import { Action, ActionType, BBCHAction, BrixAction, PlantingAction } from '../../models/action.model';
 
 @Component({
   selector: 'app-add-action',

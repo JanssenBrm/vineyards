@@ -1,5 +1,5 @@
 import { UtilService } from './../../services/util.service';
-import { Action, ActionType } from 'src/app/models/action.model';
+import { Action, ActionType, BBCHAction, BrixAction, PlantingAction } from 'src/app/models/action.model';
 import { ModalController, Platform } from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
 import { Component, Input, OnChanges } from '@angular/core';
@@ -10,7 +10,6 @@ import { AddActionComponent } from '../add-action/add-action.component';
 import { ActionService } from '../../services/action.service';
 import { VarietyService } from '../../services/variety.service';
 import { Variety } from '../../models/variety.model';
-import { BBCHAction, BrixAction, PlantingAction } from '../../../../functions/src/models/action.model';
 
 @Component({
   selector: 'app-actions',
