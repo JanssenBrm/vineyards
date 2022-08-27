@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/JanssenBrm/winery/compare/v1.13.1...v1.14.0) (2022-08-27)
+
+
+### Features
+
+* split up brix based on varieties ([75ef5fc](https://github.com/JanssenBrm/winery/commit/75ef5fcbbdd72c60c60296d0e4506cfa4527d16a))
+
 ## [1.13.1](https://github.com/JanssenBrm/winery/compare/v1.13.0...v1.13.1) (2022-08-27)
 
 
