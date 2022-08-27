@@ -710,28 +710,50 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     const years = this.actions
       .map((a: Action) => moment(a.date).year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
+    const varieties = []
+      .concat(...this.actions.map((a: Action) => a.variety))
+      .filter((v: string, idx: number, vs: string[]) => vs.indexOf(v) === idx);
+    const combinations: { year: number; variety: string }[] = [].concat(
+      ...years.map((y: number) => {
+        return varieties
+          .filter((v: string) =>
+            this.actions.find((a: Action) => a.variety?.includes(v) && moment(a.date).year() === y)
+          )
+          .map((v: string) => ({
+            year: y,
+            variety: v,
+          }));
+      })
+    );
     return merge(
       [].concat(
-        ...years
-          .filter((y: number) => this.seasons.indexOf(y) >= 0)
-          .map((y: number, idx: number) => {
+        ...combinations
+          .filter(({ year, variety }) => this.seasons.indexOf(year) >= 0 && this.activeVarieties.includes(variety))
+          .map(({ year, variety }, idx: number) => {
+            const varietyName = this.varietyService.getVarietyByID(variety).name;
             return [
               {
-                id: `Degrees Brix ${y}`,
-                name: `Degrees Brix ${y}`,
+                id: `${varietyName} - Degrees Brix ${year}`,
+                name: `${varietyName} - Degrees Brix ${year}`,
                 type: 'spline',
                 yAxis: 'brix',
                 color: this.colorService.lighten(COLOR.BRIX, idx),
                 showInNavigator: true,
                 tooltip: {
                   formatter(point) {
-                    return `<span style="color:${point.color}">●</span>  <b>Degrees Brix ${y}</b>: ${point.y.toFixed(
-                      2
-                    )} Degrees`;
+                    return `<span style="color:${
+                      point.color
+                    }">●</span>  <b>${varietyName} - Degrees Brix ${year}</b>: ${point.y.toFixed(2)} Degrees`;
                   },
                 },
                 data: this.actions
-                  .filter((a: BrixAction) => moment(a.date).year() === y && a.type === ActionType.Brix && !!a.value)
+                  .filter(
+                    (a: BrixAction) =>
+                      moment(a.date).year() === year &&
+                      a.variety?.includes(variety) &&
+                      a.type === ActionType.Brix &&
+                      !!a.value
+                  )
                   .map((a: BrixAction) => ({
                     date: a.date,
                     value: a.value,
