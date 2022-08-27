@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/JanssenBrm/winery/compare/v1.13.0...v1.13.1) (2022-08-27)
+
+
+### Bug Fixes
+
+* replaced external css with style from module ([794d3d6](https://github.com/JanssenBrm/winery/commit/794d3d64294b88621aecf87331bf27f32bc6c427))
+
 # [1.13.0](https://github.com/JanssenBrm/winery/compare/v1.12.1...v1.13.0) (2022-07-29)
 
 
