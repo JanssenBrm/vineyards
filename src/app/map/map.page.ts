@@ -381,7 +381,7 @@ export class MapPage implements OnInit, AfterViewInit {
   private _getBaseMap(): TileLayer {
     return new TileLayer({
       source: new XYZ({
-        url: 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}',
+        url: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
       }),
     });
   }
