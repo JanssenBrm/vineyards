@@ -108,8 +108,8 @@ export class MapPage implements OnInit, AfterViewInit {
     this._featureLayer = this._getFeatureLayer();
 
     this.view = new View({
-      center: [573381.618724, 6662862.881562],
-      zoom: 10,
+      center: [0, 1000000],
+      zoom: 3,
     });
 
     this._overlay = new Overlay({
