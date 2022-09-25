@@ -1,3 +1,12 @@
+# [1.15.0](https://github.com/JanssenBrm/winery/compare/v1.14.0...v1.15.0) (2022-09-25)
+
+
+### Features
+
+* center on the world if no vineyards are available ([7bd591e](https://github.com/JanssenBrm/winery/commit/7bd591e31d0e7e19cdfa00aefa8513cc4c3efc28))
+* started the implementation of a search bar ([28a534c](https://github.com/JanssenBrm/winery/commit/28a534ca72ab17f11f61c0493734c5836f2c3ad3))
+* updated base map to be hybrid ([9f22d96](https://github.com/JanssenBrm/winery/commit/9f22d96362d8d2a742f40eb04e437d02c71e45e2))
+
 # [1.14.0](https://github.com/JanssenBrm/winery/compare/v1.13.1...v1.14.0) (2022-08-27)
 
 
