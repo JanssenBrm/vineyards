@@ -34,6 +34,7 @@
     "@angular/router": "~13.3.11",
     "@capacitor/core": "1.5.0",
     "@capacitor/ios": "^2.4.7",
+    "@googlemaps/google-maps-services-js": "^3.3.16",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/photo-viewer": "^5.22.0",
     "@ionic-native/splash-screen": "^5.0.0",

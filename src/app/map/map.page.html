@@ -2,6 +2,7 @@
 <ion-content id="map-content">
   <div id="map"></div>
   <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
+  <!--<app-search></app-search>-->
 </ion-content>
 
 <div id="clickPopup" class="ol-popup">

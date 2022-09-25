@@ -1,0 +1,6 @@
+<ion-searchbar [debounce]="1000" (ionChange)="searchQueryUpdated($event.target.value)"></ion-searchbar>
+<div class="suggestions" *ngIf="(suggestions | async)?.length > 0">
+    <div *ngFor="let suggestion of suggestions" class="suggestion">
+        {{suggestion}}
+    </div>
+</div>
