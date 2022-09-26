@@ -25,8 +25,7 @@ export const environment = {
         appId: "${process.env.FB_APP_ID}",
         measurementId: "${process.env.FB_MEASUREMENT_ID}"
   },
-  owm_key: "${process.env.OWM_KEY}",
-  places_api_key: "${process.env.PLACES_API_KEY}"
+  owm_key: "${process.env.OWM_KEY}"
 };
 `;
 
