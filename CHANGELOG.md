@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/JanssenBrm/winery/compare/v1.17.0...v1.17.1) (2022-09-26)
+
+
+### Bug Fixes
+
+* do not show empty statistics ([2f9ecb3](https://github.com/JanssenBrm/winery/commit/2f9ecb33f74348911e5fce4e1c0726fced0a424d))
+
 # [1.17.0](https://github.com/JanssenBrm/winery/compare/v1.16.0...v1.17.0) (2022-09-26)
 
 
