@@ -2,6 +2,15 @@
     position: absolute;
     top: 1rem;
     width: 100%;
+
+    &.mobile {
+        bottom: 1rem;
+        top: unset;
+
+        .toolbar {
+            justify-content: center;
+        }
+    }
 }
 
 .toolbar {

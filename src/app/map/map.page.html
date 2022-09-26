@@ -1,8 +1,8 @@
 <app-header [title]="'My vineyards'" showSeasons="false" [showBackButton]="false"> </app-header>
 <ion-content id="map-content">
-  <div id="map"></div>
-  <app-toolbar [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
-  <app-search (setLocation)="zoomToLocation($event)"></app-search>
+  <div id="map" [class.mobile]="utilService.isMobile()"></div>
+  <app-toolbar [class.mobile]="utilService.isMobile()" [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
+  <app-search [class.mobile]="utilService.isMobile()" (setLocation)="zoomToLocation($event)"></app-search>
 </ion-content>
 
 <div id="clickPopup" class="ol-popup">

@@ -85,7 +85,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
   constructor(
     public vineyardService: VineyardService,
-    private utilService: UtilService,
+    public utilService: UtilService,
     private router: Router,
     private varietyService: VarietyService,
     private actionService: ActionService,

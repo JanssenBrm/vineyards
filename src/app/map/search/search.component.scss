@@ -3,6 +3,16 @@
   top: 1rem;
   min-width: 500px;
   width: 20%;
+
+  &.mobile {
+   top: 0rem;
+    min-width: unset;
+    width: 100%;
+
+    ion-searchbar {
+      background-color: white;
+    }
+  }
 }
 
 .suggestions {
@@ -11,6 +21,8 @@
   border-radius: 3px;
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  max-height: 80vh;
 
   .suggestion {
     border-bottom: 1px solid #f1f1f1;
