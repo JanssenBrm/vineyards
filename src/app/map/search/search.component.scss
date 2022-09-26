@@ -4,3 +4,37 @@
   min-width: 500px;
   width: 20%;
 }
+
+.suggestions {
+  background-color: white;
+  margin: -0.25rem 0.5rem 0;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+
+  .suggestion {
+    border-bottom: 1px solid #f1f1f1;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: #f1f1f1;
+    }
+
+    &.loading {
+      margin: 0;
+      ion-spinner {
+        margin-right: .5rem;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+

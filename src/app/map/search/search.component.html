@@ -1,5 +1,10 @@
-<ion-searchbar [debounce]="1000" (ionChange)="searchQueryUpdated($event.target.value)"></ion-searchbar>
-<div class="suggestions" *ngIf="(suggestions | async)?.length > 0">
+<ion-searchbar #searchbar [debounce]="500" (ionChange)="searchQueryUpdated($event.target.value)" [value]="query" >
+</ion-searchbar>
+<div class="suggestions" *ngIf="loading || (suggestions | async)?.length > 0 ">
+    <div class="suggestion loading" *ngIf="loading">
+        <ion-spinner></ion-spinner>
+        <span>Loading</span>
+    </div>
     <div *ngFor="let suggestion of (suggestions | async)" class="suggestion" (click)="zoomToLocation(suggestion.extent)">
         {{suggestion.name}}
     </div>
