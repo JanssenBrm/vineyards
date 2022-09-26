@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/JanssenBrm/winery/compare/v1.15.0...v1.16.0) (2022-09-26)
+
+
+### Features
+
+* updated to use nomatim for reverse geocoding ([47f7982](https://github.com/JanssenBrm/winery/commit/47f798265c8ee7f05b48471d62472f06f576ed55))
+
 # [1.15.0](https://github.com/JanssenBrm/winery/compare/v1.14.0...v1.15.0) (2022-09-25)
 
 
