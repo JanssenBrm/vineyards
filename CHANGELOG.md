@@ -1,3 +1,11 @@
+# [1.17.0](https://github.com/JanssenBrm/winery/compare/v1.16.0...v1.17.0) (2022-09-26)
+
+
+### Features
+
+* finished main implementation of search bar for desktop usage ([49fe48d](https://github.com/JanssenBrm/winery/commit/49fe48d571530dd3706ef29e02bc542610a0b7db))
+* integrated search bar for mobile ([fafb2cd](https://github.com/JanssenBrm/winery/commit/fafb2cd3d6c728f44389e1846c2fc3788aa4b669))
+
 # [1.16.0](https://github.com/JanssenBrm/winery/compare/v1.15.0...v1.16.0) (2022-09-26)
 
 
