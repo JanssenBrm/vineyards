@@ -218,7 +218,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         .pipe(switchMap(() => merge(...requests)))
         .subscribe({
           next: (s: any) => {
-            if (!!s) {
+            if (!!s && s.data?.length > 0) {
               this._chart.addSeries(s);
             }
           },
