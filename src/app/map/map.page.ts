@@ -1,6 +1,8 @@
 import { MapMode } from './../models/mapmode.model';
 import { Variety } from './../models/variety.model';
 import { TileWMS, XYZ } from 'ol/source';
+import { transformExtent } from 'ol/proj';
+import { buffer } from 'ol/extent';
 import { UtilService } from './../services/util.service';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from '../services/vineyard.service';
@@ -431,5 +433,9 @@ export class MapPage implements OnInit, AfterViewInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  zoomToLocation(extent: number[]) {
+    this.view.fit(buffer(transformExtent(extent, 'EPSG:4326', 'EPSG:3857'), 100));
   }
 }
