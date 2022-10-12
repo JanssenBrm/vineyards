@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/JanssenBrm/winery/compare/v1.17.1...v1.17.2) (2022-10-12)
+
+
+### Bug Fixes
+
+* sort the vintages ([aaf0110](https://github.com/JanssenBrm/winery/commit/aaf0110264c99af84ca2953cbaf3f6578d7ffb1c))
+
 ## [1.17.1](https://github.com/JanssenBrm/winery/compare/v1.17.0...v1.17.1) (2022-09-26)
 
 
