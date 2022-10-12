@@ -54,7 +54,8 @@ export class VintageService {
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
           }))
-        )
+        ),
+        map((vintages: Vintage[]) => vintages.sort((v1: Vintage, v2: Vintage) => (v1.year > v2.year ? -1 : 1)))
       )
       .subscribe((vintages: Vintage[]) => this._vintages.next(vintages));
   }
