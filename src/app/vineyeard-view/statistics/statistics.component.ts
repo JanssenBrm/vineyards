@@ -505,13 +505,13 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     );
   }
 
-  getWeatherStationData(): Observable<{ year: number; stats: WeatherStationInfo[] }> {
+  getWeatherStationData(daily: boolean = false): Observable<{ year: number; stats: WeatherStationInfo[] }> {
     const integration: Integration = this.integrationsService.getIntegration(IntegrationType.WEATHER_STATION);
 
     if (!integration) {
       return of({ year: undefined, stats: undefined });
     } else {
-      return this.weatherStationService.readWeatherData(integration).pipe(
+      return this.weatherStationService.readWeatherData(integration, daily).pipe(
         switchMap((stats: WeatherStationInfo[]) => {
           const years = stats
             .map((s: WeatherStationInfo) => moment(s.date).year())
@@ -547,9 +547,12 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.sunhours,
                   })),
+                dataGrouping: {
+                  approximation: 'sum',
+                },
               },
             ]
           : [];
@@ -577,9 +580,12 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.humidity,
                   })),
+                dataGrouping: {
+                  approximation: 'average',
+                },
               },
             ]
           : [];
@@ -607,9 +613,12 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.temperature,
                   })),
+                dataGrouping: {
+                  approximation: 'average',
+                },
               },
             ]
           : [];
@@ -619,7 +628,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   getWeatherStationDGDGraphs(): Observable<any> {
     let degreeDaysSum = 0;
-    return this.getWeatherStationData().pipe(
+    return this.getWeatherStationData(true).pipe(
       switchMap(({ year, stats }) => {
         return year && stats
           ? [

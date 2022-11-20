@@ -33,10 +33,10 @@ export let STATS_OPTIONS: any = {
     shared: true,
     formatter() {
       return this.points
-        ? `${Highcharts.dateFormat('%e %B', this.x)}<br/>${this.points
+        ? `${Highcharts.dateFormat('%e %B %H:%M:%S', this.x)}<br/>${this.points
             .map((p) => p.series.tooltipOptions.formatter(p))
             .join('<br/>')}`
-        : `<b> ${Highcharts.dateFormat('%e %B', this.x)} - ${this.series.name}</b><br />${this.point.label}`;
+        : `<b> ${Highcharts.dateFormat('%e %B %H:%M:%S', this.x)} - ${this.series.name}</b><br />${this.point.label}`;
     },
   },
   series: [],
