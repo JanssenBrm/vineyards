@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/JanssenBrm/winery/compare/v1.17.2...v1.18.0) (2022-11-20)
+
+
+### Features
+
+* view hourly data of weather station ([1b30fed](https://github.com/JanssenBrm/winery/commit/1b30fed4a36825bada6774dd166ca5ce8122a088))
+
 ## [1.17.2](https://github.com/JanssenBrm/winery/compare/v1.17.1...v1.17.2) (2022-10-12)
 
 
