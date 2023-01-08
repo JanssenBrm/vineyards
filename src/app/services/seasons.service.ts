@@ -19,7 +19,13 @@ export class SeasonsService {
     this.actionService
       .getActionListener()
       .pipe(
-        map((actions: Action[]) => [...new Set(actions.map((a: Action) => new Date(a.date).getFullYear()))]),
+        map((actions: Action[]) =>
+          actions.length > 0
+            ? [new Date().getFullYear(), ...actions.map((a: Action) => new Date(a.date).getFullYear())].filter(
+                (y, idx, years) => years.indexOf(y) === idx
+              )
+            : []
+        ),
         tap((years: number[]) => {
           if (years.length > 0 && this._activeSeasons.getValue().length === 0) {
             const seasons = [years[0]];
