@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/JanssenBrm/winery/compare/v1.18.0...v1.19.0) (2023-01-08)
+
+
+### Features
+
+* added the current year as a season by default ([8ec50b4](https://github.com/JanssenBrm/winery/commit/8ec50b4571825167eb140b261b95379494124645))
+
 # [1.18.0](https://github.com/JanssenBrm/winery/compare/v1.17.2...v1.18.0) (2022-11-20)
 
 
