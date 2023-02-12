@@ -21,7 +21,7 @@
     "cors": "^2.8.5",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.22.0",
-    "firebase-tools": "^10.6.0",
+    "firebase-tools": "^11.22.0",
     "moment": "^2.29.4",
     "rxjs": "^6.5.5",
     "turf": "^3.0.14"
