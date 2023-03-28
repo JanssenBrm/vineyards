@@ -16,6 +16,8 @@ export class AuthService {
 
   private userData: BehaviorSubject<UserData>;
 
+  private DELAY = 1000;
+
   constructor(
     public fbAuth: AngularFireAuth,
     public router: Router,
@@ -46,6 +48,7 @@ export class AuthService {
           this.updateUser(user, data?.role).then(() => {
             console.log('User updated', user);
           });
+          this.router.navigate(['map']);
         } else {
           localStorage.removeItem('user');
         }
@@ -96,10 +99,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     await this.fbAuth.signInWithEmailAndPassword(email, password);
-    setTimeout(() => {
-      this.analytics.logEvent('auth_login_email_success', { username: email });
-      this.router.navigate(['/map']);
-    }, 500);
+    await this.analytics.logEvent('auth_login_email_success', { username: email });
   }
 
   async register(email: string, password: string) {
@@ -128,7 +128,7 @@ export class AuthService {
     setTimeout(() => {
       this.analytics.logEvent('auth_logout_success', { username });
       this.router.navigate(['login']);
-    }, 500);
+    }, this.DELAY);
   }
 
   async loginWithGoogle() {
