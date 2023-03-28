@@ -1,3 +1,11 @@
+## [1.19.1](https://github.com/JanssenBrm/winery/compare/v1.19.0...v1.19.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* fixed redirect after login ([3bddaee](https://github.com/JanssenBrm/winery/commit/3bddaee42eadf3e489bb2eb6dc4e529578325eca))
+* updated window title based on edit/add ([48807eb](https://github.com/JanssenBrm/winery/commit/48807eb64f38eb72295ef3b052d3ad2c969f527f))
+
 # [1.19.0](https://github.com/JanssenBrm/winery/compare/v1.18.0...v1.19.0) (2023-01-08)
 
 
