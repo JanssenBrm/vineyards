@@ -10,9 +10,6 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
     branches: [ "master" ]
-
-env:
-  DOCKER_IMAGE_NAME: openeo-job-registry-elastic-api
 jobs:
   build:
     runs-on: ubuntu-latest
