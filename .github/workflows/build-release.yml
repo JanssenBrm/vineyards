@@ -24,8 +24,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install --force
-    - run: npm run build
+    - name: SonarQube Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: NPM Install
+      run: npm install --force
+    - name: NPM Build
+      run: npm run build
 
   release:
     needs: build
@@ -38,8 +45,10 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
-      - run: npm install --force
-      - run: npm run semantic-release
+      - name: NPM Install
+        run: npm install --force
+      - name: Create Release
+        run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: sh scripts/create_env_file.sh
