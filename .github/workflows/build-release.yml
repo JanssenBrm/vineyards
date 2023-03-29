@@ -38,6 +38,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
+      - run: npm install --force
       - run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
