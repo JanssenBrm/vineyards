@@ -86,5 +86,5 @@ jobs:
         id: version
         run: |
           sed -i "s/0.0.0-semver/${{needs.release.outputs.package_version}}/g" package.json
-      - run: npm install
+      - run: npm install --force
       - run: npm run deploy:ci
