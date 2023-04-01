@@ -161,7 +161,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   getStats(): void {
     if (this.vineyard) {
       if (!this._chart) {
-        this._chart = Highcharts.stockChart('graph-container', { ...STATS_OPTIONS });
+        const config = this.drawDateLine({ ...STATS_OPTIONS });
+        this._chart = Highcharts.stockChart('graph-container', config);
         this.setAxis();
       }
 
@@ -801,5 +802,18 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   setVarieties() {
     this.getStats();
+  }
+
+  private drawDateLine(options: any): any {
+    options.xAxis.plotLines = [
+      ...(options.xAxis.plotLines || []),
+      {
+        color: '#5119e3',
+        value: this.getNormalizedDate(new Date().toISOString()),
+        width: 3,
+      },
+    ];
+    console.log(options);
+    return options;
   }
 }
