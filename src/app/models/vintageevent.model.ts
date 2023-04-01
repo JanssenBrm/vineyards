@@ -1,11 +1,11 @@
 export enum VintageEvent {
-  'FIRST_FERMENTATION' = 'First Fermentation',
-  'PRESSING' = 'Pressed',
-  'RACKING' = 'Racked',
-  'RESTING' = 'Rest',
-  'TESTING' = 'Test',
-  'BOTTLING' = 'Bottled',
-  'TASTING' = 'Tasted',
+  'FIRST_FERMENTATION' = 'FIRST_FERMENTATION',
+  'PRESSING' = 'PRESSING',
+  'RACKING' = 'RACKING',
+  'RESTING' = 'RESTING',
+  'TESTING' = 'TESTING',
+  'BOTTLING' = 'BOTTLING',
+  'TASTING' = 'TASTING',
 }
 
 export const SINGLE_DATES = [

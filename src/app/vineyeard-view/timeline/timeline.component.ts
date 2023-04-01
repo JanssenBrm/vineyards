@@ -60,7 +60,16 @@ export class TimelineComponent implements OnInit, OnChanges {
               fill: false,
               tension: 0,
               showLine: !SINGLE_DATES.includes(this.STAGE[stage]),
-            })),
+            }))
+            .map((serie: any) => {
+              if (serie.label === VintageEvent.RESTING) {
+                serie.data.push({
+                  x: this.getLastRestingDate(notes),
+                  y: serie.label,
+                });
+              }
+              return serie;
+            }),
         },
         options: {
           responsive: true,
@@ -131,9 +140,25 @@ export class TimelineComponent implements OnInit, OnChanges {
     }
   }
 
+  isStillResting(notes: NoteBase[]): boolean {
+    return !notes.find((n: NoteBase) => n.stage === VintageEvent.BOTTLING);
+  }
+
+  getLastRestingDate(notes: NoteBase[]): moment.Moment {
+    if (this.isStillResting(notes)) {
+      return moment();
+    } else {
+      return moment(notes.filter((n: NoteBase) => n.stage === VintageEvent.BOTTLING)[0].date);
+    }
+  }
+
   getMaxDate(notes: NoteBase[], stage: VintageEvent): moment.Moment {
-    const dates = this.getStageDates(notes, stage);
-    return dates[dates.length - 1];
+    if (stage === VintageEvent.RESTING) {
+      return this.getLastRestingDate(notes);
+    } else {
+      const dates = this.getStageDates(notes, stage);
+      return dates[dates.length - 1];
+    }
   }
 
   getMinDate(notes: NoteBase[], stage: VintageEvent): moment.Moment {
