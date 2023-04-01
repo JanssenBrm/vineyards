@@ -92,8 +92,8 @@ export class TimelineComponent implements OnInit, OnChanges {
             return chart.data.datasets.map((d) => ({
               color: d.borderColor,
               label: SINGLE_DATES.includes(this.STAGE[d.label] as VintageEvent)
-                ? this.STAGE[d.label]
-                : `${this.STAGE[d.label]} (${this.getMaxDate(notes, d.label).diff(
+                ? this.formatStageLabel(this.STAGE[d.label])
+                : `${this.formatStageLabel(this.STAGE[d.label])} (${this.getMaxDate(notes, d.label).diff(
                     this.getMinDate(notes, d.label),
                     'days'
                   )} days) `,
@@ -138,6 +138,10 @@ export class TimelineComponent implements OnInit, OnChanges {
         this.chart.destroy();
       }
     }
+  }
+
+  private formatStageLabel(stage: string) {
+    return stage.replace('_', ' ');
   }
 
   isStillResting(notes: NoteBase[]): boolean {
