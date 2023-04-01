@@ -29,7 +29,7 @@ export class UtilService {
   }
 
   getBBCHDescription(code: string): string {
-    const stage: BBCH = BBCH_STAGES.find((s: BBCH) => s.code === code);
+    const stage: BBCH = BBCH_STAGES.find((s: BBCH) => +s.code === +code);
     return stage ? stage.description : '';
   }
 
