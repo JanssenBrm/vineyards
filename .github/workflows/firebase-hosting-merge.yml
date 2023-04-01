@@ -11,13 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: NPM Install
+      - name: Install dependencies
         run: npm install --force
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: sh scripts/create_env_file.sh
+      - name: Create env files
+        run: sh scripts/create_env_file.sh
         env:
           FB_API_KEY: ${{ secrets.FB_API_KEY }}
           FB_AUTH_DOMAIN: ${{ secrets.FB_AUTH_DOMAIN }}
@@ -29,8 +35,10 @@ jobs:
           FB_MEASUREMENT_ID: ${{ secrets.FB_MEASUREMENT_ID }}
           OWM_KEY: ${{ secrets.OWM_KEY }}
           API_URL: ${{ secrets.API_URL }}
-      - run: npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Build
+        run: npm run build
+      - name: Deploy firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WINERY_F4D20 }}'
