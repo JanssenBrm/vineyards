@@ -177,9 +177,18 @@ export class TimelineComponent implements OnInit, OnChanges {
   }
 
   calculateTotalDays(notes: NoteBase[]): number {
-    const dates = notes
-      .map((n: NoteBase) => moment(n.date))
-      .sort((d1: moment.Moment, d2: moment.Moment) => (d1.isSameOrBefore(d2) ? -1 : 1));
+    let dates: moment.Moment[] = notes
+      .sort((n1: NoteBase, n2: NoteBase) => (moment(n1.date).isSameOrBefore(moment(n2.date)) ? -1 : 1))
+      .map((n: NoteBase) => moment(n.date));
+
+    let bottlingNote = notes.findIndex((n: NoteBase) => n.stage === VintageEvent.BOTTLING);
+
+    if (bottlingNote > 0) {
+      dates = dates.slice(0, bottlingNote);
+    } else {
+      dates.push(moment());
+    }
+
     return dates.length > 0 ? dates[dates.length - 1].diff(dates[0], 'days') : 0;
   }
 
