@@ -1,5 +1,5 @@
 <div class="filters">
-  <ion-badge [style.backgroundColor]="getEventTypeColor(type)" *ngFor="let type of (notes$ | async | noteTypes)" (click)="toggleNoteType(type)">{{STAGE[type]}}</ion-badge>
+  <ion-badge [style.backgroundColor]="getEventTypeColor(type)" *ngFor="let type of (notes$ | async | noteTypes)" (click)="toggleNoteType(type)">{{STAGE[type].replace('_', ' ') | titlecase}}</ion-badge>
 </div>
 <div class="list">
   <ion-card *ngFor="let note of (notes$ | async) | filterNotesByTypes: activeTypes  | orderBy:{key: 'date', type: 'dateString', desc: true} ">

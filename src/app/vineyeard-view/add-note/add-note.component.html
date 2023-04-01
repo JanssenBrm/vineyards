@@ -14,7 +14,7 @@
         <ion-label position="stacked">Stage</ion-label>
         <ion-select required  formControlName="stage">
           <ion-select-option *ngFor="let stage of STAGES" [value]="stage">{{
-            VINTAGE_STAGES[stage]
+            VINTAGE_STAGES[stage].replace('_', ' ') | titlecase
             }}</ion-select-option>
         </ion-select>
       </ion-item>
