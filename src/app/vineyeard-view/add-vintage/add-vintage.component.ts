@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Vineyard } from '../../models/vineyard.model';
 import { LoadingController, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -22,7 +22,7 @@ export class AddVintageComponent implements OnInit {
   @Input()
   vintage: Vintage;
 
-  public vintageForm: FormGroup;
+  public vintageForm: UntypedFormGroup;
 
   public colors: string[];
 
@@ -47,22 +47,22 @@ export class AddVintageComponent implements OnInit {
     this.colors = Object.keys(VintageColor);
     this.varieties = this.varietyService.getVarietyListener();
     if (this.vintage) {
-      this.vintageForm = new FormGroup({
-        year: new FormControl(`${this.vintage.year}-01-01'`, [Validators.required]),
-        name: new FormControl(this.vintage.name, [Validators.required]),
-        color: new FormControl(this.vintage.color, [Validators.required]),
-        varieties: new FormControl(this.vintage.varieties, [Validators.required]),
-        cover: new FormControl([this.vintage.cover]),
-        status: new FormControl(this.vintage.status, [Validators.required]),
+      this.vintageForm = new UntypedFormGroup({
+        year: new UntypedFormControl(`${this.vintage.year}-01-01'`, [Validators.required]),
+        name: new UntypedFormControl(this.vintage.name, [Validators.required]),
+        color: new UntypedFormControl(this.vintage.color, [Validators.required]),
+        varieties: new UntypedFormControl(this.vintage.varieties, [Validators.required]),
+        cover: new UntypedFormControl([this.vintage.cover]),
+        status: new UntypedFormControl(this.vintage.status, [Validators.required]),
       });
     } else {
-      this.vintageForm = new FormGroup({
-        year: new FormControl('', [Validators.required]),
-        name: new FormControl('', [Validators.required]),
-        color: new FormControl('', [Validators.required]),
-        varieties: new FormControl([], [Validators.required]),
-        cover: new FormControl([]),
-        status: new FormControl(this.STATUSES[0], [Validators.required]),
+      this.vintageForm = new UntypedFormGroup({
+        year: new UntypedFormControl('', [Validators.required]),
+        name: new UntypedFormControl('', [Validators.required]),
+        color: new UntypedFormControl('', [Validators.required]),
+        varieties: new UntypedFormControl([], [Validators.required]),
+        cover: new UntypedFormControl([]),
+        status: new UntypedFormControl(this.STATUSES[0], [Validators.required]),
       });
     }
   }

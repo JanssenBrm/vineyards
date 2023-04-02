@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { VintageEvent } from '../../models/vintageevent.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UploadService } from '../../services/upload.service';
@@ -28,7 +28,7 @@ export class AddNoteComponent implements OnInit {
 
   public STAGES = Object.keys(VintageEvent);
 
-  public noteForm: FormGroup;
+  public noteForm: UntypedFormGroup;
 
   private _files: File[];
 
@@ -44,18 +44,18 @@ export class AddNoteComponent implements OnInit {
     this._files = [];
 
     if (this.note) {
-      this.noteForm = new FormGroup({
-        date: new FormControl(this.note.date, [Validators.required]),
-        stage: new FormControl(this.note.stage),
-        description: new FormControl(this.note.description, [Validators.required]),
-        files: new FormControl([this.note.files]),
+      this.noteForm = new UntypedFormGroup({
+        date: new UntypedFormControl(this.note.date, [Validators.required]),
+        stage: new UntypedFormControl(this.note.stage),
+        description: new UntypedFormControl(this.note.description, [Validators.required]),
+        files: new UntypedFormControl([this.note.files]),
       });
     } else {
-      this.noteForm = new FormGroup({
-        date: new FormControl('', [Validators.required]),
-        stage: new FormControl(''),
-        description: new FormControl('', [Validators.required]),
-        files: new FormControl([]),
+      this.noteForm = new UntypedFormGroup({
+        date: new UntypedFormControl('', [Validators.required]),
+        stage: new UntypedFormControl(''),
+        description: new UntypedFormControl('', [Validators.required]),
+        files: new UntypedFormControl([]),
       });
     }
   }

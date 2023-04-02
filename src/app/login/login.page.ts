@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UtilService } from '../services/util.service';
@@ -12,7 +12,7 @@ import { AngularFireAnalytics } from '@angular/fire/analytics';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public loading = false;
 
@@ -25,9 +25,9 @@ export class LoginPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.form = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
+    this.form = new UntypedFormGroup({
+      username: new UntypedFormControl('', Validators.required),
+      password: new UntypedFormControl('', Validators.required),
     });
   }
 

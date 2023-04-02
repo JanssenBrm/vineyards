@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { AngularFireAnalytics } from '@angular/fire/analytics';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public loading = false;
 
@@ -25,9 +25,9 @@ export class RegisterPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.form = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
+    this.form = new UntypedFormGroup({
+      username: new UntypedFormControl('', Validators.required),
+      password: new UntypedFormControl('', Validators.required),
     });
   }
 

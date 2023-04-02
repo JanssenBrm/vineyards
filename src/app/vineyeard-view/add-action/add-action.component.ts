@@ -1,7 +1,7 @@
 import { Vineyard } from 'src/app/models/vineyard.model';
 import { BBCH_STAGES } from '../../conf/bbch.config';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { BBCH } from 'src/app/models/bbch.model';
 import { BehaviorSubject, forkJoin } from 'rxjs';
@@ -30,7 +30,7 @@ export class AddActionComponent implements OnInit {
     private loadingController: LoadingController
   ) {}
 
-  public actionForm: FormGroup;
+  public actionForm: UntypedFormGroup;
 
   public actionTypes: string[];
 
@@ -54,20 +54,20 @@ export class AddActionComponent implements OnInit {
     this.createNewVariety = false;
 
     if (this.action) {
-      this.actionForm = new FormGroup({
-        type: new FormControl(
+      this.actionForm = new UntypedFormGroup({
+        type: new UntypedFormControl(
           this.actionTypes.find((a: string) => a === this.action.type),
           [Validators.required]
         ),
-        date: new FormControl(this.action.date, [Validators.required]),
-        description: new FormControl(this.action.description),
-        bbch: new FormControl(''),
-        varietyId: new FormControl(this.action.variety || []),
-        variety: new FormControl(''),
-        rows: new FormControl(''),
-        plantsPerRow: new FormControl(''),
-        value: new FormControl(''),
-        files: new FormControl([this.action.files]),
+        date: new UntypedFormControl(this.action.date, [Validators.required]),
+        description: new UntypedFormControl(this.action.description),
+        bbch: new UntypedFormControl(''),
+        varietyId: new UntypedFormControl(this.action.variety || []),
+        variety: new UntypedFormControl(''),
+        rows: new UntypedFormControl(''),
+        plantsPerRow: new UntypedFormControl(''),
+        value: new UntypedFormControl(''),
+        files: new UntypedFormControl([this.action.files]),
       });
 
       if (this.action.type === ActionType.BBCH) {
@@ -85,17 +85,17 @@ export class AddActionComponent implements OnInit {
         this.actionForm.get('value').setValue((this.action as BrixAction).value);
       }
     } else {
-      this.actionForm = new FormGroup({
-        type: new FormControl('', [Validators.required]),
-        date: new FormControl('', [Validators.required]),
-        description: new FormControl(''),
-        bbch: new FormControl(''),
-        varietyId: new FormControl([]),
-        variety: new FormControl(''),
-        rows: new FormControl(''),
-        plantsPerRow: new FormControl(''),
-        value: new FormControl(''),
-        files: new FormControl([]),
+      this.actionForm = new UntypedFormGroup({
+        type: new UntypedFormControl('', [Validators.required]),
+        date: new UntypedFormControl('', [Validators.required]),
+        description: new UntypedFormControl(''),
+        bbch: new UntypedFormControl(''),
+        varietyId: new UntypedFormControl([]),
+        variety: new UntypedFormControl(''),
+        rows: new UntypedFormControl(''),
+        plantsPerRow: new UntypedFormControl(''),
+        value: new UntypedFormControl(''),
+        files: new UntypedFormControl([]),
       });
     }
 
