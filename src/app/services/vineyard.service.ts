@@ -13,11 +13,11 @@ import {
   AngularFirestoreCollection,
   DocumentChangeAction,
   DocumentReference,
-} from '@angular/fire/firestore';
+} from '@angular/fire/compat/firestore';
 import { GeoJSON } from 'ol/format';
 import * as moment from 'moment';
 import { AuthService } from './auth.service';
-import { User } from 'firebase';
+import firebase from "firebase/compat";
 import { getCenter } from 'ol/extent';
 import { transformExtent } from 'ol/proj';
 
@@ -45,7 +45,7 @@ export class VineyardService {
     this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
     this._activeSeasons$ = new BehaviorSubject<number[]>([new Date().getFullYear()]);
 
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
         this.getVineyards();

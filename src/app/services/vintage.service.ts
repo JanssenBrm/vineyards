@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
 import { Vineyard } from '../models/vineyard.model';
 import { Vintage } from '../models/vintage.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { User } from 'firebase';
+import firebase from "firebase/compat";
 import { AuthService } from './auth.service';
+import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/compat/firestore';
 
 export const VINTAGE_COLLECTION = 'vintages';
 
@@ -20,7 +20,7 @@ export class VintageService {
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._vintages = new BehaviorSubject<Vintage[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
       }

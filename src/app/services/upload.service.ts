@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { delay, skipWhile, switchMap } from 'rxjs/operators';
-import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { UploadTaskSnapshot } from '@angular/fire/compat/storage/interfaces';
 
 @Injectable({
   providedIn: 'root',
