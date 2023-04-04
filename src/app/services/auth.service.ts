@@ -1,18 +1,19 @@
-import { Injectable } from '@angular/core';
-import { auth, User } from 'firebase';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { UserData, UserRole } from '../models/userdata.model';
-import { AngularFireAnalytics } from '@angular/fire/analytics';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireAnalytics } from '@angular/fire/compat/analytics';
+import firebase from 'firebase/compat';
+import { GoogleAuthProvider } from 'firebase/auth';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private user: BehaviorSubject<User>;
+  private user: BehaviorSubject<firebase.User>;
 
   private userData: BehaviorSubject<UserData>;
 
@@ -24,11 +25,11 @@ export class AuthService {
     private fireStore: AngularFirestore,
     private analytics: AngularFireAnalytics
   ) {
-    this.user = new BehaviorSubject<User>(undefined);
+    this.user = new BehaviorSubject<firebase.User>(undefined);
     this.userData = new BehaviorSubject<UserData>(undefined);
     this.fbAuth.authState
       .pipe(
-        switchMap((user: User) => {
+        switchMap((user: firebase.User) => {
           if (user) {
             return this.readUserData(user.uid).pipe(
               map((data: UserData) => ({
@@ -55,46 +56,17 @@ export class AuthService {
       });
   }
 
-  private async updateUser(user: User, role: UserRole) {
-    await this.fireStore
-      .collection<UserData>('users')
-      .doc(user.uid)
-      .set({
-        id: user.uid,
-        name: user.displayName,
-        role: role || UserRole.BASIC,
-      });
-  }
-
-  private readUserData(uid: string): Observable<UserData> {
-    return this.fireStore
-      .collection<UserData>('users')
-      .doc(uid)
-      .get()
-      .pipe(
-        take(1),
-        map((data: DocumentSnapshot<UserData>) => data.data()),
-        catchError((error: any) => {
-          console.error('Could not retrieve user data', error);
-          return of(undefined);
-        }),
-        tap((data: UserData) => {
-          this.userData.next(data);
-        })
-      );
+  get isLoggedIn(): boolean {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return !!user && user.emailVerified;
   }
 
   getUserData(): BehaviorSubject<UserData> {
     return this.userData;
   }
 
-  getUser(): BehaviorSubject<User> {
+  getUser(): BehaviorSubject<firebase.User> {
     return this.user;
-  }
-
-  get isLoggedIn(): boolean {
-    const user = JSON.parse(localStorage.getItem('user'));
-    return !!user && user.emailVerified;
   }
 
   async login(email: string, password: string) {
@@ -132,10 +104,39 @@ export class AuthService {
   }
 
   async loginWithGoogle() {
-    const user: auth.UserCredential = await this.fbAuth.signInWithPopup(new auth.GoogleAuthProvider());
+    const user: firebase.auth.UserCredential = await this.fbAuth.signInWithPopup(new GoogleAuthProvider());
     setTimeout(() => {
       this.analytics.logEvent('auth_login_google_success', { username: user.user.email });
       this.router.navigate(['map']);
     }, 500);
+  }
+
+  private async updateUser(user: firebase.User, role: UserRole) {
+    await this.fireStore
+      .collection<UserData>('users')
+      .doc(user.uid)
+      .set({
+        id: user.uid,
+        name: user.displayName,
+        role: role || UserRole.BASIC,
+      });
+  }
+
+  private readUserData(uid: string): Observable<UserData> {
+    return this.fireStore
+      .collection<UserData>('users')
+      .doc(uid)
+      .get()
+      .pipe(
+        take(1),
+        map((data: firebase.firestore.DocumentSnapshot<UserData>) => data.data()),
+        catchError((error: any) => {
+          console.error('Could not retrieve user data', error);
+          return of(undefined);
+        }),
+        tap((data: UserData) => {
+          this.userData.next(data);
+        })
+      );
   }
 }

@@ -4,7 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { UtilService } from '../services/util.service';
-import { AngularFireAnalytics } from '@angular/fire/analytics';
+import { AngularFireAnalytics } from '@angular/fire/compat/analytics';
 
 @Component({
   selector: 'app-forgot-password',

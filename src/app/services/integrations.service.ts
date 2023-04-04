@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/compat/firestore';
 import { Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { Integration, IntegrationType } from '../models/integration.model';
+import firebase from 'firebase/compat';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class IntegrationsService {
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._integrations = new BehaviorSubject<Integration[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._integrationCollection = fireStore.collection<Integration[]>(`users/${user.uid}/integrations`);
       }

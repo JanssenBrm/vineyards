@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/compat/firestore';
 import { Vineyard } from '../models/vineyard.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Action, ACTION_COLORS, ActionType, BaseAction } from '../models/action.model';
-import { User } from 'firebase';
+import firebase from 'firebase/compat';
 import { AuthService } from './auth.service';
 import { UtilService } from './util.service';
 
@@ -21,7 +21,7 @@ export class ActionService {
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._actions = new BehaviorSubject<Action[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
       }

@@ -26,7 +26,7 @@ import { Action } from '../models/action.model';
 import { ActionService } from '../services/action.service';
 import { SeasonsService } from '../services/seasons.service';
 import { AuthService } from '../services/auth.service';
-import { User } from 'firebase';
+import firebase from 'firebase/compat';
 import { Layer } from '../models/layer.model';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
@@ -53,7 +53,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
   public actions: BehaviorSubject<Action[]>;
 
-  public user: BehaviorSubject<User>;
+  public user: BehaviorSubject<firebase.User>;
 
   private _map: olMap;
 
