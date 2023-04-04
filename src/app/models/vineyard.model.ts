@@ -1,6 +1,6 @@
 import { Variety } from './variety.model';
-import { Polygon } from 'ol/geom/Polygon';
 import { Action } from './action.model';
+import { Polygon } from 'ol/geom';
 export interface MeteoStatEntry {
   date: string;
   tavg: number;

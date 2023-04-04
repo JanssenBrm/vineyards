@@ -32,6 +32,8 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
+import TileSource from 'ol/source/Tile';
+import { Polygon } from 'ol/geom';
 
 @Component({
   selector: 'app-map',
@@ -57,7 +59,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
   private _map: olMap;
 
-  private _featureLayer: VectorLayer;
+  private _featureLayer: VectorLayer<VectorSource>;
 
   private _select: Select;
 
@@ -116,17 +118,19 @@ export class MapPage implements OnInit, AfterViewInit {
 
     this._overlay = new Overlay({
       element: document.getElementById('popup'),
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250,
+      autoPan: {
+        animation: {
+          duration: 250,
+        },
       },
     });
 
     this.clickOverlay = new Overlay({
       element: document.getElementById('clickPopup'),
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250,
+      autoPan: {
+        animation: {
+          duration: 250,
+        },
       },
     });
 
@@ -264,13 +268,14 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   public _getMapLayer(l: Layer): any {
-    return this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
+    return this._map
+      .getLayers()
+      .getArray()
+      .find((mLayer: any) => mLayer.get('id') === l.id);
   }
 
-  private _getLayer(l: Layer): TileLayer {
+  private _getLayer(l: Layer): TileLayer<TileSource> {
     return new TileLayer({
-      id: l.id,
-      name: l.label,
       visible: l.enabled,
       source: new TileWMS({
         url: l.url,
@@ -313,7 +318,7 @@ export class MapPage implements OnInit, AfterViewInit {
     modify.on('modifyend', (event: any) => {
       event.features.forEach((f: Feature) => {
         this.dirty.push(f.get('name'));
-        this.vineyardService.updateLocation(f.get('name'), f.getGeometry());
+        this.vineyardService.updateLocation(f.get('name'), f.getGeometry() as Polygon);
       });
     });
     return modify;
@@ -340,7 +345,7 @@ export class MapPage implements OnInit, AfterViewInit {
     if (data.data) {
       console.log(data.data);
       if (!data.data.vineyard) {
-        this._draw.source_.removeFeature(f);
+        this._draw.getOverlay().getSource().removeFeature(f);
       } else {
         await this.vineyardService.addVineyard(
           data.data.vineyard.name,
@@ -371,7 +376,7 @@ export class MapPage implements OnInit, AfterViewInit {
     return new Snap({ source: this._featureLayer.getSource() });
   }
 
-  private _getFeatureLayer(): VectorLayer {
+  private _getFeatureLayer(): VectorLayer<VectorSource> {
     return new VectorLayer({
       zIndex: 99,
       source: new VectorSource({
@@ -380,7 +385,7 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
 
-  private _getBaseMap(): TileLayer {
+  private _getBaseMap(): TileLayer<TileSource> {
     return new TileLayer({
       source: new XYZ({
         url: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',

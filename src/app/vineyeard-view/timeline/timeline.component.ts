@@ -7,7 +7,8 @@ import { SINGLE_DATES, VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vi
 import { NotesService } from '../../services/notes.service';
 import { skipWhile } from 'rxjs/operators';
 import * as moment from 'moment';
-import { Chart } from 'chart.js';
+import { Chart, LegendItem } from 'chart.js';
+import { Legend } from 'highcharts';
 
 @Component({
   selector: 'app-timeline',
@@ -23,7 +24,7 @@ export class TimelineComponent implements OnInit, OnChanges {
   @Input()
   vintage: Vintage;
 
-  legend: { color: string; label: string }[] = [];
+  legend: LegendItem[];
 
   totalDays: number;
 
@@ -110,6 +111,7 @@ export class TimelineComponent implements OnInit, OnChanges {
                 ticks: {
                   display: false,
                 },
+                reverse: false,
               },
             ],
             xAxes: [
@@ -126,13 +128,14 @@ export class TimelineComponent implements OnInit, OnChanges {
                   maxRotation: 90,
                   minRotation: 90,
                 },
+                reverse: false,
               },
             ],
           },
         },
       });
       this.chart.resize();
-      this.legend = this.chart.generateLegend();
+      this.legend = this.chart.legend.legendItems;
     } else {
       if (this.chart) {
         this.chart.destroy();
