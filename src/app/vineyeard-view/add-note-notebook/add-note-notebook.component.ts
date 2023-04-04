@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Vineyard } from '../../models/vineyard.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UploadService } from '../../services/upload.service';
 import { VineyardBaseNote } from '../../models/vineyardnote.model';
@@ -19,7 +19,7 @@ export class AddNoteNotebookComponent implements OnInit {
 
   public tags: string[];
 
-  public noteForm: FormGroup;
+  public noteForm: UntypedFormGroup;
 
   private _loading: HTMLIonLoadingElement;
 
@@ -32,15 +32,15 @@ export class AddNoteNotebookComponent implements OnInit {
   ngOnInit() {
     if (this.note) {
       this.tags = this.note.tags || [];
-      this.noteForm = new FormGroup({
-        title: new FormControl(this.note.title),
-        description: new FormControl(this.note.description, [Validators.required]),
+      this.noteForm = new UntypedFormGroup({
+        title: new UntypedFormControl(this.note.title),
+        description: new UntypedFormControl(this.note.description, [Validators.required]),
       });
     } else {
       this.tags = [];
-      this.noteForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
-        description: new FormControl('', [Validators.required]),
+      this.noteForm = new UntypedFormGroup({
+        title: new UntypedFormControl('', [Validators.required]),
+        description: new UntypedFormControl('', [Validators.required]),
       });
     }
   }

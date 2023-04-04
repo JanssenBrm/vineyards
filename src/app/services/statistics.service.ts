@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { BehaviorSubject } from 'rxjs';
 import { Action, ACTION_COLORS, ActionType } from '../models/action.model';
 import { AuthService } from './auth.service';
-import { User } from 'firebase';
 import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat';
+import { Injectable } from '@angular/core';
 
 export const STATS_COLLECTION = 'stats';
 
@@ -20,7 +20,7 @@ export class StatisticsService {
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService) {
     this._meteoStats = new BehaviorSubject<MeteoStatEntry[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
       }

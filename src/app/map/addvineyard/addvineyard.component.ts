@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Polygon } from 'ol/geom';
 import { ModalController } from '@ionic/angular';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-addvineyard',
@@ -14,12 +14,12 @@ export class AddVineyardComponent implements OnInit {
 
   constructor(private modalController: ModalController) {}
 
-  public vineyardForm: FormGroup;
+  public vineyardForm: UntypedFormGroup;
 
   ngOnInit() {
-    this.vineyardForm = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      address: new FormControl('', [Validators.required]),
+    this.vineyardForm = new UntypedFormGroup({
+      name: new UntypedFormControl('', [Validators.required]),
+      address: new UntypedFormControl('', [Validators.required]),
     });
   }
 

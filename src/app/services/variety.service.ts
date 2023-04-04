@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
   DocumentChangeAction,
   DocumentReference,
-} from '@angular/fire/firestore';
+} from '@angular/fire/compat/firestore';
 import { Vineyard } from '../models/vineyard.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Action, ActionType, PlantingAction } from '../models/action.model';
 import { Variety } from '../models/variety.model';
-import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { Vintage } from '../models/vintage.model';
 import { ActionService } from './action.service';
+import firebase from 'firebase/compat';
+import { Injectable } from '@angular/core';
 
 export const VARIETY_COLLECTION = 'varieties';
 
@@ -32,7 +32,7 @@ export class VarietyService {
     private authService: AuthService
   ) {
     this._varieties = new BehaviorSubject<Variety[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
+    this.authService.getUser().subscribe((user: firebase.User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
       }

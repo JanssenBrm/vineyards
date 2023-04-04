@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Action } from '../models/action.model';
 import { ActionService } from './action.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
   providedIn: 'root',
