@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="bbch.component.scss">
+<div class="bbch-container">
+  <div class="row" *ngFor="let variety of summary">
+    <h2>{{variety.label}}
+      <div class="status">
+        <ion-icon class="positive" *ngIf="variety.diff === 1" name="arrow-up-outline"></ion-icon>
+        <ion-icon class="negative" *ngIf="variety.diff === -1" name="arrow-down-outline"></ion-icon>
+      </div>
+    </h2>
+    <div class="bbchs">
+      <div class="bbch" *ngFor="let year of years">
+        <ng-container *ngIf="variety[year]">
+          <span>{{variety[year].bbch}} ({{variety[year].value}})</span>
+          <span class="date">{{variety[year].date | date: "dd MMMM yyyy"}}</span>
+        </ng-container>
+      </div>
+
+    </div>
+  </div>
+</div>

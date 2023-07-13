@@ -36,16 +36,6 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
-        <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appPremiumFeature>
-            <ion-card>
-                <ion-card-header>
-                    <ion-card-title>Warnings</ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <app-warnings [vineyard]="vineyard"></app-warnings>
-                </ion-card-content>
-            </ion-card>
-        </ion-col>
     </ion-row>
     <ion-row class="ion-align-items-stretch">
         <ion-col class="ion-align-self-stretch" *appPremiumFeature>
@@ -58,8 +48,28 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appPremiumFeature>
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>Warnings</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <app-warnings [vineyard]="vineyard"></app-warnings>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
     </ion-row>
     <ion-row class="ion-align-items-stretch">
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appPremiumFeature>
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>BBCH</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <app-bbch [actions]="actions"></app-bbch>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
         <ion-col class="ion-align-self-stretch">
             <ion-card>
                 <ion-card-header>
