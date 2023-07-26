@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
+import * as moment from 'moment/moment';
+import { SeasonsService } from './seasons.service';
 
 export const STATS_COLLECTION = 'stats';
 
@@ -18,7 +20,13 @@ export class StatisticsService {
 
   private _meteoStats: BehaviorSubject<MeteoStatEntry[]>;
 
-  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
+  private BASE_TEMP = 10.0;
+
+  constructor(
+    private fireStore: AngularFirestore,
+    private authService: AuthService,
+    private seasonService: SeasonsService
+  ) {
     this._meteoStats = new BehaviorSubject<MeteoStatEntry[]>([]);
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
@@ -53,5 +61,32 @@ export class StatisticsService {
 
   findActionType(type: string): string {
     return Object.keys(ActionType).find((s: string) => ActionType[s] === type);
+  }
+
+  calculateDgdSeries(year: number, stats: MeteoStatEntry[], actions: Action[]) {
+    const season: [moment.Moment, moment.Moment] = this.seasonService.calculateGrowingSeason(year, stats, actions);
+    let degreeDaysSum = 0;
+    return stats
+      .filter(
+        (s: MeteoStatEntry) => moment(s.date).isSameOrAfter(season[0]) && moment(s.date).isSameOrBefore(season[1])
+      )
+      .filter((e: MeteoStatEntry) => e.tavg >= this.BASE_TEMP)
+      .map((e: MeteoStatEntry) => ({
+        date: e.date,
+        value: Math.ceil((e.tavg - this.BASE_TEMP) * 100) / 100,
+      }))
+      .map((e: { date: string; value: number }) => {
+        degreeDaysSum += e.value;
+        return {
+          x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+          y: degreeDaysSum,
+        };
+      });
+  }
+
+  getNormalizedDate(date: string): number {
+    const actDate: Date = new Date(date);
+    actDate.setFullYear(2000);
+    return actDate.getTime();
   }
 }

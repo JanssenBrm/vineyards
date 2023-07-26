@@ -20,7 +20,6 @@ import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
 import { VarietyService } from '../../services/variety.service';
 import { FeaturesService } from '../../services/features.service';
-import { SeasonsService } from '../../services/seasons.service';
 
 enum StatTypes {
   ACTIONS = 'Actions',
@@ -73,8 +72,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   private _loading: HTMLIonLoadingElement;
 
-  private BASE_TEMP = 10.0;
-
   private loadStats: BehaviorSubject<void>;
 
   constructor(
@@ -88,8 +85,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private weatherStationService: WeatherStationService,
     private loadingController: LoadingController,
     private varietyService: VarietyService,
-    private featureService: FeaturesService,
-    private seasonService: SeasonsService
+    private featureService: FeaturesService
   ) {
     this.loadStats = new BehaviorSubject<void>(undefined);
 
@@ -406,7 +402,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                     (a.variety || []).includes(this.varietyService.getVarietyByName(variety)?.id)
                 )
                 .map((a: BBCHAction) => ({
-                  x: this.getNormalizedDate(moment(a.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(moment(a.date).format('YYYY-MM-DD')),
                   y: +a.bbch,
                 })),
             },
@@ -445,7 +441,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   '<br />'
                 : ''
             }${(action as BrixAction).value ? (action as BrixAction).value + ' ' : ''}${action.description}`,
-            x: this.getNormalizedDate(action.date),
+            x: this.statService.getNormalizedDate(action.date),
             y: new Date(action.date).getFullYear(),
           })),
       }))
@@ -478,7 +474,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
               data: stats
                 .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
                 .map((e: MeteoStatEntry) => ({
-                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                   y: e.tavg,
                 })),
             },
@@ -499,7 +495,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
               data: stats
                 .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
                 .map((e: MeteoStatEntry) => ({
-                  x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
                   y: e.prcp,
                 })),
             },
@@ -550,7 +546,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.sunhours,
                   })),
                 dataGrouping: {
@@ -583,7 +579,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.humidity,
                   })),
                 dataGrouping: {
@@ -616,7 +612,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: stats
                   .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                     y: e.temperature,
                   })),
                 dataGrouping: {
@@ -630,7 +626,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   }
 
   getWeatherStationDGDGraphs(): Observable<any> {
-    let degreeDaysSum = 0;
     return this.getWeatherStationData(true).pipe(
       switchMap(({ year, stats }) => {
         return year && stats
@@ -649,20 +644,17 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                     }">●</span>  <b>Station Degree days ${year}</b>: ${point.y.toFixed(2)} GGD`;
                   },
                 },
-                data: stats
-                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
-                  .filter((e: WeatherStationInfo) => e.temperature >= this.BASE_TEMP)
-                  .map((e: WeatherStationInfo) => ({
-                    date: e.date,
-                    value: Math.ceil((e.temperature - this.BASE_TEMP) * 100) / 100,
-                  }))
-                  .map((e: { date: string; value: number }) => {
-                    degreeDaysSum += e.value;
-                    return {
-                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                      y: degreeDaysSum,
-                    };
-                  }),
+                data: this.statService.calculateDgdSeries(
+                  year,
+                  stats.map(
+                    (s: WeatherStationInfo) =>
+                      ({
+                        date: s.date,
+                        tavg: s.temperature,
+                      } as MeteoStatEntry)
+                  ),
+                  this.actions
+                ),
               },
             ]
           : [];
@@ -675,18 +667,11 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     const years = stats
       .map((s: MeteoStatEntry) => moment(s.date).year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
-    let degreeDaysSum = 0;
     return merge(
       [].concat(
         ...years
           .filter((y: number) => this.seasons.indexOf(y) >= 0)
           .map((y: number, idx: number) => {
-            const season: [moment.Moment, moment.Moment] = this.seasonService.calculateGrowingSeason(
-              y,
-              stats,
-              this.actions
-            );
-            degreeDaysSum = 0;
             return [
               {
                 id: `Degree days ${y}`,
@@ -702,23 +687,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                     )} GGD`;
                   },
                 },
-                data: stats
-                  .filter(
-                    (s: MeteoStatEntry) =>
-                      moment(s.date).isSameOrAfter(season[0]) && moment(s.date).isSameOrBefore(season[1])
-                  )
-                  .filter((e: MeteoStatEntry) => e.tavg >= this.BASE_TEMP)
-                  .map((e: MeteoStatEntry) => ({
-                    date: e.date,
-                    value: Math.ceil((e.tavg - this.BASE_TEMP) * 100) / 100,
-                  }))
-                  .map((e: { date: string; value: number }) => {
-                    degreeDaysSum += e.value;
-                    return {
-                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
-                      y: degreeDaysSum,
-                    };
-                  }),
+                data: this.statService.calculateDgdSeries(y, stats, this.actions),
               },
             ];
           })
@@ -780,7 +749,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   }))
                   .map((e: { date: string; value: number }) => {
                     return {
-                      x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                      x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
                       y: e.value,
                     };
                   }),
@@ -804,12 +773,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  getNormalizedDate(date: string): number {
-    const actDate: Date = new Date(date);
-    actDate.setFullYear(2000);
-    return actDate.getTime();
-  }
-
   setVarieties() {
     this.getStats();
   }
@@ -819,7 +782,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       ...(options.xAxis.plotLines || []),
       {
         color: '#5119e3',
-        value: this.getNormalizedDate(new Date().toISOString()),
+        value: this.statService.getNormalizedDate(new Date().toISOString()),
         width: 3,
       },
     ];
