@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { Action } from '../models/action.model';
+import { Action, ActionType } from '../models/action.model';
 import { ActionService } from './action.service';
 import { MeteoStatEntry } from '../models/vineyard.model';
 import * as moment from 'moment';
@@ -58,8 +58,11 @@ export class SeasonsService {
     this._activeSeasons.next(seasons);
   }
 
-  calculateGrowingSeason(year: number, stats: MeteoStatEntry[]): [moment.Moment, moment.Moment] {
+  calculateGrowingSeason(year: number, stats: MeteoStatEntry[], actions: Action[]): [moment.Moment, moment.Moment] {
     const yStats: MeteoStatEntry[] = stats.filter((s: MeteoStatEntry) => moment(s.date).year() === year);
+    const harvested: string = actions
+      .filter((a: Action) => moment(a.date).year() === year)
+      .find((a: Action) => a.type === ActionType.Harvest)?.date;
     const frozenPeriod = [moment(`${year}-04-01`), moment(`${year}-06-01`)];
     let start = moment(`${year}-04-01`);
     let frozen = yStats
@@ -73,7 +76,7 @@ export class SeasonsService {
     return [
       // eslint-disable-next-line import/namespace
       frozen.length ? moment.max([start, moment(frozen[0].date)]) : start,
-      moment(yStats[yStats.length - 1].date),
+      harvested ? moment(harvested) : moment(yStats[yStats.length - 1].date),
     ];
   }
 }

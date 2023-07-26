@@ -681,7 +681,11 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         ...years
           .filter((y: number) => this.seasons.indexOf(y) >= 0)
           .map((y: number, idx: number) => {
-            const season: [moment.Moment, moment.Moment] = this.seasonService.calculateGrowingSeason(y, stats);
+            const season: [moment.Moment, moment.Moment] = this.seasonService.calculateGrowingSeason(
+              y,
+              stats,
+              this.actions
+            );
             degreeDaysSum = 0;
             return [
               {
