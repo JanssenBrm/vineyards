@@ -3,7 +3,7 @@ import { Variety } from './../../models/variety.model';
 import { Platform } from '@ionic/angular';
 import { Vineyard } from './../../models/vineyard.model';
 import { VineyardService } from './../../services/vineyard.service';
-import { Component, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import View from 'ol/View';
 import { Map as olMap } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -31,6 +31,9 @@ export class InfoComponent implements OnChanges, AfterViewInit {
 
   @Input()
   actions: Action[];
+
+  @Input()
+  activeSeasons: number[];
 
   private _map: olMap;
 

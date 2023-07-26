@@ -34,6 +34,7 @@ import { NotebookComponent } from './notebook/notebook.component';
 import { AddNoteNotebookComponent } from './add-note-notebook/add-note-notebook.component';
 import { FilterNotesByFilterPipe } from '../pipes/filter-notes-by-filter.pipe';
 import { BbchComponent } from './bbch/bbch.component';
+import { SeasonsComponent } from './seasons/seasons.component';
 
 declare const require: any;
 const Boost = require('highcharts/modules/boost');
@@ -75,6 +76,7 @@ theme(Highcharts);
     AddNoteNotebookComponent,
     FilterNotesByFilterPipe,
     BbchComponent,
+    SeasonsComponent,
   ],
   providers: [PhotoViewer, TitleCasePipe, UploadService, FilterNotesByFilterPipe],
 })

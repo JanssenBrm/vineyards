@@ -39,6 +39,7 @@
             <div class="view" [class.mobile]="isMobile()">
                 <app-info *ngIf="activePage === 'info'" [vineyard]="activeVineyard" [varieties]="(varieties$ | async)"
                           [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"
+                          [activeSeasons]="(activeSeasons$ | async)"
                 ></app-info>
                 <app-actions *ngIf="activePage === 'actions'"
                              [actions]="(actions$ | async | filterActionsBySeason: (activeSeasons$ | async))"

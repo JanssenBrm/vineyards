@@ -36,6 +36,16 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
+        <ion-col class="ion-align-self-stretch" size="12" size-sm="6" *appPremiumFeature>
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title>Seasons</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <app-seasons [vineyard]="vineyard" [seasons]="activeSeasons" [actions]="actions"></app-seasons>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
     </ion-row>
     <ion-row class="ion-align-items-stretch">
         <ion-col class="ion-align-self-stretch" *appPremiumFeature>

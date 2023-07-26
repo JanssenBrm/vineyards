@@ -58,7 +58,11 @@ export class SeasonsService {
     this._activeSeasons.next(seasons);
   }
 
-  calculateGrowingSeason(year: number, stats: MeteoStatEntry[], actions: Action[]): [moment.Moment, moment.Moment] {
+  public calculateGrowingSeason(
+    year: number,
+    stats: MeteoStatEntry[],
+    actions: Action[]
+  ): [moment.Moment, moment.Moment] {
     const yStats: MeteoStatEntry[] = stats.filter((s: MeteoStatEntry) => moment(s.date).year() === year);
     const harvested: string = actions
       .filter((a: Action) => moment(a.date).year() === year)
