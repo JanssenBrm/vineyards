@@ -20,6 +20,7 @@ import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { WeatherStationInfo } from '../../models/weather.model';
 import { VarietyService } from '../../services/variety.service';
 import { FeaturesService } from '../../services/features.service';
+import { SeasonsService } from '../../services/seasons.service';
 
 enum StatTypes {
   ACTIONS = 'Actions',
@@ -87,7 +88,8 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     private weatherStationService: WeatherStationService,
     private loadingController: LoadingController,
     private varietyService: VarietyService,
-    private featureService: FeaturesService
+    private featureService: FeaturesService,
+    private seasonService: SeasonsService
   ) {
     this.loadStats = new BehaviorSubject<void>(undefined);
 
@@ -679,6 +681,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         ...years
           .filter((y: number) => this.seasons.indexOf(y) >= 0)
           .map((y: number, idx: number) => {
+            const season: [moment.Moment, moment.Moment] = this.seasonService.calculateGrowingSeason(y, stats);
             degreeDaysSum = 0;
             return [
               {
@@ -696,7 +699,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   },
                 },
                 data: stats
-                  .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                  .filter(
+                    (s: MeteoStatEntry) =>
+                      moment(s.date).isSameOrAfter(season[0]) && moment(s.date).isSameOrBefore(season[1])
+                  )
                   .filter((e: MeteoStatEntry) => e.tavg >= this.BASE_TEMP)
                   .map((e: MeteoStatEntry) => ({
                     date: e.date,

@@ -4,6 +4,8 @@ import { map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Action } from '../models/action.model';
 import { ActionService } from './action.service';
+import { MeteoStatEntry } from '../models/vineyard.model';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -54,5 +56,24 @@ export class SeasonsService {
 
   public setActiveSeasons(seasons: number[]): void {
     this._activeSeasons.next(seasons);
+  }
+
+  calculateGrowingSeason(year: number, stats: MeteoStatEntry[]): [moment.Moment, moment.Moment] {
+    const yStats: MeteoStatEntry[] = stats.filter((s: MeteoStatEntry) => moment(s.date).year() === year);
+    const frozenPeriod = [moment(`${year}-04-01`), moment(`${year}-06-01`)];
+    let start = moment(`${year}-04-01`);
+    let frozen = yStats
+      .filter(
+        (e: MeteoStatEntry) =>
+          moment(e.date).isSameOrAfter(frozenPeriod[0]) && moment(e.date).isSameOrBefore(frozenPeriod[1])
+      )
+      .filter((e: MeteoStatEntry) => e.tmin < 0)
+      .reverse();
+
+    return [
+      // eslint-disable-next-line import/namespace
+      frozen.length ? moment.max([start, moment(frozen[0].date)]) : start,
+      moment(yStats[yStats.length - 1].date),
+    ];
   }
 }
