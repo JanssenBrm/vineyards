@@ -2,11 +2,11 @@
 <div *ngIf="!loading" class="season-container">
   <div class="season" *ngFor="let season of info">
     <h2 class="title">{{season.year}}<span class="subtitle"> ({{season.duration}} days)</span></h2>
-    <span>{{season.season[0].toISOString() | date: "dd MMMM yyyy"}} - {{season.season[1].toISOString() | date: "dd MMMM yyyy"}}</span>
+    <span class="date">{{season.season[0].toISOString() | date: "dd MMMM yyyy"}} - {{season.season[1].toISOString() | date: "dd MMMM yyyy"}}</span>
     <div class="stats">
-      <div class="stat">
-      <span class="label">Degree Days</span>
-      <span class="value">{{season.dgd}}</span>
+      <div class="trow">
+      <div class="tcol theader">Degree Days</div>
+      <div class="tcol">{{season.dgd}} degrees</div>
       </div>
     </div>
   </div>
