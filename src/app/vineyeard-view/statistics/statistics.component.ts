@@ -781,7 +781,6 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
         width: 3,
       },
     ];
-    console.log(options);
     return options;
   }
 }

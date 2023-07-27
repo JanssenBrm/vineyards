@@ -79,8 +79,10 @@ export class StatisticsService {
   }
 
   getNormalizedDate(date: moment.Moment): number {
-    const actDate: Date = date.toDate();
-    actDate.setFullYear(2000);
-    return actDate.getTime();
+    let actDate: moment.Moment = date.clone();
+    const utcOffsetInMinutes = actDate.utcOffset();
+    actDate = actDate.set({ year: 2000 });
+    actDate = actDate.add(utcOffsetInMinutes, 'minutes');
+    return actDate.unix() * 1000;
   }
 }
