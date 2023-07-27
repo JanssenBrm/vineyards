@@ -5,8 +5,12 @@
     <span class="date">{{season.season[0].toISOString() | date: "dd MMMM yyyy"}} - {{season.season[1].toISOString() | date: "dd MMMM yyyy"}}</span>
     <div class="stats">
       <div class="trow">
-      <div class="tcol theader">Degree Days</div>
-      <div class="tcol">{{season.dgd}} degrees</div>
+        <div class="tcol theader">Degree Days</div>
+        <div class="tcol">{{season.dgd}} degrees</div>
+      </div>
+      <div class="trow">
+        <div class="tcol theader">Precipitation</div>
+        <div class="tcol">{{season.precip}} m3</div>
       </div>
     </div>
   </div>

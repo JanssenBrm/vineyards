@@ -4,6 +4,7 @@ import { SeasonsService } from '../../services/seasons.service';
 import { StatisticsService } from '../../services/statistics.service';
 import { MeteoStatEntry, Vineyard } from '../../models/vineyard.model';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-seasons',
@@ -24,6 +25,7 @@ export class SeasonsComponent implements OnChanges {
     year: number;
     season: [moment.Moment, moment.Moment];
     duration: number;
+    precip: number;
     dgd: number;
   }[] = [];
 
@@ -60,11 +62,13 @@ export class SeasonsComponent implements OnChanges {
   private calculateSeasonInfo(stats: MeteoStatEntry[]) {
     this.info = this.seasons.map((year: number) => {
       const season = this.seasonService.calculateGrowingSeason(year, stats, this.actions);
-      const dgd = this.statService.calculateDgdSeries(year, stats, this.actions).reverse();
+      const yearStats = stats.filter((e: MeteoStatEntry) => moment(e.date).year() === year);
+      const dgd = this.statService.calculateDgdSeries(year, yearStats, this.actions).reverse();
       return {
         year,
         season,
         duration: season[1].diff(season[0], 'days'),
+        precip: Math.round(yearStats.reduce((total, current) => total + current.prcp, 0)),
         dgd: Math.round(dgd[0].y),
       };
     });
