@@ -1,8 +1,9 @@
 import { Variety } from './variety.model';
 import { Polygon } from 'ol/geom/Polygon';
 import { Action } from './action.model';
+
 export interface MeteoStatEntry {
-  date: string;
+  date: moment.Moment;
   tavg: number;
   tmin: number;
   tmax: number;

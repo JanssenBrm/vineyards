@@ -59,7 +59,7 @@ export class AddActionComponent implements OnInit {
           this.actionTypes.find((a: string) => a === this.action.type),
           [Validators.required]
         ),
-        date: new FormControl(this.action.date, [Validators.required]),
+        date: new FormControl(this.action.date.toISOString(), [Validators.required]),
         description: new FormControl(this.action.description),
         bbch: new FormControl(''),
         varietyId: new FormControl(this.action.variety || []),
@@ -175,7 +175,7 @@ export class AddActionComponent implements OnInit {
       action: {
         ...this.actionForm.value,
         id: this.action ? this.action.id : '',
-        date: this.actionForm.value.date.split('T')[0],
+        date: moment(this.actionForm.value.date),
         type: this.actionForm.value.type,
         files: files !== undefined ? files : [],
       },

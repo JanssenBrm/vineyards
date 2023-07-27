@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { BehaviorSubject } from 'rxjs';
-import { Action, ACTION_COLORS, ActionType } from '../models/action.model';
+import { Action } from '../models/action.model';
 import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
@@ -45,22 +45,16 @@ export class StatisticsService {
       .collection<any>(STATS_COLLECTION)
       .doc('meteo')
       .snapshotChanges()
-      .pipe(map((data) => (data.payload.data() as MeteoStats)?.data || []))
+      .pipe(
+        map((data) => (data.payload.data() as MeteoStats)?.data || []),
+        map((entries: MeteoStatEntry[]) =>
+          entries.map((e: MeteoStatEntry) => ({
+            ...e,
+            date: moment(e.date),
+          }))
+        )
+      )
       .subscribe((entries: MeteoStatEntry[]) => this._meteoStats.next(entries));
-  }
-
-  public getLastUpdate(actions: Action[]): string {
-    const action = actions && actions.length > 0 ? actions[actions.length - 1] : undefined;
-    return action ? action.date : undefined;
-  }
-
-  getActionTypeColor(stage: string): string {
-    const idx = Object.keys(ActionType).findIndex((s: string) => s === stage);
-    return idx >= 0 ? ACTION_COLORS[idx] : undefined;
-  }
-
-  findActionType(type: string): string {
-    return Object.keys(ActionType).find((s: string) => ActionType[s] === type);
   }
 
   calculateDgdSeries(year: number, stats: MeteoStatEntry[], actions: Action[]) {
@@ -75,17 +69,17 @@ export class StatisticsService {
         date: e.date,
         value: Math.ceil((e.tavg - this.BASE_TEMP) * 100) / 100,
       }))
-      .map((e: { date: string; value: number }) => {
+      .map((e: { date: moment.Moment; value: number }) => {
         degreeDaysSum += e.value;
         return {
-          x: this.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+          x: this.getNormalizedDate(e.date),
           y: degreeDaysSum,
         };
       });
   }
 
-  getNormalizedDate(date: string): number {
-    const actDate: Date = new Date(date);
+  getNormalizedDate(date: moment.Moment): number {
+    const actDate: Date = date.toDate();
     actDate.setFullYear(2000);
     return actDate.getTime();
   }

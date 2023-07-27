@@ -48,7 +48,7 @@ export class WarningsComponent {
       moment(w1.date).isSameOrBefore(moment(w2.date)) ? -1 : 1
     );
     this.dates = this.warnings
-      .map((w: Warning) => moment(w.date))
+      .map((w: Warning) => w.date)
       .filter(
         (d1: moment.Moment, idx: number, dates: moment.Moment[]) =>
           dates.findIndex((d: moment.Moment) => d.isSame(d1)) === idx

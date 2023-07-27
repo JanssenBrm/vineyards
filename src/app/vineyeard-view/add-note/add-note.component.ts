@@ -45,7 +45,7 @@ export class AddNoteComponent implements OnInit {
 
     if (this.note) {
       this.noteForm = new FormGroup({
-        date: new FormControl(this.note.date, [Validators.required]),
+        date: new FormControl(this.note.date.toISOString(), [Validators.required]),
         stage: new FormControl(this.note.stage),
         description: new FormControl(this.note.description, [Validators.required]),
         files: new FormControl([this.note.files]),
@@ -103,7 +103,7 @@ export class AddNoteComponent implements OnInit {
       note: {
         id: this.note ? this.note.id : '',
         ...this.noteForm.value,
-        date: this.noteForm.value.date.split('T')[0],
+        date: moment(this.noteForm.value.date),
         files: files !== undefined ? files : [],
       },
     });

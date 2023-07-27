@@ -4,10 +4,11 @@ import { Vineyard } from '../models/vineyard.model';
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { Action, ACTION_COLORS, ActionType, BaseAction } from '../models/action.model';
+import { Action, ACTION_COLORS, ActionType, BaseAction, BaseActionDoc } from '../models/action.model';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { UtilService } from './util.service';
+import * as moment from 'moment';
 
 export const ACTION_COLLECTION = 'actions';
 
@@ -33,7 +34,10 @@ export class ActionService {
   }
 
   public async addAction(vineyard: Vineyard, action: BaseAction): Promise<Action> {
-    const doc = await this._vineyardCollection.doc(vineyard.id).collection<BaseAction>(ACTION_COLLECTION).add(action);
+    const doc = await this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<BaseActionDoc>(ACTION_COLLECTION)
+      .add(this.convertToDoc(action));
     return {
       ...action,
       id: doc.id,
@@ -44,35 +48,50 @@ export class ActionService {
   public async updateAction(vineyard: Vineyard, action: BaseAction): Promise<Action> {
     await this._vineyardCollection
       .doc(vineyard.id)
-      .collection<BaseAction>(ACTION_COLLECTION)
+      .collection<BaseActionDoc>(ACTION_COLLECTION)
       .doc(action.id)
-      .set(action);
+      .set(this.convertToDoc(action));
     return {
       ...action,
       html: UtilService.parseMarkdown(action.description),
     };
   }
 
+  private convertToDoc(action: BaseAction): BaseActionDoc {
+    return {
+      ...action,
+      date: action.date.toISOString(),
+    };
+  }
+
   public async removeAction(vineyard: Vineyard, action: BaseAction): Promise<void> {
-    await this._vineyardCollection.doc(vineyard.id).collection<BaseAction>(ACTION_COLLECTION).doc(action.id).delete();
+    await this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<BaseActionDoc>(ACTION_COLLECTION)
+      .doc(action.id)
+      .delete();
   }
 
   public getActions(vineyard: Vineyard): void {
     this._vineyardCollection
       .doc(vineyard.id)
-      .collection<BaseAction>(ACTION_COLLECTION)
+      .collection<BaseActionDoc>(ACTION_COLLECTION)
       .snapshotChanges()
       .pipe(
-        map((data: DocumentChangeAction<BaseAction>[]) =>
-          data.map((d: DocumentChangeAction<BaseAction>) => ({
+        map((data: DocumentChangeAction<BaseActionDoc>[]) =>
+          data.map((d: DocumentChangeAction<BaseActionDoc>) => ({
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
           }))
         ),
+        map((actions: BaseActionDoc[]) =>
+          actions.map((a) => ({
+            ...a,
+            date: moment(a.date),
+          }))
+        ),
         map((actions: BaseAction[]) =>
-          [...actions].sort((a1: BaseAction, a2: BaseAction) =>
-            new Date(a1.date).getTime() < new Date(a2.date).getTime() ? 1 : -1
-          )
+          [...actions].sort((a1: BaseAction, a2: BaseAction) => (a1.date.isSameOrBefore(a2.date) ? 1 : -1))
         ),
         map((actions: BaseAction[]) =>
           actions.map((a: BaseAction) => ({
@@ -84,7 +103,7 @@ export class ActionService {
       .subscribe((actions: Action[]) => this._actions.next(actions));
   }
 
-  public getLastUpdate(actions: BaseAction[]): string {
+  public getLastUpdate(actions: BaseAction[]): moment.Moment {
     const action = actions && actions.length > 0 ? actions[actions.length - 1] : undefined;
     return action ? action.date : undefined;
   }

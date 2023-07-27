@@ -3,13 +3,14 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } fr
 import { VineyardDoc } from '../models/vineyarddoc.model';
 import { BehaviorSubject } from 'rxjs';
 import { Vintage } from '../models/vintage.model';
-import { Note, NoteBase } from '../models/note.model';
+import { Note, NoteBase, NoteBaseDoc } from '../models/note.model';
 import { Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import { VINTAGE_COLLECTION } from './vintage.service';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
 import { UtilService } from './util.service';
+import * as moment from 'moment';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -38,8 +39,8 @@ export class NotesService {
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<NoteBase>(NOTE_COLLECTION)
-      .add(note);
+      .collection<NoteBaseDoc>(NOTE_COLLECTION)
+      .add(this.convertToDoc(note));
 
     return {
       ...note,
@@ -53,13 +54,20 @@ export class NotesService {
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<NoteBase>(NOTE_COLLECTION)
+      .collection<NoteBaseDoc>(NOTE_COLLECTION)
       .doc(note.id)
-      .set(note);
+      .set(this.convertToDoc(note));
 
     return {
       ...note,
       html: UtilService.parseMarkdown(note.description),
+    };
+  }
+
+  private convertToDoc(note: NoteBase): NoteBaseDoc {
+    return {
+      ...note,
+      date: note.date.toISOString(),
     };
   }
 
@@ -68,7 +76,7 @@ export class NotesService {
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<NoteBase>(NOTE_COLLECTION)
+      .collection<NoteBaseDoc>(NOTE_COLLECTION)
       .doc(note.id)
       .delete();
   }
@@ -78,19 +86,20 @@ export class NotesService {
       .doc(vineyard.id)
       .collection<Vintage>(VINTAGE_COLLECTION)
       .doc(vintage.id)
-      .collection<NoteBase>(NOTE_COLLECTION)
+      .collection<NoteBaseDoc>(NOTE_COLLECTION)
       .snapshotChanges()
       .pipe(
-        map((data: DocumentChangeAction<NoteBase>[]) =>
-          data.map((d: DocumentChangeAction<NoteBase>) => ({
+        map((data: DocumentChangeAction<NoteBaseDoc>[]) =>
+          data.map((d: DocumentChangeAction<NoteBaseDoc>) => ({
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
           }))
         ),
-        map((notes: NoteBase[]) =>
-          notes.map((n: NoteBase) => ({
+        map((notes: NoteBaseDoc[]) =>
+          notes.map((n: NoteBaseDoc) => ({
             ...n,
             html: UtilService.parseMarkdown(n.description),
+            date: moment(n.date),
           }))
         )
       )

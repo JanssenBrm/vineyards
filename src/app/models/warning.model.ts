@@ -2,7 +2,7 @@ export enum WarningType {
   FROST = 'FROST',
 }
 export interface Warning {
-  date: string;
+  date: moment.Moment;
   type: WarningType;
   description: string;
 }

@@ -1,7 +1,7 @@
 import { Polygon } from 'ol/geom';
-import { VineyardDoc } from './../models/vineyarddoc.model';
-import { MeteoStatEntry, Vineyard } from './../models/vineyard.model';
-import { Variety } from './../models/variety.model';
+import { VineyardDoc } from '../models/vineyarddoc.model';
+import { MeteoStatEntry, Vineyard } from '../models/vineyard.model';
+import { Variety } from '../models/variety.model';
 import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -138,7 +138,7 @@ export class VineyardService {
     if (types.length > 0) {
       actions = actions.filter((a: Action) => types.indexOf(a.type) >= 0);
     }
-    return actions.length > 0 ? actions.filter((a: Action) => new Date(a.date).getFullYear() <= maxYear) : actions;
+    return actions.length > 0 ? actions.filter((a: Action) => a.date.year() <= maxYear) : actions;
   }
 
   updateLocation(id: string, geometry: Polygon): void {

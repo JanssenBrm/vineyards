@@ -23,6 +23,15 @@ export const ACTION_COLORS = [
 export interface BaseAction {
   id?: string;
   type: ActionType;
+  date: moment.Moment;
+  description: string;
+  variety?: string[];
+  files?: string[];
+}
+
+export interface BaseActionDoc {
+  id?: string;
+  type: ActionType;
   date: string;
   description: string;
   variety?: string[];

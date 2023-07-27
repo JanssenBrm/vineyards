@@ -14,6 +14,7 @@ import { LayersComponent } from './components/toolbar/layers/layers.component';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { UserbuttonComponent } from './components/userbutton/userbutton.component';
 import { PremiumFeatureDirective } from './directives/premium-feature.directive';
+import { MomentPipe } from '../pipes/moment.pipe';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { PremiumFeatureDirective } from './directives/premium-feature.directive'
     ConfirmComponent,
     UserbuttonComponent,
     PremiumFeatureDirective,
+    MomentPipe,
   ],
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule],
   exports: [
@@ -42,6 +44,7 @@ import { PremiumFeatureDirective } from './directives/premium-feature.directive'
     ConfirmComponent,
     UserbuttonComponent,
     PremiumFeatureDirective,
+    MomentPipe,
   ],
 })
 export class SharedModule {}

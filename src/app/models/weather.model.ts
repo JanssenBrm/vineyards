@@ -1,5 +1,5 @@
 export interface WeatherInfo {
-  date: string;
+  date: moment.Moment;
   label: string;
   icon: string;
   temp: {
@@ -9,7 +9,7 @@ export interface WeatherInfo {
 }
 
 export interface WeatherStationInfo {
-  date: string;
+  date: moment.Moment;
   heat: number;
   humidity: number;
   sunhours: number;

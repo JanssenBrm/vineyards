@@ -5,6 +5,7 @@ import { Vineyard } from '../models/vineyard.model';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { VineyardService } from './vineyard.service';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,7 @@ export class WeatherService {
       )
       .subscribe((result: any) => {
         const conditions: WeatherInfo[] = result.daily.map((entry) => ({
-          date: new Date(entry.dt * 1000).toISOString(),
+          date: moment(new Date(entry.dt * 1000).toISOString()),
           label: `${entry.weather[0].description}`,
           icon: entry.weather[0].icon,
           temp: {

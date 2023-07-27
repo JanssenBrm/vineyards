@@ -23,7 +23,7 @@ export class SeasonsService {
       .pipe(
         map((actions: Action[]) =>
           actions.length > 0
-            ? [new Date().getFullYear(), ...actions.map((a: Action) => new Date(a.date).getFullYear())].filter(
+            ? [moment().year(), ...actions.map((a: Action) => a.date.year())].filter(
                 (y, idx, years) => years.indexOf(y) === idx
               )
             : []
@@ -63,24 +63,21 @@ export class SeasonsService {
     stats: MeteoStatEntry[],
     actions: Action[]
   ): [moment.Moment, moment.Moment] {
-    const yStats: MeteoStatEntry[] = stats.filter((s: MeteoStatEntry) => moment(s.date).year() === year);
-    const harvested: string = actions
-      .filter((a: Action) => moment(a.date).year() === year)
+    const yStats: MeteoStatEntry[] = stats.filter((s: MeteoStatEntry) => s.date.year() === year);
+    const harvested: moment.Moment = actions
+      .filter((a: Action) => a.date.year() === year)
       .find((a: Action) => a.type === ActionType.Harvest)?.date;
     const frozenPeriod = [moment(`${year}-04-01`), moment(`${year}-06-01`)];
     let start = moment(`${year}-04-01`);
     let frozen = yStats
-      .filter(
-        (e: MeteoStatEntry) =>
-          moment(e.date).isSameOrAfter(frozenPeriod[0]) && moment(e.date).isSameOrBefore(frozenPeriod[1])
-      )
+      .filter((e: MeteoStatEntry) => e.date.isSameOrAfter(frozenPeriod[0]) && e.date.isSameOrBefore(frozenPeriod[1]))
       .filter((e: MeteoStatEntry) => e.tmin < 0)
       .reverse();
 
     return [
       // eslint-disable-next-line import/namespace
-      frozen.length ? moment.max([start, moment(frozen[0].date)]) : start,
-      harvested ? moment(harvested) : moment(yStats[yStats.length - 1].date),
+      frozen.length ? moment.max([start, frozen[0].date]) : start,
+      harvested ? harvested : yStats[yStats.length - 1].date,
     ];
   }
 }

@@ -6,8 +6,9 @@ import { Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import { User } from 'firebase';
 import { AuthService } from './auth.service';
-import { VineyardBaseNote, VineyardNote } from '../models/vineyardnote.model';
+import { VineyardBaseNote, VineyardBaseNoteDoc, VineyardNote } from '../models/vineyardnote.model';
 import { UtilService } from './util.service';
+import * as moment from 'moment';
 
 export const NOTE_COLLECTION = 'notes';
 @Injectable({
@@ -32,7 +33,10 @@ export class VineyardNotesService {
   }
 
   public async addNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<VineyardNote> {
-    const doc = await this._vineyardCollection.doc(vineyard.id).collection<VineyardBaseNote>(NOTE_COLLECTION).add(note);
+    const doc = await this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<VineyardBaseNoteDoc>(NOTE_COLLECTION)
+      .add(this.convertToDoc(note));
     return {
       ...note,
       id: doc.id,
@@ -43,35 +47,47 @@ export class VineyardNotesService {
   public async updateNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<VineyardNote> {
     await this._vineyardCollection
       .doc(vineyard.id)
-      .collection<VineyardBaseNote>(NOTE_COLLECTION)
+      .collection<VineyardBaseNoteDoc>(NOTE_COLLECTION)
       .doc(note.id)
-      .set(note);
+      .set(this.convertToDoc(note));
     return {
       ...note,
       html: UtilService.parseMarkdown(note.description),
     };
   }
 
+  private convertToDoc(note: VineyardBaseNote): VineyardBaseNoteDoc {
+    return {
+      ...note,
+      date: note.date.toISOString(),
+    };
+  }
+
   public async removeNote(vineyard: Vineyard, note: VineyardBaseNote): Promise<void> {
-    await this._vineyardCollection.doc(vineyard.id).collection<VineyardBaseNote>(NOTE_COLLECTION).doc(note.id).delete();
+    await this._vineyardCollection
+      .doc(vineyard.id)
+      .collection<VineyardBaseNoteDoc>(NOTE_COLLECTION)
+      .doc(note.id)
+      .delete();
   }
 
   public getNotes(vineyard: Vineyard): void {
     this._vineyardCollection
       .doc(vineyard.id)
-      .collection<VineyardBaseNote>(NOTE_COLLECTION)
+      .collection<VineyardBaseNoteDoc>(NOTE_COLLECTION)
       .snapshotChanges()
       .pipe(
-        map((data: DocumentChangeAction<VineyardBaseNote>[]) =>
-          data.map((d: DocumentChangeAction<VineyardBaseNote>) => ({
+        map((data: DocumentChangeAction<VineyardBaseNoteDoc>[]) =>
+          data.map((d: DocumentChangeAction<VineyardBaseNoteDoc>) => ({
             ...d.payload.doc.data(),
             id: (d.payload.doc as any).id,
           }))
         ),
-        map((notes: VineyardBaseNote[]) =>
-          notes.map((n: VineyardNote) => ({
+        map((notes: VineyardBaseNoteDoc[]) =>
+          notes.map((n: VineyardBaseNoteDoc) => ({
             ...n,
             html: UtilService.parseMarkdown(n.description),
+            date: moment(n.date),
           }))
         )
       )

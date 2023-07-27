@@ -6,6 +6,6 @@ import { Action } from '../models/action.model';
 })
 export class FilterActionsBySeasonPipe implements PipeTransform {
   transform(actions: Action[], seasons: number[]): any {
-    return actions.filter((a: Action) => seasons && seasons.indexOf(new Date(a.date).getFullYear()) >= 0);
+    return actions.filter((a: Action) => seasons && seasons.indexOf(a.date.year()) >= 0);
   }
 }

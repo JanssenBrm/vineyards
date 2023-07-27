@@ -355,7 +355,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   getBBCHGraphs(): Observable<any[]> {
     const actions: BBCHAction[] = this.actions
       .filter((a: Action) => a.type === ActionType.BBCH)
-      .sort((a: Action, b: Action) => (moment(a.date).isBefore(moment(b.date)) ? -1 : 1));
+      .sort((a: Action, b: Action) => (a.date.isBefore(b.date) ? -1 : 1));
     const varieties = []
       .concat(...actions.map((a: Action) => a.variety))
       .filter((v: string, idx: number, vs: string[]) => this.activeVarieties.includes(v) && vs.indexOf(v) === idx)
@@ -363,7 +363,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     const years: { year: number; variety: string }[] = [].concat(
       ...this.actions
         .filter((a: Action) => a.type === ActionType.BBCH)
-        .map((a: Action) => moment(a.date).year())
+        .map((a: Action) => a.date.year())
         .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx)
         .map((year: number) =>
           varieties.map((variety: string) => ({
@@ -398,11 +398,11 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
               data: actions
                 .filter(
                   (a: Action) =>
-                    moment(a.date).year() === year &&
+                    a.date.year() === year &&
                     (a.variety || []).includes(this.varietyService.getVarietyByName(variety)?.id)
                 )
                 .map((a: BBCHAction) => ({
-                  x: this.statService.getNormalizedDate(moment(a.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(a.date),
                   y: +a.bbch,
                 })),
             },
@@ -429,7 +429,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
           .filter((action: Action) => action.type === ActionType[a])
           .filter(
             (action: Action) =>
-              this.seasons.indexOf(new Date(action.date).getFullYear()) >= 0 &&
+              this.seasons.indexOf(action.date.year()) >= 0 &&
               this.activeVarieties.filter((v) => action.variety.indexOf(v) >= 0).length > 0
           )
           .map((action: Action) => ({
@@ -442,7 +442,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 : ''
             }${(action as BrixAction).value ? (action as BrixAction).value + ' ' : ''}${action.description}`,
             x: this.statService.getNormalizedDate(action.date),
-            y: new Date(action.date).getFullYear(),
+            y: action.date.year(),
           })),
       }))
     );
@@ -451,7 +451,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   getMeteoTimelines(): Observable<any> {
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
     const years = stats
-      .map((s: MeteoStatEntry) => moment(s.date).year())
+      .map((s: MeteoStatEntry) => s.date.year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
 
     return merge(
@@ -472,9 +472,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 },
               },
               data: stats
-                .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                .filter((s: MeteoStatEntry) => s.date.year() === y)
                 .map((e: MeteoStatEntry) => ({
-                  x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(e.date),
                   y: e.tavg,
                 })),
             },
@@ -493,9 +493,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 },
               },
               data: stats
-                .filter((s: MeteoStatEntry) => moment(s.date).year() === y)
+                .filter((s: MeteoStatEntry) => s.date.year() === y)
                 .map((e: MeteoStatEntry) => ({
-                  x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DD')),
+                  x: this.statService.getNormalizedDate(e.date),
                   y: e.prcp,
                 })),
             },
@@ -513,13 +513,13 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       return this.weatherStationService.readWeatherData(integration, daily).pipe(
         switchMap((stats: WeatherStationInfo[]) => {
           const years = stats
-            .map((s: WeatherStationInfo) => moment(s.date).year())
+            .map((s: WeatherStationInfo) => s.date.year())
             .filter((y: number) => this.seasons.indexOf(y) >= 0)
             .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
 
           return years.map((year: number) => ({
             year,
-            stats: stats.filter((s: WeatherStationInfo) => moment(s.date).year() === year),
+            stats: stats.filter((s: WeatherStationInfo) => s.date.year() === year),
           }));
         })
       );
@@ -544,9 +544,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   },
                 },
                 data: stats
-                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .filter((s: WeatherStationInfo) => s.date.year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(e.date),
                     y: e.sunhours,
                   })),
                 dataGrouping: {
@@ -577,9 +577,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   },
                 },
                 data: stats
-                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .filter((s: WeatherStationInfo) => s.date.year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(e.date),
                     y: e.humidity,
                   })),
                 dataGrouping: {
@@ -610,9 +610,9 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                   },
                 },
                 data: stats
-                  .filter((s: WeatherStationInfo) => moment(s.date).year() === year)
+                  .filter((s: WeatherStationInfo) => s.date.year() === year)
                   .map((e: WeatherStationInfo) => ({
-                    x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                    x: this.statService.getNormalizedDate(e.date),
                     y: e.temperature,
                   })),
                 dataGrouping: {
@@ -665,7 +665,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
   getDgdTimelines(): Observable<any> {
     const stats: MeteoStatEntry[] = this.statService.getMeteoListener().getValue();
     const years = stats
-      .map((s: MeteoStatEntry) => moment(s.date).year())
+      .map((s: MeteoStatEntry) => s.date.year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
     return merge(
       [].concat(
@@ -697,7 +697,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   getBrixTimelines(): Observable<any> {
     const years = this.actions
-      .map((a: Action) => moment(a.date).year())
+      .map((a: Action) => a.date.year())
       .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
     const varieties = []
       .concat(...this.actions.map((a: Action) => a.variety))
@@ -705,9 +705,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
     const combinations: { year: number; variety: string }[] = [].concat(
       ...years.map((y: number) => {
         return varieties
-          .filter((v: string) =>
-            this.actions.find((a: Action) => a.variety?.includes(v) && moment(a.date).year() === y)
-          )
+          .filter((v: string) => this.actions.find((a: Action) => a.variety?.includes(v) && a.date.year() === y))
           .map((v: string) => ({
             year: y,
             variety: v,
@@ -738,18 +736,15 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
                 data: this.actions
                   .filter(
                     (a: BrixAction) =>
-                      moment(a.date).year() === year &&
-                      a.variety?.includes(variety) &&
-                      a.type === ActionType.Brix &&
-                      !!a.value
+                      a.date.year() === year && a.variety?.includes(variety) && a.type === ActionType.Brix && !!a.value
                   )
                   .map((a: BrixAction) => ({
                     date: a.date,
                     value: a.value,
                   }))
-                  .map((e: { date: string; value: number }) => {
+                  .map((e: { date: moment.Moment; value: number }) => {
                     return {
-                      x: this.statService.getNormalizedDate(moment(e.date).format('YYYY-MM-DDTHH:mm:SS')),
+                      x: this.statService.getNormalizedDate(e.date),
                       y: e.value,
                     };
                   }),
@@ -782,7 +777,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       ...(options.xAxis.plotLines || []),
       {
         color: '#5119e3',
-        value: this.statService.getNormalizedDate(new Date().toISOString()),
+        value: this.statService.getNormalizedDate(moment()),
         width: 3,
       },
     ];

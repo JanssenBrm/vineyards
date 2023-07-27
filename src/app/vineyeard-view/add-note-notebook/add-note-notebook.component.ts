@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UploadService } from '../../services/upload.service';
 import { VineyardBaseNote } from '../../models/vineyardnote.model';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-add-note-notebook',
@@ -54,7 +55,7 @@ export class AddNoteNotebookComponent implements OnInit {
       note: {
         id: this.note ? this.note.id : '',
         ...this.noteForm.value,
-        date: new Date().toDateString(),
+        date: moment(),
         tags: this.tags,
       },
     });

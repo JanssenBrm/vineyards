@@ -204,7 +204,7 @@ export class MapPage implements OnInit, AfterViewInit {
     return this.varietyService.getPlantCount(varieties);
   }
 
-  getLastUpdate(actions: Action[]): string {
+  getLastUpdate(actions: Action[]): moment.Moment {
     return this.actionService.getLastUpdate(actions);
   }
 
