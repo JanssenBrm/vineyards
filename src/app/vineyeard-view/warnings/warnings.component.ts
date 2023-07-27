@@ -20,11 +20,15 @@ export class WarningsComponent {
 
   dates: string[];
 
+  loading: boolean = true;
+
   constructor(private weatherService: WeatherService) {
+    this.loading = true;
     this.weatherService.getConditions().subscribe((info: WeatherInfo[]) => {
       if (info.length > 0) {
         this.calculateMeteoWarnings(info);
       }
+      this.loading = false;
     });
   }
 

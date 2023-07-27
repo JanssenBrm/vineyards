@@ -1,4 +1,5 @@
-<div class="warnings">
+<ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+<div class="warnings" *ngIf="!loading">
   <div class="dates" *ngFor="let date of dates">
     <div class="info">
       <div class="date">
