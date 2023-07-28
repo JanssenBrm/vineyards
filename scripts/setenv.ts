@@ -13,9 +13,9 @@ const targetPath = isProduction
 
 const environmentFileContent = `
 export const environment = {
-      production: "${isProduction}",
-      api: "${process.env.API_URL}",
-      firebase: {
+  production: "${isProduction}",
+  api: "${process.env.API_URL}",
+  firebase: {
         apiKey: "${process.env.FB_API_KEY}",
         authDomain: "${process.env.FB_AUTH_DOMAIN}",
         databaseURL: "${process.env.FB_DATABASE_URL}",
@@ -23,8 +23,9 @@ export const environment = {
         storageBucket: "${process.env.FB_STORAGE_BUCKET}",
         messagingSenderId: "${process.env.FB_MESSAGE_SENDER_ID}",
         appId: "${process.env.FB_APP_ID}",
-        measurementId: "${process.env.FB_MEASUREMENT_ID}"
+        measurementId: "${process.env.FB_MEASUREMENT_ID}",
   },
+  stripeKey: "${process.env.STRIPE_KEY}",
   owm_key: "${process.env.OWM_KEY}"
 };
 `;

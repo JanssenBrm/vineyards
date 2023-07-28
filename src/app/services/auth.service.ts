@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { auth, User } from 'firebase';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { AngularFirestore, DocumentSnapshot } from '@angular/fire/firestore';
 import { UserData, UserRole } from '../models/userdata.model';
 import { AngularFireAnalytics } from '@angular/fire/analytics';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { StripeService } from './stripe.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,8 @@ export class AuthService {
     public fbAuth: AngularFireAuth,
     public router: Router,
     private fireStore: AngularFirestore,
-    private analytics: AngularFireAnalytics
+    private analytics: AngularFireAnalytics,
+    private stripeService: StripeService
   ) {
     this.user = new BehaviorSubject<User>(undefined);
     this.userData = new BehaviorSubject<UserData>(undefined);
@@ -30,7 +32,7 @@ export class AuthService {
       .pipe(
         switchMap((user: User) => {
           if (user) {
-            return this.readUserData(user.uid).pipe(
+            return this.readUserData(user).pipe(
               map((data: UserData) => ({
                 user,
                 data,
@@ -45,8 +47,8 @@ export class AuthService {
         this.user.next(user);
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
-          this.updateUser(user, data?.role).then(() => {
-            console.log('User updated', user);
+          this.updateUser(user, data).then(() => {
+            console.log('User updated');
           });
           this.router.navigate(['map']);
         } else {
@@ -55,25 +57,36 @@ export class AuthService {
       });
   }
 
-  private async updateUser(user: User, role: UserRole) {
+  private async updateUser(user: User, data: UserData) {
     await this.fireStore
       .collection<UserData>('users')
       .doc(user.uid)
       .set({
         id: user.uid,
         name: user.displayName,
-        role: role || UserRole.BASIC,
+        role: data.role || UserRole.BASIC,
+        customerId: data.customerId,
       });
   }
 
-  private readUserData(uid: string): Observable<UserData> {
+  private readUserData(user: User): Observable<UserData> {
     return this.fireStore
       .collection<UserData>('users')
-      .doc(uid)
+      .doc(user.uid)
       .get()
       .pipe(
         take(1),
         map((data: DocumentSnapshot<UserData>) => data.data()),
+        switchMap((data: UserData) =>
+          data.customerId
+            ? of(data)
+            : from(
+                this.stripeService.createCustomer(data, user.email).then((id) => ({
+                  ...data,
+                  customerId: id,
+                }))
+              ).pipe()
+        ),
         catchError((error: any) => {
           console.error('Could not retrieve user data', error);
           return of(undefined);

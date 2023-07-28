@@ -8,4 +8,5 @@ export interface UserData {
   id: string;
   name: string;
   role: UserRole;
+  customerId?: string;
 }
