@@ -28,12 +28,14 @@ export class BbchComponent implements OnChanges {
   }
 
   private parseBBCHStages(actions: Action[]) {
-    const bbch: BBCHAction[] = actions.filter((a: Action) => {
-      const date = moment(a.date);
-      const normalizedCurrent = moment().set('year', date.year());
-      const diff = normalizedCurrent.diff(date, 'days');
-      return a.type === ActionType.BBCH && this.years.includes(date.year()) && diff > 0;
-    });
+    const bbch: BBCHAction[] = actions
+      .filter((a: Action) => a.type === ActionType.BBCH)
+      .sort((a: Action, b: Action) => (a.date.isSameOrBefore(b.date) ? -1 : 1))
+      .filter((a: Action) => {
+        const normalizedCurrent = moment().set('year', a.date.year());
+        const diff = normalizedCurrent.diff(a.date, 'days');
+        return this.years.includes(a.date.year()) && diff >= 0;
+      });
     const summary = [];
     for (const action of bbch) {
       const year = moment(action.date).year();
@@ -59,6 +61,7 @@ export class BbchComponent implements OnChanges {
         }
       }
     }
+    console.log(summary);
     return summary.map((v) => {
       const codes: number[] = this.years.map((y) => (v[y] ? v[y].value : undefined)).filter((d) => !!d);
       const diff = codes.length > 1 ? codes[1].toString().localeCompare(codes[0].toString()) : 0;
