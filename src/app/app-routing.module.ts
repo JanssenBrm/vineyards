@@ -36,6 +36,10 @@ const routes: Routes = [
     path: 'forgot-password',
     loadChildren: () => import('./forgot-password/forgot-password.module').then((m) => m.ForgotPasswordPageModule),
   },
+  {
+    path: 'premium',
+    loadChildren: () => import('./premium/premium.module').then((m) => m.PremiumPageModule),
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
