@@ -15,6 +15,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
 import { UserbuttonComponent } from './components/userbutton/userbutton.component';
 import { PremiumFeatureDirective } from './directives/premium-feature.directive';
 import { MomentPipe } from '../pipes/moment.pipe';
+import { HasRoleDirective } from './directives/has-role.directive';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { MomentPipe } from '../pipes/moment.pipe';
     UserbuttonComponent,
     PremiumFeatureDirective,
     MomentPipe,
+    HasRoleDirective,
   ],
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule],
   exports: [
@@ -45,6 +47,7 @@ import { MomentPipe } from '../pipes/moment.pipe';
     UserbuttonComponent,
     PremiumFeatureDirective,
     MomentPipe,
+    HasRoleDirective,
   ],
 })
 export class SharedModule {}

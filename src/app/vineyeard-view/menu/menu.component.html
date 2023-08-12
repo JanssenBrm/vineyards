@@ -59,3 +59,12 @@
     </div>
   </div>
 </div>
+<div class="gutter"></div>
+<div class="section footer">
+  <div class="items">
+   <div class="item premium" *appUserHasRole="NON_PREMIUM_ROLES" (click)="openPremium()">
+     <ion-icon name="diamond-outline" slot="start"></ion-icon>
+     <ion-label>Become a premium member</ion-label>
+   </div>
+  </div>
+</div>

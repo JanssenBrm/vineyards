@@ -9,6 +9,8 @@
     width: 15vw;
     background-color: var(--ion-color-primary-contrast-2);
     box-shadow: 0 3px 9px 0 rgb(169 184 200 / 15%);
+    display: flex;
+    flex-direction: column;
 
     .title {
       background: var( --ion-primary-gradient-2);
@@ -21,6 +23,12 @@
       span {
         font-family: var(--ion-title-font);
       }
+    }
+
+    app-menu {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
   }
 
