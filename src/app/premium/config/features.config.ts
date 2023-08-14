@@ -25,6 +25,6 @@ export const ROLES: ProductInfo[] = [
     role: UserRole.PREMIUM,
     label: 'Premium User',
     features: PREMIUM_FEATURES,
-    productId: 'prod_KTUcFkMNO7j7lw',
+    priceId: 'price_1JoXdZC2RvQQCR3w9HXRULeP',
   },
 ];

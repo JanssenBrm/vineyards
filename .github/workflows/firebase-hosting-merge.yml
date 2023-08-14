@@ -36,6 +36,7 @@ jobs:
           OWM_KEY: ${{ secrets.OWM_KEY }}
           API_URL: ${{ secrets.API_URL }}
           STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          STRIPE_REDIRECT: ${{ secrets.STRIPE_REDIRECT }}
       - name: Build
         run: npm run build
       - name: Deploy firebase

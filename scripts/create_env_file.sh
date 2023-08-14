@@ -10,3 +10,4 @@ echo "FB_MEASUREMENT_ID=$FB_MEASUREMENT_ID" >> $file
 echo "OWM_KEY=$OWM_KEY" >> $file
 echo "API_URL=$API_URL" >> $file
 echo "STRIPE_KEY=$STRIPE_KEY" >> $file
+echo "STRIPE_REDIRECT=$STRIPE_REDIRECT" >> $file

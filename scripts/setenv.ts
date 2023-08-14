@@ -26,7 +26,8 @@ export const environment = {
         measurementId: "${process.env.FB_MEASUREMENT_ID}",
   },
   stripeKey: "${process.env.STRIPE_KEY}",
-  owm_key: "${process.env.OWM_KEY}"
+  owm_key: "${process.env.OWM_KEY}",
+  stripeRedirect: "${process.env.STRIPE_REDIRECT}" 
 };
 `;
 

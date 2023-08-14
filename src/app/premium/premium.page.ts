@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ROLES } from './config/features.config';
 import { FeaturesService } from '../services/features.service';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { UserRole } from '../models/userdata.model';
 import { ProductInfo } from './premium.model';
 import { ToastController } from '@ionic/angular';
+import { StripeService } from '../services/stripe.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-premium',
@@ -18,12 +20,22 @@ export class PremiumPage {
 
   private toast: HTMLIonToastElement;
 
-  constructor(private featureService: FeaturesService, private toastController: ToastController) {
+  constructor(
+    private featureService: FeaturesService,
+    private toastController: ToastController,
+    private stripeService: StripeService,
+    private authService: AuthService
+  ) {
     this.userRole = this.featureService.getUserRole();
   }
 
   registerProduct(product: ProductInfo) {
-    const request = this.featureService.updateUserRole(product.role);
+    let request;
+    if (!product.priceId) {
+      request = this.featureService.updateUserRole(product.role);
+    } else {
+      request = from(this.stripeService.startPayment(this.authService.getUserData().value.customerId, product));
+    }
 
     if (request) {
       this.showToast(`Switching your account to ${product.label}`, 'refresh-sharp').then(() => {

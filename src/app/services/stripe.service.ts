@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserData } from '../models/userdata.model';
 import Stripe from 'stripe';
 import { environment } from '../../environments/environment';
+import { ProductInfo } from '../premium/premium.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,5 +16,28 @@ export class StripeService {
       email,
     });
     return customer.id;
+  }
+
+  public async startPayment(customer: string, product: ProductInfo): Promise<void> {
+    if (!product.priceId) {
+      console.warn(`Starting payment for ${product.label} without price ID`);
+      return;
+    } else {
+      const session = await this.stripe.checkout.sessions.create({
+        billing_address_collection: 'auto',
+        customer: customer,
+        line_items: [
+          {
+            price: product.priceId,
+            quantity: 1,
+          },
+        ],
+        payment_method_types: ['bancontact', 'card', 'paypal'],
+        mode: 'subscription',
+        success_url: `${environment.stripeRedirect}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${environment.stripeRedirect}/cancel.html`,
+      });
+      window.location.href = session.url;
+    }
   }
 }

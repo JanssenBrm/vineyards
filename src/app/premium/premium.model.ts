@@ -4,5 +4,5 @@ export interface ProductInfo {
   role: UserRole;
   label: string;
   features: string[];
-  productId?: string;
+  priceId?: string;
 }
