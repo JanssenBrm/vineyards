@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { PREMIUM_ROLES, UserData, UserRole } from '../models/userdata.model';
-import { Observable } from 'rxjs';
-import { map, skipWhile, take } from 'rxjs/operators';
+import { combineLatest, from, Observable } from 'rxjs';
+import { map, skipWhile, switchMap, take } from 'rxjs/operators';
+import { User } from 'firebase';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +22,21 @@ export class FeaturesService {
   getUserRole(): Observable<UserRole> {
     return this.authService.getUserData().pipe(
       skipWhile((data: UserData) => !data),
-      take(1),
       map((data: UserData) => data.role)
+    );
+  }
+
+  updateUserRole(role: UserRole): Observable<UserData> {
+    return combineLatest(this.authService.getUser(), this.authService.getUserData()).pipe(
+      take(1),
+      switchMap(([user, userData]: [User, UserData]) =>
+        from(
+          this.authService.updateUser(user, {
+            ...userData,
+            role,
+          })
+        ).pipe(switchMap(() => this.authService.readUserData(user)))
+      )
     );
   }
 }

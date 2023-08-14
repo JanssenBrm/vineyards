@@ -1,13 +1,26 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Become a premium member</ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="roles">
-    <div class="role" *ngFor="let role of ROLES">
-     <h1>{{role.label}}</h1>
+    <div class="role" [class.active]="(userRole | async) === role.role" *ngFor="let role of ROLES">
+     <div class="title">
+       <span>{{role.label}}</span>
+     </div>
+        <div class="features">
+            <div class="feature" *ngFor="let feature of role.features">
+                <ion-icon name="checkmark-sharp" slot="start"></ion-icon>
+                <ion-label>{{feature}}</ion-label>
+            </div>
+        </div>
+        <div class="actions">
+                <ion-button expand="full" (click)="registerProduct(role)" *ngIf="(userRole | async) !== role.role">
+                    <span>Become a {{role.label}}</span>
+                </ion-button>
+            <span class="active" *ngIf="(userRole | async) === role.role">
+                You are currently a {{role.label}}
+            </span>
+        </div>
     </div>
   </div>
 

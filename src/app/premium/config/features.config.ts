@@ -1,4 +1,5 @@
 import { UserRole } from '../../models/userdata.model';
+import { ProductInfo } from '../premium.model';
 
 const BASIC_FEATURES = [
   'Create multiple vineyards',
@@ -8,12 +9,13 @@ const BASIC_FEATURES = [
 ];
 
 const PREMIUM_FEATURES = [
+  'Features of the basic user',
   'Get weather statistics and frost warnings',
   'Compare growing seasons',
   'Follow up on your vintages',
 ];
 
-export const ROLES = [
+export const ROLES: ProductInfo[] = [
   {
     role: UserRole.BASIC,
     label: 'Basic User',
@@ -23,5 +25,6 @@ export const ROLES = [
     role: UserRole.PREMIUM,
     label: 'Premium User',
     features: PREMIUM_FEATURES,
+    productId: 'prod_KTUcFkMNO7j7lw',
   },
 ];

@@ -57,7 +57,7 @@ export class AuthService {
       });
   }
 
-  private async updateUser(user: User, data: UserData) {
+  public async updateUser(user: User, data: UserData) {
     await this.fireStore
       .collection<UserData>('users')
       .doc(user.uid)
@@ -69,7 +69,7 @@ export class AuthService {
       });
   }
 
-  private readUserData(user: User): Observable<UserData> {
+  public readUserData(user: User): Observable<UserData> {
     return this.fireStore
       .collection<UserData>('users')
       .doc(user.uid)
