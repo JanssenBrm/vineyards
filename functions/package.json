@@ -24,6 +24,7 @@
     "firebase-tools": "^10.6.0",
     "moment": "^2.29.4",
     "rxjs": "^6.5.5",
+    "stripe": "^12.18.0",
     "turf": "^3.0.14"
   },
   "devDependencies": {

@@ -12,7 +12,7 @@ import {
 import { Vineyard } from './models/vineyard.model';
 import { getMeteo, getMeteoDates } from './services/meteo.service';
 import { MeteoStat } from './models/stats.model';
-import { Warning, WarningType } from '../../src/app/models/warning.model';
+import { Warning, WarningType } from './models/warning.model';
 import * as moment from 'moment';
 import * as sgMail from '@sendgrid/mail';
 
