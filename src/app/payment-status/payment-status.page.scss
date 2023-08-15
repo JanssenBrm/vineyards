@@ -1,0 +1,42 @@
+ion-content {
+  --ion-background-color: var(--ion-primary-gradient);
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ion-color-light);
+  border-radius: var(--ion-border-radius);
+  margin: 0 1rem;
+  padding: 2rem;
+  width: 50%;
+
+  &.active {
+    box-shadow:  var(--ion-box-shadow);
+  }
+
+  .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2rem;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  span {
+    text-align: center;
+  }
+
+  ion-button {
+    margin-top: 2.5rem;
+  }
+}

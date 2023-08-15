@@ -40,6 +40,10 @@ const routes: Routes = [
     path: 'premium',
     loadChildren: () => import('./premium/premium.module').then((m) => m.PremiumPageModule),
   },
+  {
+    path: 'payment-status',
+    loadChildren: () => import('./payment-status/payment-status.module').then((m) => m.PaymentStatusPageModule),
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],

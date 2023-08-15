@@ -34,8 +34,8 @@ export class StripeService {
         ],
         payment_method_types: ['bancontact', 'card', 'paypal'],
         mode: 'subscription',
-        success_url: `${environment.stripeRedirect}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${environment.stripeRedirect}/cancel.html`,
+        success_url: `${environment.stripeRedirect}/payment-status?status=success&role=${product.label}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${environment.stripeRedirect}/payment-status?status=error`,
       });
       window.location.href = session.url;
     }

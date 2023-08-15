@@ -1,0 +1,24 @@
+<ion-header>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <div class="card" >
+      <ng-container *ngIf="(activatedRoute.queryParams | async).status === 'success'">
+        <div class="title">
+          <ion-label>Thank you!</ion-label>
+        </div>
+        <span>You are now a {{(activatedRoute.queryParams | async).role || 'foobar' }}</span>
+      </ng-container>
+      <ng-container *ngIf="(activatedRoute.queryParams | async).status === 'error'">
+        <div class="title">
+          <ion-label>Oops, something went wrong!</ion-label>
+        </div>
+        <span>It looks like we are not able to switch your account. Please try again.</span>
+      </ng-container>
+      <ion-button expand="full" (click)="router.navigate(['/'])">
+        <span>Return back to the application</span>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
