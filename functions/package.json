@@ -3,11 +3,12 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "npm run build && firebase serve --only functions",
+    "serve": "(npm run build && firebase serve -p 5001 --only functions) & npm run webhooks",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "webhooks": "stripe listen --forward-to http://localhost:5001/winery-f4d20/us-central1/stripeWebhooks"
   },
   "engines": {
     "node": "16"

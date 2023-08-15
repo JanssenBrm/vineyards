@@ -15,6 +15,7 @@ import { MeteoStat } from './models/stats.model';
 import { Warning, WarningType } from './models/warning.model';
 import * as moment from 'moment';
 import * as sgMail from '@sendgrid/mail';
+import { verifyEvent } from './services/stripe.service';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
@@ -114,4 +115,19 @@ const execUpdateMeteoStats = async () => {
 
 exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async () => {
   return execUpdateMeteoStats();
+});
+
+exports.stripeWebhooks = functions.https.onRequest(async (req: functions.Request, resp: functions.Response) => {
+  const payload = req.body;
+  let event;
+
+  try {
+    event = verifyEvent(req);
+    if (event.type === 'checkout.session.completed') {
+      console.log('CHECKOUT SUCCESS', payload);
+    }
+    resp.sendStatus(200);
+  } catch (err: any) {
+    resp.status(400).send(`Webhook Error: ${err.message}`);
+  }
 });
