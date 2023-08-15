@@ -114,7 +114,7 @@ export class AuthService {
     setTimeout(() => {
       this.analytics.logEvent('auth_login_email_success', { username: email });
       this.router.navigate(['map']);
-    }, 500);
+    }, this.DELAY);
   }
 
   async register(email: string, password: string) {
@@ -151,6 +151,6 @@ export class AuthService {
     setTimeout(() => {
       this.analytics.logEvent('auth_login_google_success', { username: user.user.email });
       this.router.navigate(['map']);
-    }, 500);
+    }, this.DELAY);
   }
 }
