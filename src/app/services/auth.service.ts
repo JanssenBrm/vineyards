@@ -50,7 +50,6 @@ export class AuthService {
           this.updateUser(user, data).then(() => {
             console.log('User updated');
           });
-          this.router.navigate(['map']);
         } else {
           localStorage.removeItem('user');
         }
@@ -112,7 +111,10 @@ export class AuthService {
 
   async login(email: string, password: string) {
     await this.fbAuth.signInWithEmailAndPassword(email, password);
-    await this.analytics.logEvent('auth_login_email_success', { username: email });
+    setTimeout(() => {
+      this.analytics.logEvent('auth_login_email_success', { username: email });
+      this.router.navigate(['map']);
+    }, 500);
   }
 
   async register(email: string, password: string) {
