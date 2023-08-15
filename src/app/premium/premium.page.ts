@@ -20,6 +20,8 @@ export class PremiumPage {
 
   private toast: HTMLIonToastElement;
 
+  public loading: boolean;
+
   constructor(
     private featureService: FeaturesService,
     private toastController: ToastController,
@@ -38,6 +40,7 @@ export class PremiumPage {
     }
 
     if (request) {
+      this.loading = true;
       this.showToast(`Switching your account to ${product.label}`, 'refresh-sharp').then(() => {
         request.subscribe(
           () => {
@@ -51,6 +54,9 @@ export class PremiumPage {
               5000,
               true
             ).then();
+          },
+          () => {
+            this.loading = false;
           }
         );
       });

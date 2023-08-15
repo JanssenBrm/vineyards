@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="actions">
-                <ion-button expand="full" (click)="registerProduct(role)" *ngIf="(userRole | async) !== role.role">
+                <ion-button [disabled]="loading" expand="full" (click)="registerProduct(role)" *ngIf="(userRole | async) !== role.role">
                     <span>Become a {{role.label}}</span>
                 </ion-button>
             <span class="active" *ngIf="(userRole | async) === role.role">
