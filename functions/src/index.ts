@@ -123,11 +123,25 @@ exports.stripeWebhooks = functions.https.onRequest(async (req: functions.Request
 
   try {
     event = verifyEvent(req);
-    if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    switch (event.type) {
+      case 'checkout.session.completed':
+        // if (session.payment_status === 'paid') {
+        //   (session);
+        // }
+
+        break;
+      case 'checkout.session.async_payment_succeeded':
+        break;
+      case 'checkout.session.async_payment_failed':
+        break;
+    }
+    if (event.type === ) {
       console.log('CHECKOUT SUCCESS', payload);
     }
     resp.sendStatus(200);
-  } catch (err: any) {
-    resp.status(400).send(`Webhook Error: ${err.message}`);
+  } catch (err) {
+    resp.status(400).send(`Webhook Error: ${(err as any).message}`);
   }
 });
