@@ -18,7 +18,7 @@ export class StripeService {
     return customer.id;
   }
 
-  public async startPayment(customer: string, product: ProductInfo): Promise<void> {
+  public async startPayment(user: string, customer: string, product: ProductInfo): Promise<void> {
     if (!product.priceId) {
       console.warn(`Starting payment for ${product.label} without price ID`);
       return;
@@ -36,6 +36,10 @@ export class StripeService {
         mode: 'subscription',
         success_url: `${environment.stripeRedirect}/payment-status?status=success&role=${product.label}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${environment.stripeRedirect}/payment-status?status=error`,
+        metadata: {
+          user,
+          role: product.role,
+        },
       });
       window.location.href = session.url;
     }

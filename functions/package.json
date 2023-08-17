@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "tsc",
+    "build": "rm -rf lib && tsc",
     "serve": "(npm run build && firebase serve -p 5001 --only functions) & npm run webhooks",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
@@ -13,7 +13,7 @@
   "engines": {
     "node": "16"
   },
-  "main": "lib/functions/src/index.js",
+  "main": "lib/index.js",
   "dependencies": {
     "@angular/fire": "^6.0.0",
     "@sendgrid/mail": "^7.6.2",

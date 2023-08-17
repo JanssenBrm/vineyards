@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ROLES } from './config/features.config';
 import { FeaturesService } from '../services/features.service';
 import { from, Observable } from 'rxjs';
-import { UserRole } from '../models/userdata.model';
+import { UserData, UserRole } from '../models/userdata.model';
 import { ProductInfo } from './premium.model';
 import { ToastController } from '@ionic/angular';
 import { StripeService } from '../services/stripe.service';
@@ -36,7 +36,8 @@ export class PremiumPage {
     if (!product.priceId) {
       request = this.featureService.updateUserRole(product.role);
     } else {
-      request = from(this.stripeService.startPayment(this.authService.getUserData().value.customerId, product));
+      const userData: UserData = this.authService.getUserData().value;
+      request = from(this.stripeService.startPayment(userData.id, userData.customerId, product));
     }
 
     if (request) {

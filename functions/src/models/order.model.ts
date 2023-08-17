@@ -6,4 +6,6 @@ export enum OrderStatus {
 export interface Order {
   id: string;
   status: OrderStatus;
+  created: number;
+  invoice: string;
 }

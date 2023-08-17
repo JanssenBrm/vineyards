@@ -15,7 +15,7 @@ import { MeteoStat } from './models/stats.model';
 import { Warning, WarningType } from './models/warning.model';
 import * as moment from 'moment';
 import * as sgMail from '@sendgrid/mail';
-import { verifyEvent } from './services/stripe.service';
+import { stripeWebhooks } from './controllers/stripe.controller';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
@@ -117,31 +117,4 @@ exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async ()
   return execUpdateMeteoStats();
 });
 
-exports.stripeWebhooks = functions.https.onRequest(async (req: functions.Request, resp: functions.Response) => {
-  const payload = req.body;
-  let event;
-
-  try {
-    event = verifyEvent(req);
-    const session = event.data.object;
-
-    switch (event.type) {
-      case 'checkout.session.completed':
-        // if (session.payment_status === 'paid') {
-        //   (session);
-        // }
-
-        break;
-      case 'checkout.session.async_payment_succeeded':
-        break;
-      case 'checkout.session.async_payment_failed':
-        break;
-    }
-    if (event.type === ) {
-      console.log('CHECKOUT SUCCESS', payload);
-    }
-    resp.sendStatus(200);
-  } catch (err) {
-    resp.status(400).send(`Webhook Error: ${(err as any).message}`);
-  }
-});
+exports.stripeWebhooks = stripeWebhooks;
