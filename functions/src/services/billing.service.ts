@@ -9,8 +9,13 @@ export const addOrder = async (uid: string, order: Order): Promise<Order> => {
 
 export const updateOrderStatus = async (uid: string, oid: string, status: OrderStatus): Promise<OrderStatus> => {
   console.log(`Updating order status of ${oid} for user ${uid} to ${status}`);
-  await db.collection('users').doc(uid).collection('orders').doc(oid).update({
-    status,
-  });
+  await db
+    .collection('users')
+    .doc(uid)
+    .collection('orders')
+    .doc(oid)
+    .update({
+      status: +status,
+    });
   return status;
 };

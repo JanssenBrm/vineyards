@@ -4,5 +4,8 @@ import * as admin from 'firebase-admin';
 import WriteResult = admin.firestore.WriteResult;
 
 export const updateUserRole = (uid: string, role: UserRole): Promise<WriteResult> => {
-  return db.collection('users').doc(uid).update({ role });
+  return db
+    .collection('users')
+    .doc(uid)
+    .update({ role: +role });
 };
