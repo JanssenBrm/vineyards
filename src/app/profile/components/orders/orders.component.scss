@@ -1,0 +1,25 @@
+ion-row {
+  margin: .5rem 0;
+}
+
+.description {
+  font-weight: bold;
+}
+
+.status {
+  padding: .5rem;
+  border-radius: var(--ion-border-radius);
+
+  &.pending {
+    background-color: rgb(255, 159, 64);
+    color: white;
+  }
+  &.failed {
+    background-color: rgb(255, 99, 132);
+    color: white;
+  }
+  &.success {
+    background-color: rgb(75, 192, 192);
+    color: white;
+  }
+}

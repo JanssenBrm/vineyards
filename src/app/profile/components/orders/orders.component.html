@@ -1,0 +1,23 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Orders</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row *ngFor="let order of (orders | async) || []">
+        <ion-col size="1">
+          <span class="date">{{order.created * 1000 | date:'mediumDate'}}</span>
+        </ion-col>
+        <ion-col size="9">
+          <span class="description">{{order.description || 'None'}}</span>
+        </ion-col>
+        <ion-col size="1">
+          <span class="amount">{{order.amount / 100 | number: '1.2-2'}} {{order.currency | uppercase}}</span>
+        </ion-col>
+        <ion-col size="1">
+          <span class="status {{getStatusLabel(order.status).toLowerCase()}}">{{getStatusLabel(order.status)}}</span>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
