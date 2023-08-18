@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { verifyEvent } from '../services/stripe.service';
+import { createOrderObject, verifyEvent } from '../services/stripe.service';
 import { Order, OrderStatus } from '../models/order.model';
 import { addOrder, updateOrderStatus } from '../services/billing.service';
 import { updateUserRole } from '../services/user.service';
@@ -14,14 +14,7 @@ export const stripeWebhooks = functions.https.onRequest(async (req: functions.Re
     switch (event.type) {
       case 'checkout.session.completed':
         console.log('Completed checkout session', session);
-        const order: Order = {
-          id: session.id,
-          created: session.created,
-          invoice: session.invoice,
-          status: ['paid', 'no_payment_required'].includes(session.payment_status)
-            ? OrderStatus.SUCCESS
-            : OrderStatus.PAYMENT_PENDING,
-        };
+        const order: Order = await createOrderObject(session);
         await addOrder(session.metadata.user, order);
 
         if (order.status === OrderStatus.SUCCESS) {

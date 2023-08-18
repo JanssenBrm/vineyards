@@ -39,6 +39,7 @@ export class StripeService {
         metadata: {
           user,
           role: product.role,
+          description: product.label,
         },
       });
       window.location.href = session.url;
