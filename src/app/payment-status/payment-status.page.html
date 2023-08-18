@@ -8,7 +8,7 @@
         <div class="title">
           <ion-label>Thank you!</ion-label>
         </div>
-        <span>You are now a {{(activatedRoute.queryParams | async).role || 'foobar' }}</span>
+        <span>We are processing your payment...</span>
       </ng-container>
       <ng-container *ngIf="(activatedRoute.queryParams | async).status === 'error'">
         <div class="title">
