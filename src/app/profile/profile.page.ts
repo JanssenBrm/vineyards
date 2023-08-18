@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MenuTab } from '../vineyeard-view/menu/menu.component';
+import { MenuTab } from './components/menu/menu.component';
 import { MenuController, Platform } from '@ionic/angular';
 import { Location } from '@angular/common';
 
@@ -11,14 +11,14 @@ import { Location } from '@angular/common';
 export class ProfilePage {
   public activePage: MenuTab;
 
-  constructor(private location: Location, private platform: Platform, private menuController: MenuController) {}
+  constructor(private location: Location, private platform: Platform, private menuController: MenuController) {
+    this.activePage = MenuTab.INFO;
+  }
 
   openTab(tab: MenuTab): void {
     if (tab !== this.activePage) {
       this.activePage = tab;
-      if (tab !== 'vintages') {
-        this.location.go(`/profile/${tab}`);
-      }
+      this.location.go(`/profile/${tab}`);
     }
     this.closeMenu();
   }
@@ -32,4 +32,6 @@ export class ProfilePage {
   isMobile(): boolean {
     return ['mobile'].filter((p: string) => this.platform.platforms().includes(p)).length > 0;
   }
+
+  public readonly MenuTab = MenuTab;
 }

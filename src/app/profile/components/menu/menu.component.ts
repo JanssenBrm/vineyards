@@ -1,5 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 export enum MenuTab {
   INFO = 'info',
@@ -11,7 +12,7 @@ export enum MenuTab {
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, AfterViewInit {
   public activePage: string;
 
   MenuTab = MenuTab;
@@ -19,7 +20,11 @@ export class MenuComponent implements OnInit {
   @Output()
   tabUpdated: EventEmitter<MenuTab> = new EventEmitter<MenuTab>();
 
-  constructor(private location: Location) {}
+  constructor(private location: Location, private activeRoute: ActivatedRoute) {}
+
+  ngAfterViewInit() {
+    this.openTab(this.activeRoute.snapshot.params.tab || MenuTab.INFO);
+  }
 
   ngOnInit() {
     const path = this.location.path().split('/');

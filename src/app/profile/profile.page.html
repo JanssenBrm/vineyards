@@ -9,7 +9,7 @@
     </ion-toolbar>
   </ion-header>
   <ion-content class="menu-content">
-    <app-menu></app-menu>
+    <app-menu (tabUpdated)="openTab($event)"></app-menu>
   </ion-content>
 </ion-menu>
 
@@ -19,9 +19,11 @@
       <div class="title">
         <span>Profile</span>
       </div>
-      <app-menu></app-menu>
+      <app-menu (tabUpdated)="openTab($event)"></app-menu>
     </div>
     <div class="content">
+      <app-info *ngIf="activePage === MenuTab.INFO"></app-info>
+      <app-orders *ngIf="activePage === MenuTab.ORDERS"></app-orders>
     </div>
   </div>
 </ion-content>

@@ -1,0 +1,19 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Hi {{(userData | async)?.name}},</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <h2>Account</h2>
+          <ion-row class="vertical-align-content">
+            <span>{{getRoleLabel((userData | async)?.role)}}</span>
+            <ion-button (click)="router.navigate(['/premium'])">
+              <ion-icon name="diamond-outline"></ion-icon></ion-button>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>

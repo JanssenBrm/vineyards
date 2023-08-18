@@ -9,9 +9,11 @@ import { ProfilePageRoutingModule } from './profile-routing.module';
 import { ProfilePage } from './profile.page';
 import { SharedModule } from '../shared/shared.module';
 import { MenuComponent } from './components/menu/menu.component';
+import { InfoComponent } from './components/info/info.component';
+import { OrdersComponent } from './components/orders/orders.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, ProfilePageRoutingModule, SharedModule],
-  declarations: [ProfilePage, MenuComponent],
+  declarations: [ProfilePage, MenuComponent, InfoComponent, OrdersComponent],
 })
 export class ProfilePageModule {}
