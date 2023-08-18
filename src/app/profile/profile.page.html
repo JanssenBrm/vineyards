@@ -1,0 +1,27 @@
+
+<app-header [title]="'Profile'"
+            [menuId]="'menu1'" *appHideOnPlatform="['desktop']"></app-header>
+
+<ion-menu side="start" content-id="main-content" *appHideOnPlatform="['desktop']">
+  <ion-header>
+    <ion-toolbar translucent>
+      <ion-title>Profile</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="menu-content">
+    <app-menu></app-menu>
+  </ion-content>
+</ion-menu>
+
+<ion-content id="main-content">
+  <div class="container">
+    <div class="sidebar" *appHideOnPlatform="['mobile']">
+      <div class="title">
+        <span>Profile</span>
+      </div>
+      <app-menu></app-menu>
+    </div>
+    <div class="content">
+    </div>
+  </div>
+</ion-content>

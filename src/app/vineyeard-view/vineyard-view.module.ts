@@ -79,5 +79,6 @@ theme(Highcharts);
     SeasonsComponent,
   ],
   providers: [PhotoViewer, TitleCasePipe, UploadService, FilterNotesByFilterPipe],
+  exports: [MenuComponent],
 })
 export class VineyardViewPageModule {}

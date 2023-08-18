@@ -1,0 +1,22 @@
+<div class="section">
+  <div class="header">
+    <ion-label>Information</ion-label>
+  </div>
+  <div class="items">
+    <div class="item" (click)="openTab(MenuTab.INFO)"  [class.selected]="activePage === 'info'">
+      <ion-icon name="information-circle" slot="start"></ion-icon>
+      <ion-label>Info</ion-label>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="header">
+    <ion-label>Billing</ion-label>
+  </div>
+  <div class="items">
+    <div class="item" (click)="openTab(MenuTab.ORDERS)"  [class.selected]="activePage === 'orders'">
+      <ion-icon name="wallet" slot="start"></ion-icon>
+      <ion-label>View Orders</ion-label>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 export declare let require: any;
 const { version: appVersion } = require('../../../../../package.json');
@@ -13,7 +14,7 @@ const { version: appVersion } = require('../../../../../package.json');
 export class UsermenuComponent {
   version = appVersion;
 
-  constructor(private popoverController: PopoverController, private authService: AuthService) {}
+  constructor(public router: Router, private popoverController: PopoverController, private authService: AuthService) {}
 
   async logOut() {
     await this.authService.logout();
