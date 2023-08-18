@@ -52,3 +52,8 @@
     </div>
   </div>
 </div>
+<ion-fab *appUserHasRole="NON_PREMIUM_ROLES" vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button (click)="router.navigate(['/premium'])">
+    <ion-icon name="diamond-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

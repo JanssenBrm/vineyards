@@ -32,6 +32,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
+import { NON_PREMIUM_ROLES } from '../models/userdata.model';
 
 @Component({
   selector: 'app-map',
@@ -86,7 +87,7 @@ export class MapPage implements OnInit, AfterViewInit {
   constructor(
     public vineyardService: VineyardService,
     public utilService: UtilService,
-    private router: Router,
+    public router: Router,
     private varietyService: VarietyService,
     private actionService: ActionService,
     private seasonService: SeasonsService,
@@ -438,4 +439,6 @@ export class MapPage implements OnInit, AfterViewInit {
   zoomToLocation(extent: number[]) {
     this.view.fit(buffer(transformExtent(extent, 'EPSG:4326', 'EPSG:3857'), 100));
   }
+
+  public readonly NON_PREMIUM_ROLES = NON_PREMIUM_ROLES;
 }
