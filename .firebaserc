@@ -10,13 +10,6 @@
           "winery-f4d20"
         ]
       }
-    },
-    "winery-dev": {
-      "hosting": {
-        "app": [
-          "winery-dev"
-        ]
-      }
     }
   }
 }
