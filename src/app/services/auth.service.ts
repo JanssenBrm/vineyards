@@ -56,16 +56,15 @@ export class AuthService {
       });
   }
 
-  public async updateUser(user: User, data: UserData) {
-    await this.fireStore
-      .collection<UserData>('users')
-      .doc(user.uid)
-      .set({
-        id: user.uid,
-        name: user.displayName,
-        role: data?.role || UserRole.BASIC,
-        customerId: data.customerId,
-      });
+  public async updateUser(user: User, data: UserData): Promise<UserData> {
+    const newData: UserData = {
+      id: user.uid,
+      name: user.displayName,
+      role: data?.role || UserRole.BASIC,
+      customerId: data?.customerId || '',
+    };
+    await this.fireStore.collection<UserData>('users').doc(user.uid).set(newData);
+    return newData;
   }
 
   public readUserData(user: User): Observable<UserData> {
@@ -76,8 +75,9 @@ export class AuthService {
       .pipe(
         take(1),
         map((data: DocumentSnapshot<UserData>) => data.data()),
+        switchMap((data: UserData) => (!data ? from(this.updateUser(user, null)) : of(data))),
         switchMap((data: UserData) =>
-          data.customerId
+          data.customerId === ''
             ? of(data)
             : from(
                 this.stripeService.createCustomer(data, user.email).then((id) => ({
