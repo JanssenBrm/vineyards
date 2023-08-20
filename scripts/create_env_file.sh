@@ -1,4 +1,4 @@
-file='.env'
+file='.env.prod'
 echo "FB_API_KEY=$FB_API_KEY" > $file
 echo "FB_AUTH_DOMAIN=$FB_AUTH_DOMAIN" >> $file
 echo "FB_DATABASE_URL=$FB_DATABASE_URL" >> $file
