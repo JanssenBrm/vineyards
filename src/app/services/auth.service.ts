@@ -63,7 +63,7 @@ export class AuthService {
       .set({
         id: user.uid,
         name: user.displayName,
-        role: data.role || UserRole.BASIC,
+        role: data?.role || UserRole.BASIC,
         customerId: data.customerId,
       });
   }
