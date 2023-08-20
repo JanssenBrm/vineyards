@@ -1,5 +1,6 @@
 import { UserRole } from '../../models/userdata.model';
 import { ProductInfo } from '../premium.model';
+import { environment } from '../../../environments/environment';
 
 const BASIC_FEATURES = [
   'Create multiple vineyards',
@@ -25,6 +26,6 @@ export const ROLES: ProductInfo[] = [
     role: UserRole.PREMIUM,
     label: 'Premium User',
     features: PREMIUM_FEATURES,
-    priceId: 'price_1JoXdZC2RvQQCR3w9HXRULeP',
+    priceId: environment.stripePremiumPrice,
   },
 ];

@@ -35,6 +35,7 @@ export const stripeWebhooks = functions.https.onRequest(async (req: functions.Re
     resp.sendStatus(200);
   } catch (err) {
     console.error('Could not process Stripe webhook', err);
-    resp.status(400).send(`Webhook Error: ${(err as any).message}`);
+    // @ts-ignore
+    resp.status(400).send(`Webhook Error: ${err.message}`);
   }
 });

@@ -37,6 +37,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
           STRIPE_REDIRECT: ${{ secrets.STRIPE_REDIRECT }}
+          STRIPE_PREMIUM_PRICE_ID: ${{ secrets.STRIPE_PREMIUM_PRICE_ID }}
       - name: Build
         run: npm run build
       - name: Deploy firebase
