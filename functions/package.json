@@ -6,8 +6,8 @@
     "serve": "(npm run build && firebase serve -p 5001 --only functions) & npm run webhooks",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy:dev": "firebase use dev && firebase deploy --only functions",
-    "deploy": "firebase use prod && firebase deploy --only functions && firebase use dev",
+    "deploy:dev": "firebase use winery-dev && firebase deploy --only functions",
+    "deploy": "firebase use winery-f4d20 && firebase deploy --only functions && firebase use winery-dev",
     "logs": "firebase functions:log",
     "webhooks": "stripe listen --forward-to http://localhost:5001/winery-f4d20/us-central1/stripeWebhooks"
   },
