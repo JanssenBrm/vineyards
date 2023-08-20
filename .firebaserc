@@ -1,7 +1,7 @@
 {
   "projects": {
-    "prod": "winery-f4d20",
-    "default": "winery-dev"
+    "default": "winery-f4d20",
+    "dev": "winery-dev"
   },
   "targets": {
     "winery-f4d20": {
@@ -10,7 +10,7 @@
           "winery-f4d20"
         ]
       }
-    }
+    },
     "winery-dev": {
       "hosting": {
         "app": [
