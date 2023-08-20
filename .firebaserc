@@ -1,7 +1,6 @@
 {
   "projects": {
-    "default": "winery-f4d20",
-    "dev": "winery-dev"
+    "default": "winery-f4d20"
   },
   "targets": {
     "winery-f4d20": {
