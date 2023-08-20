@@ -21,7 +21,7 @@
         {{activeVineyard?.address}}
       </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="(varieties | async)?.length > 0">
       <div class="icon">
         <ion-icon name="leaf-outline"></ion-icon>
       </div>
@@ -29,7 +29,7 @@
         {{getVarieties((varieties | async))}}
       </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="(varieties | async)?.length > 0">
         <div class="icon">
           <ion-icon name="pricetags-outline"></ion-icon>
         </div>
@@ -37,7 +37,7 @@
           {{getVarietyCount((varieties | async))}} plants
         </div>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="(actions | async)?.length > 0">
         <div class="icon">
           <ion-icon name="time-outline"></ion-icon>
         </div>
