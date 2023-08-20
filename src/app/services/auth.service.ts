@@ -77,7 +77,7 @@ export class AuthService {
         map((data: DocumentSnapshot<UserData>) => data.data()),
         switchMap((data: UserData) => (!data ? from(this.updateUser(user, null)) : of(data))),
         switchMap((data: UserData) =>
-          data.customerId === ''
+          data.customerId !== ''
             ? of(data)
             : from(
                 this.stripeService.createCustomer(data, user.email).then((id) => ({
