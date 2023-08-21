@@ -32,7 +32,7 @@ export class StripeService {
             quantity: 1,
           },
         ],
-        payment_method_types: ['card', 'paypal'],
+        payment_method_types: ['card'],
         mode: 'subscription',
         success_url: `${environment.stripeRedirect}/payment-status?status=success&role=${product.label}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${environment.stripeRedirect}/payment-status?status=error`,
