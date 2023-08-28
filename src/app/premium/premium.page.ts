@@ -7,6 +7,7 @@ import { ProductInfo } from './premium.model';
 import { ToastController } from '@ionic/angular';
 import { StripeService } from '../services/stripe.service';
 import { AuthService } from '../services/auth.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-premium',
@@ -33,10 +34,12 @@ export class PremiumPage {
 
   registerProduct(product: ProductInfo) {
     let request;
+    const userData: UserData = this.authService.getUserData().value;
     if (!product.priceId) {
-      request = this.featureService.updateUserRole(product.role);
+      request = from(this.stripeService.removeSubscriptions(userData.customerId)).pipe(
+        switchMap(() => this.featureService.updateUserRole(product.role))
+      );
     } else {
-      const userData: UserData = this.authService.getUserData().value;
       request = from(this.stripeService.startPayment(userData.id, userData.customerId, product));
     }
 

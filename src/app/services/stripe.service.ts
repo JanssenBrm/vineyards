@@ -3,6 +3,7 @@ import { UserData } from '../models/userdata.model';
 import Stripe from 'stripe';
 import { environment } from '../../environments/environment';
 import { ProductInfo } from '../premium/premium.model';
+import { ROLES } from '../premium/config/features.config';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,6 @@ export class StripeService {
             quantity: 1,
           },
         ],
-        payment_method_types: ['card'],
         mode: 'subscription',
         success_url: `${environment.stripeRedirect}/payment-status?status=success&role=${product.label}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${environment.stripeRedirect}/payment-status?status=error`,
@@ -43,6 +43,17 @@ export class StripeService {
         },
       });
       window.location.href = session.url;
+    }
+  }
+
+  async removeSubscriptions(customerId: string): Promise<void> {
+    const prices = ROLES.map((r) => r.priceId).filter((p) => !!p);
+    const customer: any = await this.stripe.customers.retrieve(customerId, {
+      expand: ['subscriptions.data'],
+    });
+    const subscriptions = customer.subscriptions.data.filter((s) => prices.includes(s.plan.id));
+    for (const s of subscriptions) {
+      await this.stripe.subscriptions.cancel(s.id);
     }
   }
 }
