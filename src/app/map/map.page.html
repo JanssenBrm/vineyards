@@ -52,8 +52,11 @@
     </div>
   </div>
 </div>
-<ion-fab *appUserHasRole="NON_PREMIUM_ROLES" vertical="bottom" horizontal="start" slot="fixed">
-  <ion-fab-button (click)="router.navigate(['/premium'])">
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button href="https://github.com/JanssenBrm/vineyards/issues/new?template=bug_report.md'">
+    <ion-icon name="bug-outline"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button *appUserHasRole="NON_PREMIUM_ROLES"  (click)="router.navigate(['/premium'])">
     <ion-icon name="diamond-outline"></ion-icon>
   </ion-fab-button>
 </ion-fab>
