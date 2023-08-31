@@ -120,9 +120,22 @@ export class VineyardService {
       switchMap((shared: SharedVineyardDoc[]) =>
         forkJoin(
           shared.map((s: SharedVineyardDoc) =>
-            this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get()
+            this.fireStore
+              .collection<VineyardDoc>(`users/${s.user}/vineyards`)
+              .doc(s.vineyard)
+              .get()
+              .pipe(
+                map((doc) => ({
+                  ...doc.data(),
+                  id: doc.id,
+                })),
+                catchError((error: any) => {
+                  console.error(`Cannot open vineyard ${s.vineyard}`, error);
+                  return of(undefined);
+                })
+              )
           )
-        )
+        ).pipe(map((docs) => docs.filter((d) => !!d)))
       )
     );
   }
