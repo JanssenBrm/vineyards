@@ -1,13 +1,11 @@
 import { Polygon } from 'ol/geom';
 import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
-import { MeteoStatEntry, Vineyard } from '../models/vineyard.model';
-import { Variety } from '../models/variety.model';
+import { Vineyard } from '../models/vineyard.model';
 import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Action, ActionType } from '../models/action.model';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
@@ -15,7 +13,6 @@ import {
   DocumentReference,
 } from '@angular/fire/firestore';
 import { GeoJSON } from 'ol/format';
-import * as moment from 'moment';
 import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { getCenter } from 'ol/extent';
@@ -34,8 +31,6 @@ export class VineyardService {
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
   private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
-
-  private _API: string = 'https://us-central1-winery-f4d20.cloudfunctions.net';
 
   constructor(
     private http: HttpClient,
@@ -60,10 +55,6 @@ export class VineyardService {
 
   getVineyardsListener(): Observable<Vineyard[]> {
     return this._vineyards$;
-  }
-
-  setActiveVineyard(id: string): void {
-    this._activeVineyard$.next(id ? this._vineyards$.getValue().find((v: Vineyard) => v.id === id) : null);
   }
 
   getActiveVineyard(): Observable<Vineyard> {
@@ -144,40 +135,6 @@ export class VineyardService {
     return this._vineyards$.getValue().find((v: Vineyard) => v.id === id);
   }
 
-  updateTempStats(v: Vineyard): Observable<boolean> {
-    return this.http.get(`${this._API}/updateTemp?vineyardId=${v.id}`).pipe(
-      switchMap(() => of(true)),
-      catchError(() => of(false))
-    );
-  }
-
-  getVarieties(info: Vineyard, year: number = new Date().getFullYear()): Variety[] {
-    const plantingActions = this.getActions(info, [ActionType.Planting], year);
-    return plantingActions.length > 0
-      ? []
-          .concat(...plantingActions.map((a: Action) => a.variety))
-          .map((id: string) => info.varieties.find((v: Variety) => v.id === id))
-      : [];
-  }
-
-  getFirstPlanting(info: Vineyard): Action {
-    const plantingActions = this.getActions(info, [ActionType.Planting]);
-    return plantingActions.length > 0 ? plantingActions[0] : undefined;
-  }
-
-  getLastPlanting(info: Vineyard): Action {
-    const plantingActions = this.getActions(info, [ActionType.Planting]);
-    return plantingActions.length > 0 ? plantingActions[plantingActions.length - 1] : undefined;
-  }
-
-  getActions(info: Vineyard, types: ActionType[] = [], maxYear: number = new Date().getFullYear()): Action[] {
-    let actions = info ? info.actions : [];
-    if (types.length > 0) {
-      actions = actions.filter((a: Action) => types.indexOf(a.type) >= 0);
-    }
-    return actions.length > 0 ? actions.filter((a: Action) => a.date.year() <= maxYear) : actions;
-  }
-
   updateLocation(id: string, geometry: Polygon): void {
     const polygons = this._vineyards$.getValue().map((v: Vineyard) =>
       v.id === id
@@ -206,14 +163,6 @@ export class VineyardService {
       .forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
   }
 
-  updateVineyard(vineyard: Vineyard): void {
-    const vineyards: Vineyard[] = this._vineyards$
-      .getValue()
-      .map((v: Vineyard) => (v.id === vineyard.id ? vineyard : v));
-    this._vineyards$.next(vineyards);
-    this.saveVineyards([vineyard.id]);
-  }
-
   async addVineyard(name: string, address: string, location: Polygon): Promise<DocumentReference> {
     const geoJSON = new GeoJSON({
       dataProjection: 'EPSG:4326',
@@ -235,18 +184,6 @@ export class VineyardService {
     await this._vineyardCollection.doc(id).delete();
     const vineyards: Vineyard[] = this._vineyards$.getValue().filter((v: Vineyard) => v.id !== id);
     this._vineyards$.next(vineyards);
-  }
-
-  getMeteoYears(info: Vineyard): number[] {
-    return info && info.meteo && info.meteo.data
-      ? [...new Set(info.meteo.data.map((e: MeteoStatEntry) => moment(e.date).year()))]
-      : [];
-  }
-
-  getMeteoByYears(info: Vineyard, years: number[]): MeteoStatEntry[] {
-    return info && info.meteo && info.meteo.data
-      ? info.meteo.data.filter((e: MeteoStatEntry) => years.indexOf(moment(e.date).year()) >= 0)
-      : [];
   }
 
   getLocation(vineyard: Vineyard): [number, number] {
