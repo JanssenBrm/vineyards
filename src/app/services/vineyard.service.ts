@@ -1,11 +1,11 @@
 import { Polygon } from 'ol/geom';
-import { VineyardDoc } from '../models/vineyarddoc.model';
+import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
 import { MeteoStatEntry, Vineyard } from '../models/vineyard.model';
 import { Variety } from '../models/variety.model';
 import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { Action, ActionType } from '../models/action.model';
 import {
@@ -33,6 +33,8 @@ export class VineyardService {
 
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
+  private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
+
   private _API: string = 'https://us-central1-winery-f4d20.cloudfunctions.net';
 
   constructor(
@@ -48,6 +50,7 @@ export class VineyardService {
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+        this._sharedVineyardCollection = fireStore.collection<SharedVineyardDoc>(`users/${user.uid}/sharedVineyards`);
         this.getVineyards();
       } else {
         this._vineyards$.next([]);
@@ -76,15 +79,9 @@ export class VineyardService {
   }
 
   getVineyards(): void {
-    this._vineyardCollection
-      .snapshotChanges()
+    combineLatest(this.getUserVineyards(), this.getSharedVineyards())
       .pipe(
-        map((data: DocumentChangeAction<VineyardDoc>[]) =>
-          data.map((d: DocumentChangeAction<VineyardDoc>) => ({
-            ...d.payload.doc.data(),
-            id: (d.payload.doc as any).id,
-          }))
-        ),
+        map(([owned, shared]) => [...owned, ...shared]),
         map((docs: VineyardDoc[]) =>
           docs.map((d: VineyardDoc) => ({
             ...d,
@@ -99,8 +96,35 @@ export class VineyardService {
         )
       )
       .subscribe((vineyards: Vineyard[]) => {
+        console.log('Vineyards', vineyards);
         this._vineyards$.next(vineyards);
       });
+  }
+
+  private getUserVineyards(): Observable<Vineyard[]> {
+    return this._vineyardCollection.snapshotChanges().pipe(
+      map((data: DocumentChangeAction<VineyardDoc>[]) =>
+        data.map((d: DocumentChangeAction<VineyardDoc>) => ({
+          ...d.payload.doc.data(),
+          id: (d.payload.doc as any).id,
+        }))
+      )
+    );
+  }
+
+  private getSharedVineyards(): Observable<Vineyard[]> {
+    return this._sharedVineyardCollection.snapshotChanges().pipe(
+      map((data: DocumentChangeAction<SharedVineyardDoc>[]) =>
+        data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
+      ),
+      switchMap((shared: SharedVineyardDoc[]) =>
+        forkJoin(
+          shared.map((s: SharedVineyardDoc) =>
+            this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get()
+          )
+        )
+      )
+    );
   }
 
   getInfo(id: string): Vineyard {
