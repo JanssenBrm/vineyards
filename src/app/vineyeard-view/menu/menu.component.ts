@@ -121,5 +121,5 @@ export class MenuComponent implements OnInit {
 
   public readonly NON_PREMIUM_ROLES = NON_PREMIUM_ROLES;
 
-  protected readonly PREMIUM_ROLES = PREMIUM_ROLES;
+  public readonly PREMIUM_ROLES = PREMIUM_ROLES;
 }

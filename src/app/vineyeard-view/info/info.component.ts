@@ -116,5 +116,5 @@ export class InfoComponent implements OnChanges, AfterViewInit {
     return this.varietyService.getPlantCount(this.varieties);
   }
 
-  protected readonly PREMIUM_ROLES = PREMIUM_ROLES;
+  public readonly PREMIUM_ROLES = PREMIUM_ROLES;
 }
