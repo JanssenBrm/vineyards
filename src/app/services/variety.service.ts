@@ -1,62 +1,36 @@
 import { Injectable } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-  DocumentChangeAction,
-  DocumentReference,
-} from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction, DocumentReference } from '@angular/fire/firestore';
 import { Vineyard } from '../models/vineyard.model';
-import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Action, ActionType, PlantingAction } from '../models/action.model';
 import { Variety } from '../models/variety.model';
-import { User } from 'firebase';
-import { AuthService } from './auth.service';
 import { Vintage } from '../models/vintage.model';
 import { ActionService } from './action.service';
-
-export const VARIETY_COLLECTION = 'varieties';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VarietyService {
-  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
-
   private _varieties: BehaviorSubject<Variety[]>;
 
-  constructor(
-    private fireStore: AngularFirestore,
-    private actionService: ActionService,
-    private authService: AuthService
-  ) {
+  constructor(private fireStore: AngularFirestore, private actionService: ActionService) {
     this._varieties = new BehaviorSubject<Variety[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
-      if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
-      }
-    });
   }
 
   public getVarietyListener(): BehaviorSubject<Variety[]> {
     return this._varieties;
   }
 
+  private getVineyardVarietiesCollectionPath(vineyard: Vineyard): string {
+    return `users/${vineyard.owner}/vineyards/${vineyard.id}/varieties`;
+  }
+
   public addVariety(vineyard: Vineyard, variety: Variety): Promise<string> {
-    return this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<Variety>(VARIETY_COLLECTION)
+    return this.fireStore
+      .collection<Variety>(this.getVineyardVarietiesCollectionPath(vineyard))
       .add(variety)
       .then((doc: DocumentReference) => doc.id);
-  }
-
-  public updateVariety(vineyard: Vineyard, variety: Variety): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).doc(variety.id).set(variety);
-  }
-
-  public removeVaerity(vineyard: Vineyard, variety: Variety): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Variety>(VARIETY_COLLECTION).doc(variety.id).delete();
   }
 
   public getVarietyByName(name: string): Variety {
@@ -68,9 +42,8 @@ export class VarietyService {
   }
 
   public getVarieties(vineyard: Vineyard): void {
-    this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<Variety>(VARIETY_COLLECTION)
+    this.fireStore
+      .collection<Variety>(this.getVineyardVarietiesCollectionPath(vineyard))
       .snapshotChanges()
       .pipe(
         map((data: DocumentChangeAction<Variety>[]) =>
