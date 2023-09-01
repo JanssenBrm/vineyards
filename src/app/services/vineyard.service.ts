@@ -1,6 +1,6 @@
 import { Polygon } from 'ol/geom';
-import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
-import { Vineyard } from '../models/vineyard.model';
+import { SharedVineyardDoc, VineyardDoc, VineyardPermissionsDoc } from '../models/vineyarddoc.model';
+import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -32,6 +32,8 @@ export class VineyardService {
 
   private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
 
+  private _userId: string;
+
   constructor(
     private http: HttpClient,
     private utilService: UtilService,
@@ -44,10 +46,14 @@ export class VineyardService {
 
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
-        this._sharedVineyardCollection = fireStore.collection<SharedVineyardDoc>(`users/${user.uid}/sharedVineyards`);
+        this._userId = user.uid;
+        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${this._userId}/vineyards`);
+        this._sharedVineyardCollection = fireStore.collection<SharedVineyardDoc>(
+          `users/${this._userId}/sharedVineyards`
+        );
         this.getVineyards();
       } else {
+        this._userId = undefined;
         this._vineyards$.next([]);
       }
     });
@@ -99,38 +105,56 @@ export class VineyardService {
           ...d.payload.doc.data(),
           id: (d.payload.doc as any).id,
           shared: false,
+          permissions: VineyardPermissions.OWNER,
         }))
       )
     );
   }
 
   private getSharedVineyards(): Observable<Vineyard[]> {
-    return this._sharedVineyardCollection.snapshotChanges().pipe(
-      map((data: DocumentChangeAction<SharedVineyardDoc>[]) =>
-        data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
-      ),
-      switchMap((shared: SharedVineyardDoc[]) =>
-        forkJoin(
-          shared.map((s: SharedVineyardDoc) =>
-            this.fireStore
-              .collection<VineyardDoc>(`users/${s.user}/vineyards`)
-              .doc(s.vineyard)
-              .get()
-              .pipe(
-                map((doc) => ({
-                  ...doc.data(),
-                  id: doc.id,
-                  shared: true,
-                })),
-                catchError((error: any) => {
-                  console.error(`Cannot open vineyard ${s.vineyard}`, error);
-                  return of(undefined);
-                })
+    return this._userId
+      ? this._sharedVineyardCollection.snapshotChanges().pipe(
+          map((data: DocumentChangeAction<SharedVineyardDoc>[]) =>
+            data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
+          ),
+          switchMap((shared: SharedVineyardDoc[]) =>
+            forkJoin(
+              shared.map((s: SharedVineyardDoc) =>
+                forkJoin(
+                  // Fetch the shared vineyard
+                  this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get(),
+                  // Fetch the permissions on the shared vineyard
+                  this.fireStore
+                    .collection<VineyardDoc>(`users/${s.user}/vineyards/${s.vineyard}/permissions/`)
+                    .doc(this._userId)
+                    .get()
+                    .pipe(
+                      map((doc) => (doc.data() as VineyardPermissionsDoc).permissions),
+                      catchError((error) => {
+                        console.error(
+                          `Could not fetch permissions for user ${this._userId} on vineyard ${s.vineyard} of user ${s.user}`,
+                          error
+                        );
+                        return of(VineyardPermissions.NONE);
+                      })
+                    )
+                ).pipe(
+                  map(([doc, permissions]) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                    shared: true,
+                    permissions: permissions,
+                  })),
+                  catchError((error: any) => {
+                    console.error(`Cannot open vineyard ${s.vineyard}`, error);
+                    return of(undefined);
+                  })
+                )
               )
+            ).pipe(map((docs) => docs.filter((d) => !!d && d.permissions !== VineyardPermissions.NONE)))
           )
-        ).pipe(map((docs) => docs.filter((d) => !!d)))
-      )
-    );
+        )
+      : of([]);
   }
 
   getInfo(id: string): Vineyard {
