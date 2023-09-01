@@ -24,7 +24,7 @@
   <div id="popup-content">
     <div class="title">
       {{activeVineyard?.name}}
-      <div *ngIf="!activeVineyard?.owner" class="chip" [style.background-color]="getFeatureColors(false)[1]">Shared</div>
+      <div *ngIf="activeVineyard?.shared" class="chip" [style.background-color]="getFeatureColors(true)[1]">Shared</div>
     </div>
     <div class="row">
       <div class="icon">

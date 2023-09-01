@@ -370,7 +370,7 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   private _getFeatureStyle(feature: Feature): Style {
-    const [fill, stroke] = this.getFeatureColors(feature.get('owner'));
+    const [fill, stroke] = this.getFeatureColors(feature.get('shared'));
     return new Style({
       fill: new Fill({
         color: fill,
@@ -382,8 +382,8 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
 
-  public getFeatureColors(owner: boolean): [string, string] {
-    return owner ? ['rgba(95, 118, 232, 0.5)', 'rgb(86,107,210)'] : ['rgba(193,95,232,0.5)', 'rgb(175,86,210)'];
+  public getFeatureColors(shared: boolean): [string, string] {
+    return shared ? ['rgba(193,95,232,0.5)', 'rgb(175,86,210)'] : ['rgba(95, 118, 232, 0.5)', 'rgb(86,107,210)'];
   }
 
   private _getFeatureLayer(): VectorLayer {
@@ -418,7 +418,7 @@ export class MapPage implements OnInit, AfterViewInit {
                   geometry: v.location,
                   name: v.id,
                   title: v.name,
-                  owner: v.owner,
+                  shared: v.shared,
                 })
             )
           );

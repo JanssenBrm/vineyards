@@ -31,5 +31,5 @@ export interface VineyardBase {
 }
 
 export interface Vineyard extends VineyardBase {
-  owner: boolean;
+  shared: boolean;
 }
