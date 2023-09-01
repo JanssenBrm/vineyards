@@ -368,10 +368,6 @@ export class MapPage implements OnInit, AfterViewInit {
     }
   }
 
-  private _getSnapInteraction(): Snap {
-    return new Snap({ source: this._featureLayer.getSource() });
-  }
-
   private _getFeatureLayer(): VectorLayer {
     return new VectorLayer({
       zIndex: 99,
@@ -431,10 +427,6 @@ export class MapPage implements OnInit, AfterViewInit {
       .subscribe((seasons: number[]) => {
         this.activeSeasons = seasons;
       });
-  }
-
-  logout() {
-    this.authService.logout();
   }
 
   zoomToLocation(extent: number[]) {
