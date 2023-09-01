@@ -33,6 +33,7 @@ import { ModalController } from '@ionic/angular';
 import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
 import { NON_PREMIUM_ROLES } from '../models/userdata.model';
+import { Fill, Stroke, Style } from 'ol/style';
 
 @Component({
   selector: 'app-map',
@@ -368,12 +369,30 @@ export class MapPage implements OnInit, AfterViewInit {
     }
   }
 
+  private _getFeatureStyle(feature: Feature): Style {
+    const [fill, stroke] = this.getFeatureColors(feature.get('owner'));
+    return new Style({
+      fill: new Fill({
+        color: fill,
+      }),
+      stroke: new Stroke({
+        color: stroke,
+        width: 2,
+      }),
+    });
+  }
+
+  public getFeatureColors(owner: boolean): [string, string] {
+    return owner ? ['rgba(95, 118, 232, 0.5)', 'rgb(86,107,210)'] : ['rgba(193,95,232,0.5)', 'rgb(175,86,210)'];
+  }
+
   private _getFeatureLayer(): VectorLayer {
     return new VectorLayer({
       zIndex: 99,
       source: new VectorSource({
         features: [],
       }),
+      style: (feature) => this._getFeatureStyle(feature),
     });
   }
 

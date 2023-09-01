@@ -5,6 +5,17 @@
   <app-search [class.mobile]="utilService.isMobile()" (setLocation)="zoomToLocation($event)"></app-search>
 </ion-content>
 
+<div id="legend">
+  <div class="legend-item">
+    <div class="color" [style.background-color]="getFeatureColors(true)[0]" [style.border-color]="getFeatureColors(true)[1]"></div>
+    <span>Your vineyards</span>
+  </div>
+  <div class="legend-item">
+    <div class="color" [style.background-color]="getFeatureColors(false)[0]" [style.border-color]="getFeatureColors(false)[1]"></div>
+    <span>Shared vineyards</span>
+  </div>
+</div>
+
 <div id="clickPopup" class="ol-popup">
   <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closeClickPopup()"></a>
   <div [innerHTML]="clickText"></div>

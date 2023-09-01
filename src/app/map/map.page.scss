@@ -80,3 +80,32 @@
 ion-fab-button {
   margin-top: .5rem;
 }
+
+
+#legend {
+  position: absolute;
+  right: calc(1rem + 2px);
+  top: 10rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: var(--ion-border-radius);
+  font-size: smaller;
+  display: flex;
+  flex-direction: column;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0.25rem 0;
+
+    .color {
+      height: 24px;
+      width: 24px;
+      border-width: 2px;
+      border-style: solid;
+      margin-right: 1rem;
+
+    }
+
+  }
+}
