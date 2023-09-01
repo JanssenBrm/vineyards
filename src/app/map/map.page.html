@@ -21,9 +21,11 @@
   <div [innerHTML]="clickText"></div>
 </div>
 <div id="popup" class="ol-popup">
-  <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closePopup()"></a>
   <div id="popup-content">
-    <div class="title">{{activeVineyard?.name}}</div>
+    <div class="title">
+      {{activeVineyard?.name}}
+      <div *ngIf="!activeVineyard?.owner" class="chip" [style.background-color]="getFeatureColors(false)[1]">Shared</div>
+    </div>
     <div class="row">
       <div class="icon">
         <ion-icon name="home-outline"></ion-icon>
