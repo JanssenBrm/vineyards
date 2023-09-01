@@ -93,7 +93,6 @@ export class VineyardService {
         )
       )
       .subscribe((vineyards: Vineyard[]) => {
-        console.log('Vineyards', vineyards);
         this._vineyards$.next(vineyards);
       });
   }
