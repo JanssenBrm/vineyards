@@ -16,6 +16,7 @@ import { VarietyService } from '../../services/variety.service';
 import { ActionService } from '../../services/action.service';
 import * as moment from 'moment';
 import { FeaturesService } from '../../services/features.service';
+import { PREMIUM_ROLES } from '../../models/userdata.model';
 
 @Component({
   selector: 'app-info',
@@ -114,4 +115,6 @@ export class InfoComponent implements OnChanges, AfterViewInit {
   getTotalCount(): number {
     return this.varietyService.getPlantCount(this.varieties);
   }
+
+  protected readonly PREMIUM_ROLES = PREMIUM_ROLES;
 }

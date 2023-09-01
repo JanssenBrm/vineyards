@@ -13,7 +13,6 @@ import { UsermenuComponent } from './components/usermenu/usermenu.component';
 import { LayersComponent } from './components/toolbar/layers/layers.component';
 import { ConfirmComponent } from './components/confirm/confirm.component';
 import { UserbuttonComponent } from './components/userbutton/userbutton.component';
-import { PremiumFeatureDirective } from './directives/premium-feature.directive';
 import { MomentPipe } from '../pipes/moment.pipe';
 import { HasRoleDirective } from './directives/has-role.directive';
 
@@ -29,7 +28,6 @@ import { HasRoleDirective } from './directives/has-role.directive';
     LayersComponent,
     ConfirmComponent,
     UserbuttonComponent,
-    PremiumFeatureDirective,
     MomentPipe,
     HasRoleDirective,
   ],
@@ -45,7 +43,6 @@ import { HasRoleDirective } from './directives/has-role.directive';
     LayersComponent,
     ConfirmComponent,
     UserbuttonComponent,
-    PremiumFeatureDirective,
     MomentPipe,
     HasRoleDirective,
   ],

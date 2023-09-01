@@ -7,7 +7,7 @@ import { Vintage } from '../../models/vintage.model';
 import { AddVintageComponent } from '../add-vintage/add-vintage.component';
 import { VintageService } from '../../services/vintage.service';
 import { VarietyService } from '../../services/variety.service';
-import { NON_PREMIUM_ROLES } from '../../models/userdata.model';
+import { NON_PREMIUM_ROLES, PREMIUM_ROLES } from '../../models/userdata.model';
 
 export enum MenuTab {
   INFO = 'info',
@@ -120,4 +120,6 @@ export class MenuComponent implements OnInit {
   }
 
   public readonly NON_PREMIUM_ROLES = NON_PREMIUM_ROLES;
+
+  protected readonly PREMIUM_ROLES = PREMIUM_ROLES;
 }
