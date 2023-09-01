@@ -65,7 +65,7 @@
     </div>
   </div>
 </div>
-<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+<ion-fab [vertical]="utilService.isMobile() ? 'center' : 'bottom'" horizontal="start" slot="fixed">
   <ion-fab-button href="https://github.com/JanssenBrm/vineyards/issues/new?template=bug_report.md'">
     <ion-icon name="bug-outline"></ion-icon>
   </ion-fab-button>
