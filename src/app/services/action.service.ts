@@ -1,32 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { Vineyard } from '../models/vineyard.model';
-import { VineyardDoc } from '../models/vineyarddoc.model';
-import { map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
 import { Action, ACTION_COLORS, ActionType, BaseAction, BaseActionDoc } from '../models/action.model';
-import { User } from 'firebase';
-import { AuthService } from './auth.service';
 import { UtilService } from './util.service';
 import * as moment from 'moment';
-
-export const ACTION_COLLECTION = 'actions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ActionService {
-  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
-
   private _actions: BehaviorSubject<Action[]>;
 
-  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
+  constructor(private fireStore: AngularFirestore) {
     this._actions = new BehaviorSubject<Action[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
-      if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
-      }
-    });
   }
 
   public getActionListener(): BehaviorSubject<Action[]> {
@@ -34,9 +22,8 @@ export class ActionService {
   }
 
   public async addAction(vineyard: Vineyard, action: BaseAction): Promise<Action> {
-    const doc = await this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<BaseActionDoc>(ACTION_COLLECTION)
+    const doc = await this.fireStore
+      .collection<BaseActionDoc>(this.getVineyardActionsCollectionPath(vineyard))
       .add(this.convertToDoc(action));
     return {
       ...action,
@@ -46,15 +33,18 @@ export class ActionService {
   }
 
   public async updateAction(vineyard: Vineyard, action: BaseAction): Promise<Action> {
-    await this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<BaseActionDoc>(ACTION_COLLECTION)
+    await this.fireStore
+      .collection<BaseActionDoc>(this.getVineyardActionsCollectionPath(vineyard))
       .doc(action.id)
       .set(this.convertToDoc(action));
     return {
       ...action,
       html: UtilService.parseMarkdown(action.description),
     };
+  }
+
+  private getVineyardActionsCollectionPath(vineyard: Vineyard): string {
+    return `users/${vineyard.owner}/vineyards/${vineyard.id}/actions`;
   }
 
   private convertToDoc(action: BaseAction): BaseActionDoc {
@@ -65,17 +55,15 @@ export class ActionService {
   }
 
   public async removeAction(vineyard: Vineyard, action: BaseAction): Promise<void> {
-    await this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<BaseActionDoc>(ACTION_COLLECTION)
+    await this.fireStore
+      .collection<BaseActionDoc>(this.getVineyardActionsCollectionPath(vineyard))
       .doc(action.id)
       .delete();
   }
 
   public getActions(vineyard: Vineyard): void {
-    this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<BaseActionDoc>(ACTION_COLLECTION)
+    this.fireStore
+      .collection<BaseActionDoc>(this.getVineyardActionsCollectionPath(vineyard))
       .snapshotChanges()
       .pipe(
         map((data: DocumentChangeAction<BaseActionDoc>[]) =>
@@ -98,7 +86,11 @@ export class ActionService {
             ...a,
             html: UtilService.parseMarkdown(a.description),
           }))
-        )
+        ),
+        catchError((error: any) => {
+          console.error(`Could not fetch actions from vineyard ${vineyard.id}`, error);
+          return of([]);
+        })
       )
       .subscribe((actions: Action[]) => this._actions.next(actions));
   }

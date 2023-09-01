@@ -40,4 +40,5 @@ export interface VineyardBase {
 export interface Vineyard extends VineyardBase {
   shared: boolean;
   permissions: VineyardPermissions;
+  owner: string;
 }

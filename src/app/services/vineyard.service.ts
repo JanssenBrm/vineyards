@@ -92,22 +92,34 @@ export class VineyardService {
           }))
         )
       )
-      .subscribe((vineyards: Vineyard[]) => {
-        this._vineyards$.next(vineyards);
+      .subscribe({
+        next: (vineyards: Vineyard[]) => {
+          this._vineyards$.next(vineyards);
+        },
+        error: (error: any) => {
+          console.error(`Something went wrong while fetching vineyards for user ${this._userId}`, error);
+        },
       });
   }
 
   private getUserVineyards(): Observable<Vineyard[]> {
-    return this._vineyardCollection.snapshotChanges().pipe(
-      map((data: DocumentChangeAction<VineyardDoc>[]) =>
-        data.map((d: DocumentChangeAction<VineyardDoc>) => ({
-          ...d.payload.doc.data(),
-          id: (d.payload.doc as any).id,
-          shared: false,
-          permissions: VineyardPermissions.OWNER,
-        }))
-      )
-    );
+    return this._userId
+      ? this._vineyardCollection.snapshotChanges().pipe(
+          map((data: DocumentChangeAction<VineyardDoc>[]) =>
+            data.map((d: DocumentChangeAction<VineyardDoc>) => ({
+              ...d.payload.doc.data(),
+              id: (d.payload.doc as any).id,
+              shared: false,
+              permissions: VineyardPermissions.OWNER,
+              owner: this._userId,
+            }))
+          ),
+          catchError((error) => {
+            console.error(`Error while retrieving vineyards of user ${this._userId}`, error);
+            return of([]);
+          })
+        )
+      : of([]);
   }
 
   private getSharedVineyards(): Observable<Vineyard[]> {
@@ -117,41 +129,49 @@ export class VineyardService {
             data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
           ),
           switchMap((shared: SharedVineyardDoc[]) =>
-            forkJoin(
-              shared.map((s: SharedVineyardDoc) =>
-                forkJoin(
-                  // Fetch the shared vineyard
-                  this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get(),
-                  // Fetch the permissions on the shared vineyard
-                  this.fireStore
-                    .collection<VineyardDoc>(`users/${s.user}/vineyards/${s.vineyard}/permissions/`)
-                    .doc(this._userId)
-                    .get()
-                    .pipe(
-                      map((doc) => (doc.data() as VineyardPermissionsDoc).permissions),
-                      catchError((error) => {
-                        console.error(
-                          `Could not fetch permissions for user ${this._userId} on vineyard ${s.vineyard} of user ${s.user}`,
-                          error
-                        );
-                        return of(VineyardPermissions.NONE);
+            (shared.length > 0
+              ? forkJoin(
+                  shared.map((s: SharedVineyardDoc) =>
+                    forkJoin(
+                      // Fetch the shared vineyard
+                      this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get(),
+                      // Fetch the permissions on the shared vineyard
+                      this.fireStore
+                        .collection<VineyardDoc>(`users/${s.user}/vineyards/${s.vineyard}/permissions/`)
+                        .doc(this._userId)
+                        .get()
+                        .pipe(
+                          map((doc) => (doc.data() as VineyardPermissionsDoc).permissions),
+                          catchError((error) => {
+                            console.error(
+                              `Could not fetch permissions for user ${this._userId} on vineyard ${s.vineyard} of user ${s.user}`,
+                              error
+                            );
+                            return of(VineyardPermissions.NONE);
+                          })
+                        )
+                    ).pipe(
+                      map(([doc, permissions]) => ({
+                        ...doc.data(),
+                        id: doc.id,
+                        shared: true,
+                        permissions: permissions,
+                        owner: s.user,
+                      })),
+                      catchError((error: any) => {
+                        console.error(`Cannot open vineyard ${s.vineyard}`, error);
+                        return of(undefined);
                       })
                     )
-                ).pipe(
-                  map(([doc, permissions]) => ({
-                    ...doc.data(),
-                    id: doc.id,
-                    shared: true,
-                    permissions: permissions,
-                  })),
-                  catchError((error: any) => {
-                    console.error(`Cannot open vineyard ${s.vineyard}`, error);
-                    return of(undefined);
-                  })
+                  )
                 )
-              )
+              : of([])
             ).pipe(map((docs) => docs.filter((d) => !!d && d.permissions !== VineyardPermissions.NONE)))
-          )
+          ),
+          catchError((error) => {
+            console.error(`Failed to retrieved shared vineyards for user ${this._userId}`, error);
+            return of([]);
+          })
         )
       : of([]);
   }
