@@ -403,6 +403,7 @@ export class MapPage implements OnInit, AfterViewInit {
                   geometry: v.location,
                   name: v.id,
                   title: v.name,
+                  owner: v.owner,
                 })
             )
           );

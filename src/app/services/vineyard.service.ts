@@ -98,6 +98,7 @@ export class VineyardService {
         data.map((d: DocumentChangeAction<VineyardDoc>) => ({
           ...d.payload.doc.data(),
           id: (d.payload.doc as any).id,
+          owner: true,
         }))
       )
     );
@@ -119,6 +120,7 @@ export class VineyardService {
                 map((doc) => ({
                   ...doc.data(),
                   id: doc.id,
+                  owner: false,
                 })),
                 catchError((error: any) => {
                   console.error(`Cannot open vineyard ${s.vineyard}`, error);

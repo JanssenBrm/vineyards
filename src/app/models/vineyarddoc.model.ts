@@ -1,6 +1,6 @@
-import { Vineyard } from './vineyard.model';
+import { VineyardBase } from './vineyard.model';
 
-export interface VineyardDoc extends Vineyard {
+export interface VineyardDoc extends VineyardBase {
   location: string;
 }
 export interface SharedVineyardDoc {
