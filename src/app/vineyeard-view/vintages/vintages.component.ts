@@ -2,7 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Vineyard } from '../../models/vineyard.model';
 import { AddVintageComponent } from '../add-vintage/add-vintage.component';
-import { Vintage, VintageStatus, VINTAGE_STATUS_COLORS } from '../../models/vintage.model';
+import { Vintage, VINTAGE_STATUS_COLORS, VintageStatus } from '../../models/vintage.model';
 import { VintageService } from '../../services/vintage.service';
 import { VineyardService } from '../../services/vineyard.service';
 import { VarietyService } from '../../services/variety.service';
@@ -54,7 +54,7 @@ export class VintagesComponent implements OnChanges {
 
     const data = await modal.onWillDismiss();
     if (data.data.vintage) {
-      this.parseVintage(data.data.vintage);
+      await this.parseVintage(data.data.vintage);
     }
   }
 
@@ -73,8 +73,8 @@ export class VintagesComponent implements OnChanges {
         },
         {
           text: 'Okay',
-          handler: () => {
-            this.vintageService.removeVintage(this.vineyard, vintage);
+          handler: async () => {
+            await this.vintageService.removeVintage(this.vineyard, vintage);
           },
         },
       ],
@@ -88,22 +88,22 @@ export class VintagesComponent implements OnChanges {
     this.setTab('timeline');
   }
 
-  editVintage(vintage: Vintage) {
-    this.openAddVintageModal(vintage);
+  async editVintage(vintage: Vintage) {
+    await this.openAddVintageModal(vintage);
   }
 
-  deleteVintage(vintage: Vintage) {
-    this.openDeleteConfirm(vintage);
+  async deleteVintage(vintage: Vintage) {
+    await this.openDeleteConfirm(vintage);
   }
 
   setTab(tab: 'timeline' | 'notes') {
     this.tab = tab;
   }
 
-  private parseVintage(vintage: Vintage) {
+  private async parseVintage(vintage: Vintage): Promise<void> {
     vintage.id
-      ? this.vintageService.updateVintage(this.vineyard, vintage)
-      : this.vintageService.addVintage(this.vineyard, vintage);
+      ? await this.vintageService.updateVintage(this.vineyard, vintage)
+      : await this.vintageService.addVintage(this.vineyard, vintage);
     this.vintage = vintage;
   }
 }

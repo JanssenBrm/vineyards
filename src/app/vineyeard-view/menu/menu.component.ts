@@ -105,12 +105,12 @@ export class MenuComponent implements OnInit {
 
     const data = await modal.onWillDismiss();
     if (data.data.vintage) {
-      this.parseVintage(data.data.vintage);
+      await this.parseVintage(data.data.vintage);
     }
   }
 
-  private parseVintage(vintage: Vintage) {
-    this.vintageService.addVintage(this.activeVineyard, vintage);
+  private async parseVintage(vintage: Vintage) {
+    await this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   viewVintage(vintage: Vintage) {
