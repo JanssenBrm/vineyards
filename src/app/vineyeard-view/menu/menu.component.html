@@ -27,7 +27,7 @@
       <ion-icon name="information-circle" slot="start"></ion-icon>
       <ion-label>Info</ion-label>
     </div>
-    <div class="item" (click)="openTab(MenuTab.NOTES)"   [class.selected]="activePage === 'notes'">
+    <div class="item" (click)="openTab(MenuTab.NOTES)" *appHasPermissions="{vineyard: activeVineyard , permissions: VineyardPermissions.OWNER}"  [class.selected]="activePage === 'notes'">
       <ion-icon name="create" slot="start"></ion-icon>
       <ion-label>Notes</ion-label>
     </div>

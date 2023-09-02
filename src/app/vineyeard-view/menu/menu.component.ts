@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SeasonsService } from '../../services/seasons.service';
 import { ModalController, NavController } from '@ionic/angular';
-import { Vineyard } from '../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from '../../models/vineyard.model';
 import { Location } from '@angular/common';
 import { Vintage } from '../../models/vintage.model';
 import { AddVintageComponent } from '../add-vintage/add-vintage.component';
@@ -122,4 +122,6 @@ export class MenuComponent implements OnInit {
   public readonly NON_PREMIUM_ROLES = NON_PREMIUM_ROLES;
 
   public readonly PREMIUM_ROLES = PREMIUM_ROLES;
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }
