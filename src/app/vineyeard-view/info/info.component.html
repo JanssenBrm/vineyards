@@ -62,28 +62,36 @@
                 </ion-card-content>
             </ion-card>
         </ion-col>
-        <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appUserHasRole="PREMIUM_ROLES">
-            <ion-card>
-                <ion-card-header>
-                    <ion-card-title>Warnings</ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <app-warnings [vineyard]="vineyard"></app-warnings>
-                </ion-card-content>
-            </ion-card>
-        </ion-col>
+        <ng-container *appUserHasRole="PREMIUM_ROLES">
+            <ng-container *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.OWNER}">
+                <ion-col class="ion-align-self-stretch" size="12" size-sm="3">
+                    <ion-card>
+                        <ion-card-header>
+                            <ion-card-title>Warnings</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <app-warnings [vineyard]="vineyard"></app-warnings>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ng-container>
+        </ng-container>
     </ion-row>
     <ion-row class="ion-align-items-stretch">
-        <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appUserHasRole="PREMIUM_ROLES">
-            <ion-card>
-                <ion-card-header>
-                    <ion-card-title>BBCH</ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <app-bbch [actions]="actions"></app-bbch>
-                </ion-card-content>
-            </ion-card>
-        </ion-col>
+        <ng-container *appUserHasRole="PREMIUM_ROLES">
+            <ng-container *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.OWNER}">
+                <ion-col class="ion-align-self-stretch" size="12" size-sm="3" *appUserHasRole="PREMIUM_ROLES">
+                    <ion-card>
+                        <ion-card-header>
+                            <ion-card-title>BBCH</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <app-bbch [actions]="actions"></app-bbch>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ng-container>
+        </ng-container>
         <ion-col class="ion-align-self-stretch">
             <ion-card>
                 <ion-card-header>
