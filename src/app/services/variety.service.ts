@@ -86,6 +86,6 @@ export class VarietyService {
   }
 
   getVintageVarietiesLabel(vintage: Vintage): string {
-    return vintage.varieties.map((v: string) => this.getVarietyByID(v).name).join(',');
+    return vintage.varieties.map((v: string) => this.getVarietyByID(v)?.name || '').join(',');
   }
 }
