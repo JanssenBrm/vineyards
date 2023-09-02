@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { NoteBase } from '../../models/note.model';
 import { NotesService } from '../../services/notes.service';
-import { Vineyard } from '../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from '../../models/vineyard.model';
 import { Vintage } from '../../models/vintage.model';
 import { AddNoteComponent } from '../add-note/add-note.component';
 import { ModalController } from '@ionic/angular';
@@ -83,4 +83,6 @@ export class NotesComponent implements OnInit, OnChanges {
       this.activeTypes = [...this.activeTypes, stage];
     }
   }
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }

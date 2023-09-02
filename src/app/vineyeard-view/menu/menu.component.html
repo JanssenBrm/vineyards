@@ -55,7 +55,7 @@
       </ion-label>
     </div>
     <div class="item action">
-      <ion-button (click)="openAddVintageModal()" fill="clear"><ion-icon name="add-outline"></ion-icon>Add vintage</ion-button>
+      <ion-button *appHasPermissions="{vineyard: activeVineyard, permissions: VineyardPermissions.EDIT}" (click)="openAddVintageModal()" fill="clear"><ion-icon name="add-outline"></ion-icon>Add vintage</ion-button>
     </div>
   </div>
 </div>

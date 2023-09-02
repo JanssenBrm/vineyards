@@ -8,7 +8,7 @@
       <ion-card-title>
         <div class="subtitle">
           <span>{{note.date | date:'dd MMMM yyyy'}}</span>
-          <span><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span>
+          <span *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.EDIT}"><ion-icon name="create-outline" (click)="editNote(note)"></ion-icon><ion-icon name="trash-outline" (click)="deleteNote(note)"></ion-icon></span>
         </div>
       </ion-card-title>
     </ion-card-header>
@@ -22,7 +22,7 @@
     </ion-card-content>
   </ion-card>
 </div>
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+<ion-fab *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.EDIT}" vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="openAddNoteModal()">
     <ion-icon name="add-outline"></ion-icon>
   </ion-fab-button>

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
-import { Vineyard } from '../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from '../../models/vineyard.model';
 import { AddVintageComponent } from '../add-vintage/add-vintage.component';
 import { Vintage, VINTAGE_STATUS_COLORS, VintageStatus } from '../../models/vintage.model';
 import { VintageService } from '../../services/vintage.service';
@@ -106,4 +106,6 @@ export class VintagesComponent implements OnChanges {
       : await this.vintageService.addVintage(this.vineyard, vintage);
     this.vintage = vintage;
   }
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }
