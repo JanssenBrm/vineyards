@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="bbch.component.scss">
 <div class="bbch-container">
+  <span *ngIf="summary?.length === 0">No BBCH stages available</span>
   <div class="row" *ngFor="let variety of summary">
     <h2>{{variety.label}}
       <div class="status">

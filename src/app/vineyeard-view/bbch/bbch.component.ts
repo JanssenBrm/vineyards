@@ -61,7 +61,6 @@ export class BbchComponent implements OnChanges {
         }
       }
     }
-    console.log(summary);
     return summary.map((v) => {
       const codes: number[] = this.years.map((y) => (v[y] ? v[y].value : undefined)).filter((d) => !!d);
       const diff = codes.length > 1 ? codes[1].toString().localeCompare(codes[0].toString()) : 0;
