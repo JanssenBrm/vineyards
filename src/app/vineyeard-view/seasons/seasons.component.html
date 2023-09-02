@@ -1,5 +1,6 @@
 <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
 <div *ngIf="!loading" class="season-container">
+  <span *ngIf="info?.length === 0">No season information available</span>
   <div class="season" *ngFor="let season of info">
     <h2 class="title">{{season.year}}<span class="subtitle"> ({{season.duration}} days)</span></h2>
     <span class="date">{{season.season[0].toISOString() | date: "dd MMMM yyyy"}} - {{season.season[1].toISOString() | date: "dd MMMM yyyy"}}</span>
