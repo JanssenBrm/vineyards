@@ -1,9 +1,7 @@
 import { Polygon } from 'ol/geom';
 import { SharedVineyardDoc, VineyardDoc, VineyardPermissionsDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
-import { UtilService } from './util.service';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import {
@@ -17,6 +15,7 @@ import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { getCenter } from 'ol/extent';
 import { transformExtent } from 'ol/proj';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,12 +33,7 @@ export class VineyardService {
 
   private _userId: string;
 
-  constructor(
-    private http: HttpClient,
-    private utilService: UtilService,
-    private fireStore: AngularFirestore,
-    private authService: AuthService
-  ) {
+  constructor(private fireStore: AngularFirestore, private authService: AuthService, private userService: UserService) {
     this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
     this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
     this._activeSeasons$ = new BehaviorSubject<number[]>([new Date().getFullYear()]);
@@ -149,14 +143,17 @@ export class VineyardService {
                             );
                             return of(VineyardPermissions.NONE);
                           })
-                        )
+                        ),
+                      // Get the user data of the vineyard owner
+                      this.userService.getUserInfo(s.user)
                     ).pipe(
-                      map(([doc, permissions]) => ({
+                      map(([doc, permissions, user]) => ({
                         ...doc.data(),
                         id: doc.id,
                         shared: true,
                         permissions: permissions,
                         owner: s.user,
+                        ownerName: user.name,
                       })),
                       catchError((error: any) => {
                         console.error(`Cannot open vineyard ${s.vineyard}`, error);
