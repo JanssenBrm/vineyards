@@ -1,7 +1,7 @@
 import { UtilService } from './../../services/util.service';
 import { Variety } from './../../models/variety.model';
 import { Platform } from '@ionic/angular';
-import { Vineyard } from './../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from './../../models/vineyard.model';
 import { VineyardService } from './../../services/vineyard.service';
 import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import View from 'ol/View';
@@ -117,4 +117,6 @@ export class InfoComponent implements OnChanges, AfterViewInit {
   }
 
   public readonly PREMIUM_ROLES = PREMIUM_ROLES;
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }
