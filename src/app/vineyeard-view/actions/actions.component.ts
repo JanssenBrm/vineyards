@@ -3,7 +3,7 @@ import { Action, ActionType, BaseAction, BBCHAction, BrixAction, PlantingAction 
 import { ModalController, Platform } from '@ionic/angular';
 import { VineyardService } from './../../services/vineyard.service';
 import { Component, Input, OnChanges } from '@angular/core';
-import { Vineyard } from 'src/app/models/vineyard.model';
+import { Vineyard, VineyardPermissions } from 'src/app/models/vineyard.model';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import { Router } from '@angular/router';
 import { AddActionComponent } from '../add-action/add-action.component';
@@ -158,4 +158,6 @@ export class ActionsComponent implements OnChanges {
       ? varieties.map((v: string) => this.varietyService.getVarietyByID(v)).filter((v: Variety) => !!v)
       : [];
   }
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }
