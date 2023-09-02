@@ -15,6 +15,7 @@ import { ConfirmComponent } from './components/confirm/confirm.component';
 import { UserbuttonComponent } from './components/userbutton/userbutton.component';
 import { MomentPipe } from '../pipes/moment.pipe';
 import { HasRoleDirective } from './directives/has-role.directive';
+import { HasPermissionsDirective } from './directives/has-permissions.directive';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { HasRoleDirective } from './directives/has-role.directive';
     UserbuttonComponent,
     MomentPipe,
     HasRoleDirective,
+    HasPermissionsDirective,
   ],
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule],
   exports: [
@@ -45,6 +47,7 @@ import { HasRoleDirective } from './directives/has-role.directive';
     UserbuttonComponent,
     MomentPipe,
     HasRoleDirective,
+    HasPermissionsDirective,
   ],
 })
 export class SharedModule {}
