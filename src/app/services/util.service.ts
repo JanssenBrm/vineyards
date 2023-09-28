@@ -1,7 +1,7 @@
 import { BBCH_STAGES } from './../conf/bbch.config';
 import { Vineyard } from './../models/vineyard.model';
 import { Injectable } from '@angular/core';
-import { createEmpty, extend } from 'ol/extent';
+import { buffer, createEmpty, extend } from 'ol/extent';
 import Polygon from 'ol/geom/Polygon';
 import { BBCH } from '../models/bbch.model';
 import { Platform } from '@ionic/angular';
@@ -18,6 +18,23 @@ export class UtilService {
     locations.forEach((p: Polygon) => {
       extent = extend(extent, p.getExtent());
     });
+    return this.padExtent(extent);
+  }
+
+  padExtent(extent: any, percentage = 1): any {
+    console.log(extent);
+    const longestSide = Math.max(
+      ...[
+        Math.abs(extent[0] - extent[1]),
+        Math.abs(extent[1] - extent[2]),
+        Math.abs(extent[2] - extent[3]),
+        Math.abs(extent[3] - extent[0]),
+      ]
+    );
+    const bufferDistance = longestSide * (percentage / 100);
+
+    const buffered = buffer(extent, bufferDistance);
+    console.log(extent, bufferDistance, buffered);
     return extent;
   }
 
