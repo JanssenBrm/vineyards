@@ -4,7 +4,7 @@
 <div class="list">
   <ion-card *ngFor="let note of (notes$ | async) | filterNotesByTypes: activeTypes  | orderBy:{key: 'date', type: 'dateString', desc: true} ">
     <ion-card-header >
-      <ion-card-subtitle>{{STAGE[note.stage]}}</ion-card-subtitle>
+      <ion-card-subtitle>{{STAGE[note.stage].replace('_', ' ') | titlecase}}</ion-card-subtitle>
       <ion-card-title>
         <div class="subtitle">
           <span>{{note.date | date:'dd MMMM yyyy'}}</span>
