@@ -101,6 +101,7 @@ export class InfoComponent implements OnChanges, AfterViewInit {
         view: new View({
           center: [0, 0],
           zoom: 10,
+          maxZoom: 20,
         }),
       });
     }
