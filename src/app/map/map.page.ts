@@ -377,7 +377,7 @@ export class MapPage implements OnInit, AfterViewInit {
       }),
       stroke: new Stroke({
         color: stroke,
-        width: 2,
+        width: 5,
       }),
     });
   }
