@@ -1,13 +1,15 @@
 <div class="content-title">
     <span>Vintage</span>
-<div class="actions" *ngIf="vintage">
-    <ion-button  (click)="editVintage(vintage)">
-        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-    </ion-button>
-        <ion-button  (click)="deleteVintage(vintage)">
-            <ion-icon  slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-button>
-</div>
+    <ng-container *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.EDIT}">
+        <div class="actions" *ngIf="vintage" >
+            <ion-button  (click)="editVintage(vintage)">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button  (click)="deleteVintage(vintage)">
+                <ion-icon  slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+        </div>
+    </ng-container>
 </div>
 <div class="container">
     <div class="content" *ngIf="vintage">

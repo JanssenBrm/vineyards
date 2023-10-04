@@ -1,5 +1,5 @@
 import { MenuController, ModalController, NavController, Platform } from '@ionic/angular';
-import { Vineyard } from './../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from './../models/vineyard.model';
 import { VineyardService } from './../services/vineyard.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
@@ -147,14 +147,14 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
 
     const data = await modal.onWillDismiss();
     if (data.data.vintage) {
-      this.parseVintage(data.data.vintage);
+      await this.parseVintage(data.data.vintage);
     }
   }
 
-  private parseVintage(vintage: Vintage) {
+  private async parseVintage(vintage: Vintage) {
     vintage.id
-      ? this.vintageService.updateVintage(this.activeVineyard, vintage)
-      : this.vintageService.addVintage(this.activeVineyard, vintage);
+      ? await this.vintageService.updateVintage(this.activeVineyard, vintage)
+      : await this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   openOverview() {
@@ -170,4 +170,6 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
     this.openTab(MenuTab.VINTAGES);
     this.location.go(`/vineyard/view/${this.activeVineyard.id}/vintages/${vintage.id}`);
   }
+
+  protected readonly VineyardPermissions = VineyardPermissions;
 }

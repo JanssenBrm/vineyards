@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SeasonsService } from '../../services/seasons.service';
 import { ModalController, NavController } from '@ionic/angular';
-import { Vineyard } from '../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from '../../models/vineyard.model';
 import { Location } from '@angular/common';
 import { Vintage } from '../../models/vintage.model';
 import { AddVintageComponent } from '../add-vintage/add-vintage.component';
 import { VintageService } from '../../services/vintage.service';
 import { VarietyService } from '../../services/variety.service';
-import { NON_PREMIUM_ROLES } from '../../models/userdata.model';
+import { NON_PREMIUM_ROLES, PREMIUM_ROLES } from '../../models/userdata.model';
 
 export enum MenuTab {
   INFO = 'info',
@@ -105,12 +105,12 @@ export class MenuComponent implements OnInit {
 
     const data = await modal.onWillDismiss();
     if (data.data.vintage) {
-      this.parseVintage(data.data.vintage);
+      await this.parseVintage(data.data.vintage);
     }
   }
 
-  private parseVintage(vintage: Vintage) {
-    this.vintageService.addVintage(this.activeVineyard, vintage);
+  private async parseVintage(vintage: Vintage) {
+    await this.vintageService.addVintage(this.activeVineyard, vintage);
   }
 
   viewVintage(vintage: Vintage) {
@@ -120,4 +120,8 @@ export class MenuComponent implements OnInit {
   }
 
   public readonly NON_PREMIUM_ROLES = NON_PREMIUM_ROLES;
+
+  public readonly PREMIUM_ROLES = PREMIUM_ROLES;
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }

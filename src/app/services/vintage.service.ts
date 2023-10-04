@@ -1,52 +1,46 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { Vineyard } from '../models/vineyard.model';
 import { Vintage } from '../models/vintage.model';
-import { VineyardDoc } from '../models/vineyarddoc.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { User } from 'firebase';
-import { AuthService } from './auth.service';
-
-export const VINTAGE_COLLECTION = 'vintages';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VintageService {
-  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
-
   private _vintages: BehaviorSubject<Vintage[]>;
 
-  constructor(private fireStore: AngularFirestore, private authService: AuthService) {
+  constructor(private fireStore: AngularFirestore) {
     this._vintages = new BehaviorSubject<Vintage[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
-      if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
-      }
-    });
+  }
+
+  private getVineyardVintagesCollectionPath(vineyard: Vineyard): string {
+    return `users/${vineyard.owner}/vineyards/${vineyard.id}/vintages`;
   }
 
   public getVintageListener(): BehaviorSubject<Vintage[]> {
     return this._vintages;
   }
 
-  public addVintage(vineyard: Vineyard, vintage: Vintage): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).add(vintage);
+  public async addVintage(vineyard: Vineyard, vintage: Vintage): Promise<void> {
+    await this.fireStore.collection<Vintage>(this.getVineyardVintagesCollectionPath(vineyard)).add(vintage);
   }
 
-  public updateVintage(vineyard: Vineyard, vintage: Vintage): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).set(vintage);
+  public async updateVintage(vineyard: Vineyard, vintage: Vintage): Promise<void> {
+    await this.fireStore
+      .collection<Vintage>(this.getVineyardVintagesCollectionPath(vineyard))
+      .doc(vintage.id)
+      .set(vintage);
   }
 
-  public removeVintage(vineyard: Vineyard, vintage: Vintage): void {
-    this._vineyardCollection.doc(vineyard.id).collection<Vintage>(VINTAGE_COLLECTION).doc(vintage.id).delete();
+  public async removeVintage(vineyard: Vineyard, vintage: Vintage): Promise<void> {
+    await this.fireStore.collection<Vintage>(this.getVineyardVintagesCollectionPath(vineyard)).doc(vintage.id).delete();
   }
 
   public getVintages(vineyard: Vineyard): void {
-    this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<Vintage>(VINTAGE_COLLECTION)
+    this.fireStore
+      .collection<Vintage>(this.getVineyardVintagesCollectionPath(vineyard))
       .snapshotChanges()
       .pipe(
         map((data: DocumentChangeAction<Vintage>[]) =>

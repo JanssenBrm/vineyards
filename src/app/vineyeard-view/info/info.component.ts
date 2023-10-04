@@ -1,7 +1,7 @@
 import { UtilService } from './../../services/util.service';
 import { Variety } from './../../models/variety.model';
 import { Platform } from '@ionic/angular';
-import { Vineyard } from './../../models/vineyard.model';
+import { Vineyard, VineyardPermissions } from './../../models/vineyard.model';
 import { VineyardService } from './../../services/vineyard.service';
 import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import View from 'ol/View';
@@ -16,6 +16,7 @@ import { VarietyService } from '../../services/variety.service';
 import { ActionService } from '../../services/action.service';
 import * as moment from 'moment';
 import { FeaturesService } from '../../services/features.service';
+import { PREMIUM_ROLES } from '../../models/userdata.model';
 
 @Component({
   selector: 'app-info',
@@ -114,4 +115,8 @@ export class InfoComponent implements OnChanges, AfterViewInit {
   getTotalCount(): number {
     return this.varietyService.getPlantCount(this.varieties);
   }
+
+  public readonly PREMIUM_ROLES = PREMIUM_ROLES;
+
+  public readonly VineyardPermissions = VineyardPermissions;
 }

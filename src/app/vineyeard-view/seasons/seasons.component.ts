@@ -52,8 +52,8 @@ export class SeasonsComponent implements OnChanges {
       next: (stats: MeteoStatEntry[]) => {
         if (stats.length > 0) {
           this.calculateSeasonInfo(stats);
-          this.loading = false;
         }
+        this.loading = false;
       },
     });
     this.statService.getMeteoStats(this.vineyard);

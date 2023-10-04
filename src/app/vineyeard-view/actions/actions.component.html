@@ -13,7 +13,7 @@
       <div class="text">
         <ion-card-title [class.mobile]="utilService.isMobile()">
           <span>{{activity.date | date:'dd MMMM yyyy'}}<ion-badge [style.backgroundColor]="getActionTypeColor(actionService.findActionType(activity.type))">{{actionService.findActionType(activity.type)}}</ion-badge></span>
-          <span><ion-icon name="create-outline" (click)="openAddActionModal(activity)"></ion-icon><ion-icon name="trash-outline" (click)="removeAction(activity)"></ion-icon></span>
+          <span  *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.EDIT}"><ion-icon name="create-outline" (click)="openAddActionModal(activity)"></ion-icon><ion-icon name="trash-outline" (click)="removeAction(activity)"></ion-icon></span>
         </ion-card-title>
         <ion-card-subtitle>
           <div class="subtitle">
@@ -39,7 +39,7 @@
     </ion-card-content>
   </ion-card>
 </div>
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" *appHasPermissions="{vineyard: vineyard, permissions: VineyardPermissions.EDIT}">
   <ion-fab-button (click)="openAddActionModal()">
     <ion-icon name="add-outline"></ion-icon>
   </ion-fab-button>

@@ -1,38 +1,26 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { VineyardDoc } from '../models/vineyarddoc.model';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { Action } from '../models/action.model';
-import { AuthService } from './auth.service';
-import { User } from 'firebase';
 import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment/moment';
 import { SeasonsService } from './seasons.service';
 
-export const STATS_COLLECTION = 'stats';
-
 @Injectable({
   providedIn: 'root',
 })
 export class StatisticsService {
-  private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
-
   private _meteoStats: BehaviorSubject<MeteoStatEntry[]>;
 
   private BASE_TEMP = 10.0;
 
-  constructor(
-    private fireStore: AngularFirestore,
-    private authService: AuthService,
-    private seasonService: SeasonsService
-  ) {
+  constructor(private fireStore: AngularFirestore, private seasonService: SeasonsService) {
     this._meteoStats = new BehaviorSubject<MeteoStatEntry[]>([]);
-    this.authService.getUser().subscribe((user: User) => {
-      if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
-      }
-    });
+  }
+
+  private getVineyardMeteoCollectionPath(vineyard: Vineyard): string {
+    return `users/${vineyard.owner}/vineyards/${vineyard.id}/stats`;
   }
 
   public getMeteoListener(): BehaviorSubject<MeteoStatEntry[]> {
@@ -40,9 +28,8 @@ export class StatisticsService {
   }
 
   public getMeteoStats(vineyard: Vineyard): void {
-    this._vineyardCollection
-      .doc(vineyard.id)
-      .collection<any>(STATS_COLLECTION)
+    this.fireStore
+      .collection(this.getVineyardMeteoCollectionPath(vineyard))
       .doc('meteo')
       .snapshotChanges()
       .pipe(

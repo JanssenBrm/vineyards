@@ -29,6 +29,7 @@ export class LoginPage implements OnInit {
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
     });
+    this.loading = false;
   }
 
   login() {
@@ -46,10 +47,6 @@ export class LoginPage implements OnInit {
       this.showError(error.message);
       this.loading = false;
     });
-  }
-
-  signUp() {
-    this.router.navigate(['register']);
   }
 
   async showError(message: string) {

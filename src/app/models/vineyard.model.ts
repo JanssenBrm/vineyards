@@ -19,7 +19,15 @@ export interface MeteoStatEntry {
 export interface MeteoStats {
   data: MeteoStatEntry[];
 }
-export interface Vineyard {
+
+export enum VineyardPermissions {
+  NONE,
+  VIEW,
+  EDIT,
+  OWNER,
+}
+
+export interface VineyardBase {
   id?: string;
   name: string;
   address?: string;
@@ -27,4 +35,11 @@ export interface Vineyard {
   actions: Action[];
   varieties: Variety[];
   meteo: MeteoStats;
+}
+
+export interface Vineyard extends VineyardBase {
+  shared: boolean;
+  permissions: VineyardPermissions;
+  owner: string;
+  ownerName?: string;
 }

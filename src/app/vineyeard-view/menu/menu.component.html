@@ -27,7 +27,7 @@
       <ion-icon name="information-circle" slot="start"></ion-icon>
       <ion-label>Info</ion-label>
     </div>
-    <div class="item" (click)="openTab(MenuTab.NOTES)"   [class.selected]="activePage === 'notes'">
+    <div class="item" (click)="openTab(MenuTab.NOTES)" *appHasPermissions="{vineyard: activeVineyard , permissions: VineyardPermissions.OWNER}"  [class.selected]="activePage === 'notes'">
       <ion-icon name="create" slot="start"></ion-icon>
       <ion-label>Notes</ion-label>
     </div>
@@ -42,7 +42,7 @@
   </div>
 </div>
 
-<div class="section" *appPremiumFeature>
+<div class="section" *appUserHasRole="PREMIUM_ROLES">
   <div class="header">
     <ion-label>Vintages</ion-label>
   </div>
@@ -55,7 +55,7 @@
       </ion-label>
     </div>
     <div class="item action">
-      <ion-button (click)="openAddVintageModal()" fill="clear"><ion-icon name="add-outline"></ion-icon>Add vintage</ion-button>
+      <ion-button *appHasPermissions="{vineyard: activeVineyard, permissions: VineyardPermissions.EDIT}" (click)="openAddVintageModal()" fill="clear"><ion-icon name="add-outline"></ion-icon>Add vintage</ion-button>
     </div>
   </div>
 </div>

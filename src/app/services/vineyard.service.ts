@@ -1,13 +1,9 @@
 import { Polygon } from 'ol/geom';
-import { VineyardDoc } from '../models/vineyarddoc.model';
-import { MeteoStatEntry, Vineyard } from '../models/vineyard.model';
-import { Variety } from '../models/variety.model';
-import { UtilService } from './util.service';
+import { SharedVineyardDoc, VineyardDoc, VineyardPermissionsDoc } from '../models/vineyarddoc.model';
+import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Action, ActionType } from '../models/action.model';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
@@ -15,11 +11,11 @@ import {
   DocumentReference,
 } from '@angular/fire/firestore';
 import { GeoJSON } from 'ol/format';
-import * as moment from 'moment';
 import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { getCenter } from 'ol/extent';
 import { transformExtent } from 'ol/proj';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,23 +29,25 @@ export class VineyardService {
 
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
-  private _API: string = 'https://us-central1-winery-f4d20.cloudfunctions.net';
+  private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
 
-  constructor(
-    private http: HttpClient,
-    private utilService: UtilService,
-    private fireStore: AngularFirestore,
-    private authService: AuthService
-  ) {
+  private _userId: string;
+
+  constructor(private fireStore: AngularFirestore, private authService: AuthService, private userService: UserService) {
     this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
     this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
     this._activeSeasons$ = new BehaviorSubject<number[]>([new Date().getFullYear()]);
 
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
-        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${user.uid}/vineyards`);
+        this._userId = user.uid;
+        this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${this._userId}/vineyards`);
+        this._sharedVineyardCollection = fireStore.collection<SharedVineyardDoc>(
+          `users/${this._userId}/sharedVineyards`
+        );
         this.getVineyards();
       } else {
+        this._userId = undefined;
         this._vineyards$.next([]);
       }
     });
@@ -57,10 +55,6 @@ export class VineyardService {
 
   getVineyardsListener(): Observable<Vineyard[]> {
     return this._vineyards$;
-  }
-
-  setActiveVineyard(id: string): void {
-    this._activeVineyard$.next(id ? this._vineyards$.getValue().find((v: Vineyard) => v.id === id) : null);
   }
 
   getActiveVineyard(): Observable<Vineyard> {
@@ -76,15 +70,9 @@ export class VineyardService {
   }
 
   getVineyards(): void {
-    this._vineyardCollection
-      .snapshotChanges()
+    combineLatest(this.getUserVineyards(), this.getSharedVineyards())
       .pipe(
-        map((data: DocumentChangeAction<VineyardDoc>[]) =>
-          data.map((d: DocumentChangeAction<VineyardDoc>) => ({
-            ...d.payload.doc.data(),
-            id: (d.payload.doc as any).id,
-          }))
-        ),
+        map(([owned, shared]) => [...owned, ...shared]),
         map((docs: VineyardDoc[]) =>
           docs.map((d: VineyardDoc) => ({
             ...d,
@@ -98,47 +86,95 @@ export class VineyardService {
           }))
         )
       )
-      .subscribe((vineyards: Vineyard[]) => {
-        this._vineyards$.next(vineyards);
+      .subscribe({
+        next: (vineyards: Vineyard[]) => {
+          this._vineyards$.next(vineyards);
+        },
+        error: (error: any) => {
+          console.error(`Something went wrong while fetching vineyards for user ${this._userId}`, error);
+        },
       });
+  }
+
+  private getUserVineyards(): Observable<Vineyard[]> {
+    return this._userId
+      ? this._vineyardCollection.snapshotChanges().pipe(
+          map((data: DocumentChangeAction<VineyardDoc>[]) =>
+            data.map((d: DocumentChangeAction<VineyardDoc>) => ({
+              ...d.payload.doc.data(),
+              id: (d.payload.doc as any).id,
+              shared: false,
+              permissions: VineyardPermissions.OWNER,
+              owner: this._userId,
+            }))
+          ),
+          catchError((error) => {
+            console.error(`Error while retrieving vineyards of user ${this._userId}`, error);
+            return of([]);
+          })
+        )
+      : of([]);
+  }
+
+  private getSharedVineyards(): Observable<Vineyard[]> {
+    return this._userId
+      ? this._sharedVineyardCollection.snapshotChanges().pipe(
+          map((data: DocumentChangeAction<SharedVineyardDoc>[]) =>
+            data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
+          ),
+          switchMap((shared: SharedVineyardDoc[]) =>
+            (shared.length > 0
+              ? forkJoin(
+                  shared.map((s: SharedVineyardDoc) =>
+                    forkJoin(
+                      // Fetch the shared vineyard
+                      this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get(),
+                      // Fetch the permissions on the shared vineyard
+                      this.fireStore
+                        .collection<VineyardDoc>(`users/${s.user}/vineyards/${s.vineyard}/permissions/`)
+                        .doc(this._userId)
+                        .get()
+                        .pipe(
+                          map((doc) => (doc.data() as VineyardPermissionsDoc).permissions),
+                          catchError((error) => {
+                            console.error(
+                              `Could not fetch permissions for user ${this._userId} on vineyard ${s.vineyard} of user ${s.user}`,
+                              error
+                            );
+                            return of(VineyardPermissions.NONE);
+                          })
+                        ),
+                      // Get the user data of the vineyard owner
+                      this.userService.getUserInfo(s.user)
+                    ).pipe(
+                      map(([doc, permissions, user]) => ({
+                        ...doc.data(),
+                        id: doc.id,
+                        shared: true,
+                        permissions: permissions,
+                        owner: s.user,
+                        ownerName: user.name,
+                      })),
+                      catchError((error: any) => {
+                        console.error(`Cannot open vineyard ${s.vineyard}`, error);
+                        return of(undefined);
+                      })
+                    )
+                  )
+                )
+              : of([])
+            ).pipe(map((docs) => docs.filter((d) => !!d && d.permissions !== VineyardPermissions.NONE)))
+          ),
+          catchError((error) => {
+            console.error(`Failed to retrieved shared vineyards for user ${this._userId}`, error);
+            return of([]);
+          })
+        )
+      : of([]);
   }
 
   getInfo(id: string): Vineyard {
     return this._vineyards$.getValue().find((v: Vineyard) => v.id === id);
-  }
-
-  updateTempStats(v: Vineyard): Observable<boolean> {
-    return this.http.get(`${this._API}/updateTemp?vineyardId=${v.id}`).pipe(
-      switchMap(() => of(true)),
-      catchError(() => of(false))
-    );
-  }
-
-  getVarieties(info: Vineyard, year: number = new Date().getFullYear()): Variety[] {
-    const plantingActions = this.getActions(info, [ActionType.Planting], year);
-    return plantingActions.length > 0
-      ? []
-          .concat(...plantingActions.map((a: Action) => a.variety))
-          .map((id: string) => info.varieties.find((v: Variety) => v.id === id))
-      : [];
-  }
-
-  getFirstPlanting(info: Vineyard): Action {
-    const plantingActions = this.getActions(info, [ActionType.Planting]);
-    return plantingActions.length > 0 ? plantingActions[0] : undefined;
-  }
-
-  getLastPlanting(info: Vineyard): Action {
-    const plantingActions = this.getActions(info, [ActionType.Planting]);
-    return plantingActions.length > 0 ? plantingActions[plantingActions.length - 1] : undefined;
-  }
-
-  getActions(info: Vineyard, types: ActionType[] = [], maxYear: number = new Date().getFullYear()): Action[] {
-    let actions = info ? info.actions : [];
-    if (types.length > 0) {
-      actions = actions.filter((a: Action) => types.indexOf(a.type) >= 0);
-    }
-    return actions.length > 0 ? actions.filter((a: Action) => a.date.year() <= maxYear) : actions;
   }
 
   updateLocation(id: string, geometry: Polygon): void {
@@ -169,14 +205,6 @@ export class VineyardService {
       .forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
   }
 
-  updateVineyard(vineyard: Vineyard): void {
-    const vineyards: Vineyard[] = this._vineyards$
-      .getValue()
-      .map((v: Vineyard) => (v.id === vineyard.id ? vineyard : v));
-    this._vineyards$.next(vineyards);
-    this.saveVineyards([vineyard.id]);
-  }
-
   async addVineyard(name: string, address: string, location: Polygon): Promise<DocumentReference> {
     const geoJSON = new GeoJSON({
       dataProjection: 'EPSG:4326',
@@ -198,18 +226,6 @@ export class VineyardService {
     await this._vineyardCollection.doc(id).delete();
     const vineyards: Vineyard[] = this._vineyards$.getValue().filter((v: Vineyard) => v.id !== id);
     this._vineyards$.next(vineyards);
-  }
-
-  getMeteoYears(info: Vineyard): number[] {
-    return info && info.meteo && info.meteo.data
-      ? [...new Set(info.meteo.data.map((e: MeteoStatEntry) => moment(e.date).year()))]
-      : [];
-  }
-
-  getMeteoByYears(info: Vineyard, years: number[]): MeteoStatEntry[] {
-    return info && info.meteo && info.meteo.data
-      ? info.meteo.data.filter((e: MeteoStatEntry) => years.indexOf(moment(e.date).year()) >= 0)
-      : [];
   }
 
   getLocation(vineyard: Vineyard): [number, number] {

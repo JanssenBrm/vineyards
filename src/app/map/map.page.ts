@@ -33,6 +33,7 @@ import { ModalController } from '@ionic/angular';
 import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
 import { NON_PREMIUM_ROLES } from '../models/userdata.model';
+import { Fill, Stroke, Style } from 'ol/style';
 
 @Component({
   selector: 'app-map',
@@ -368,8 +369,21 @@ export class MapPage implements OnInit, AfterViewInit {
     }
   }
 
-  private _getSnapInteraction(): Snap {
-    return new Snap({ source: this._featureLayer.getSource() });
+  private _getFeatureStyle(feature: Feature): Style {
+    const [fill, stroke] = this.getFeatureColors(feature.get('shared'));
+    return new Style({
+      fill: new Fill({
+        color: fill,
+      }),
+      stroke: new Stroke({
+        color: stroke,
+        width: 2,
+      }),
+    });
+  }
+
+  public getFeatureColors(shared: boolean): [string, string] {
+    return shared ? ['rgba(193,95,232,0.5)', 'rgb(175,86,210)'] : ['rgba(95, 118, 232, 0.5)', 'rgb(86,107,210)'];
   }
 
   private _getFeatureLayer(): VectorLayer {
@@ -378,6 +392,7 @@ export class MapPage implements OnInit, AfterViewInit {
       source: new VectorSource({
         features: [],
       }),
+      style: (feature) => this._getFeatureStyle(feature),
     });
   }
 
@@ -403,6 +418,7 @@ export class MapPage implements OnInit, AfterViewInit {
                   geometry: v.location,
                   name: v.id,
                   title: v.name,
+                  shared: v.shared,
                 })
             )
           );
@@ -430,10 +446,6 @@ export class MapPage implements OnInit, AfterViewInit {
       .subscribe((seasons: number[]) => {
         this.activeSeasons = seasons;
       });
-  }
-
-  logout() {
-    this.authService.logout();
   }
 
   zoomToLocation(extent: number[]) {
