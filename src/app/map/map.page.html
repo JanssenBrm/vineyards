@@ -5,6 +5,8 @@
   <app-search [class.mobile]="utilService.isMobile()" (setLocation)="zoomToLocation($event)"></app-search>
 </ion-content>
 
+<ion-progress-bar type="indeterminate"  *ngIf="vineyardService.getIsVineyardsLoading() | async"></ion-progress-bar>
+
 <div id="legend">
   <div class="legend-item">
     <div class="color" [style.background-color]="getFeatureColors(true)[0]" [style.border-color]="getFeatureColors(true)[1]"></div>

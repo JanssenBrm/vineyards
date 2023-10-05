@@ -27,6 +27,8 @@ export class VineyardService {
 
   private _activeSeasons$: BehaviorSubject<number[]>;
 
+  private _vineyardsLoading$: BehaviorSubject<boolean>;
+
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
   private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
@@ -37,6 +39,7 @@ export class VineyardService {
     this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
     this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
     this._activeSeasons$ = new BehaviorSubject<number[]>([new Date().getFullYear()]);
+    this._vineyardsLoading$ = new BehaviorSubject<boolean>(false);
 
     this.authService.getUser().subscribe((user: User) => {
       if (user) {
@@ -51,6 +54,10 @@ export class VineyardService {
         this._vineyards$.next([]);
       }
     });
+  }
+
+  getIsVineyardsLoading(): Observable<boolean> {
+    return this._vineyardsLoading$;
   }
 
   getVineyardsListener(): Observable<Vineyard[]> {
@@ -70,6 +77,7 @@ export class VineyardService {
   }
 
   getVineyards(): void {
+    this._vineyardsLoading$.next(true);
     combineLatest(this.getUserVineyards(), this.getSharedVineyards())
       .pipe(
         map(([owned, shared]) => [...owned, ...shared]),
@@ -89,9 +97,11 @@ export class VineyardService {
       .subscribe({
         next: (vineyards: Vineyard[]) => {
           this._vineyards$.next(vineyards);
+          this._vineyardsLoading$.next(false);
         },
         error: (error: any) => {
           console.error(`Something went wrong while fetching vineyards for user ${this._userId}`, error);
+          this._vineyardsLoading$.next(false);
         },
       });
   }
