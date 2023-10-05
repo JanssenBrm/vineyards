@@ -216,9 +216,6 @@ export class VineyardService {
       location: geoJSON.writeGeometry(location),
       actions: [],
       varieties: [],
-      meteo: {
-        data: [],
-      },
     });
   }
 

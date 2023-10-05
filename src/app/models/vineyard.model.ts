@@ -34,7 +34,6 @@ export interface VineyardBase {
   location: Polygon;
   actions: Action[];
   varieties: Variety[];
-  meteo: MeteoStats;
 }
 
 export interface Vineyard extends VineyardBase {
