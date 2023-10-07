@@ -12,3 +12,4 @@ echo "API_URL=$API_URL" >> $file
 echo "STRIPE_KEY=$STRIPE_KEY" >> $file
 echo "STRIPE_REDIRECT=$STRIPE_REDIRECT" >> $file
 echo "STRIPE_PREMIUM_PRICE_ID=$STRIPE_PREMIUM_PRICE_ID" >> $file
+echo "MAPBOX_KEY=$MAPBOX_KEY" >> $file

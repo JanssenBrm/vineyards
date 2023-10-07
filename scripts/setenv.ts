@@ -28,7 +28,8 @@ export const environment = {
   stripeKey: "${process.env.STRIPE_KEY}",
   owm_key: "${process.env.OWM_KEY}",
   stripeRedirect: "${process.env.STRIPE_REDIRECT}",
-  stripePremiumPrice: "${process.env.STRIPE_PREMIUM_PRICE_ID}"
+  stripePremiumPrice: "${process.env.STRIPE_PREMIUM_PRICE_ID}",
+  mapboxKey: "${process.env.MAPBOX_KEY}",
 };
 `;
 

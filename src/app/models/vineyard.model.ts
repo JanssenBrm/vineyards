@@ -1,6 +1,6 @@
 import { Variety } from './variety.model';
-import { Polygon } from 'ol/geom/Polygon';
 import { Action } from './action.model';
+import { Polygon } from 'geojson';
 
 export interface MeteoStatEntry {
   date: moment.Moment;
@@ -31,12 +31,13 @@ export interface VineyardBase {
   id?: string;
   name: string;
   address?: string;
-  location: Polygon;
+  location: Polygon | string;
   actions: Action[];
   varieties: Variety[];
 }
 
 export interface Vineyard extends VineyardBase {
+  location: Polygon;
   shared: boolean;
   permissions: VineyardPermissions;
   owner: string;

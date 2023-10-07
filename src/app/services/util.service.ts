@@ -1,11 +1,14 @@
 import { BBCH_STAGES } from './../conf/bbch.config';
-import { Vineyard } from './../models/vineyard.model';
 import { Injectable } from '@angular/core';
-import { buffer, createEmpty, extend, getArea } from 'ol/extent';
-import Polygon from 'ol/geom/Polygon';
+import { Polygon } from 'geojson';
 import { BBCH } from '../models/bbch.model';
 import { Platform } from '@ionic/angular';
 import * as marked from 'marked';
+import buffer from '@turf/buffer';
+import union from '@turf/union';
+import bboxPolygon from '@turf/bbox-polygon';
+import bbox from '@turf/bbox';
+import area from '@turf/area';
 
 @Injectable({
   providedIn: 'root',
@@ -14,23 +17,20 @@ export class UtilService {
   constructor(public platform: Platform) {}
 
   getExtent(locations: Polygon[]): any {
-    let extent = createEmpty();
+    let extent = undefined;
     locations.forEach((p: Polygon) => {
-      extent = extend(extent, p.getExtent());
+      if (!extent) {
+        extent = bboxPolygon(bbox(p));
+      } else {
+        extent = union(extent, p);
+      }
     });
     return this.padExtent(extent);
   }
 
-  padExtent(extent: any): any {
-    const bufferDistance = Math.sqrt(getArea(extent)) / 2;
-    return buffer(extent, bufferDistance);
-  }
-
-  reproject(v: Vineyard, from: string, to: string): Vineyard {
-    return {
-      ...v,
-      location: new Polygon(v.location.coordinates).transform(from, to),
-    };
+  padExtent(extent: Polygon): any {
+    const bufferDistance = Math.sqrt(area(extent)) / 30;
+    return bbox(buffer(bboxPolygon(bbox(extent)), bufferDistance, { units: 'kilometers' }));
   }
 
   getBBCHDescription(code: string): string {

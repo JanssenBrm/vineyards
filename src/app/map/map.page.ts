@@ -7,7 +7,6 @@ import { UtilService } from './../services/util.service';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from '../services/vineyard.service';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { Map as olMap } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -19,8 +18,8 @@ import Snap from 'ol/interaction/Snap';
 import Draw from 'ol/interaction/Draw';
 import Overlay from 'ol/Overlay';
 import { Router } from '@angular/router';
-import { catchError, switchMap, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { VarietyService } from '../services/variety.service';
 import { Action } from '../models/action.model';
 import { ActionService } from '../services/action.service';
@@ -34,6 +33,9 @@ import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
 import { NON_PREMIUM_ROLES } from '../models/userdata.model';
 import { Fill, Stroke, Style } from 'ol/style';
+import * as mapboxgl from 'mapbox-gl';
+import { GeoJSONSource } from 'mapbox-gl';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -57,7 +59,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
   public user: BehaviorSubject<User>;
 
-  private _map: olMap;
+  private _map: mapboxgl.Map;
 
   private _featureLayer: VectorLayer;
 
@@ -84,6 +86,10 @@ export class MapPage implements OnInit, AfterViewInit {
   private backgroundLayers: Layer[];
 
   public clickText: string;
+
+  private featureLayer = {
+    source: 'vineyards',
+  };
 
   constructor(
     public vineyardService: VineyardService,
@@ -132,54 +138,86 @@ export class MapPage implements OnInit, AfterViewInit {
       },
     });
 
-    this._map = new olMap({
-      layers: [this._getBaseMap(), this._featureLayer],
-      target: document.getElementById('map'),
-      overlays: [this._overlay, this.clickOverlay],
-      view: this.view,
+    this._map = new mapboxgl.Map({
+      accessToken: environment.mapboxKey,
+      container: 'map',
+      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      projection: {
+        name: 'globe',
+      },
+      center: [0, 0],
+      zoom: 3,
     });
 
-    this._select = this._getSelectInteraction();
-    this._map.addInteraction(this._select);
+    this._map.on('style.load', () => {
+      this._map.addSource('mapbox-dem', {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.terrain-rgb',
+      });
 
-    this._map.on('singleclick', (event) => {
-      const requests = this.backgroundLayers
-        ? this.backgroundLayers
-            .map((l: Layer) => {
-              const layer = this._getMapLayer(l);
-              if (layer && l.enabled && l.click) {
-                return this.http
-                  .get(
-                    layer.getSource().getFeatureInfoUrl(event.coordinate, this.view.getResolution(), 'EPSG:3857', {
-                      INFO_FORMAT: 'application/json',
-                    })
-                  )
-                  .pipe(
-                    switchMap((data: any) => of(l.click(data))),
-                    catchError(() => of(''))
-                  );
-              } else {
-                return null;
-              }
-            })
-            .filter((r: any) => !!r)
-        : [];
-      if (requests.length > 0) {
-        forkJoin(requests).subscribe((results: string[]) => {
-          this.clickText = results.filter((r: string) => r !== '').join('<br/>');
-          this.clickOverlay.setPosition(event.coordinate);
-        });
-      }
+      this._map.setTerrain({
+        source: 'mapbox-dem',
+        exaggeration: 1.5,
+      });
     });
+
+    this._map.on('load', () => {
+      this._map.resize();
+      this._map.addSource(this.featureLayer.source, {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [],
+        },
+      });
+      this._getData();
+    });
+
+    // new olMap({
+    //   layers: [this._getBaseMap(), this._featureLayer],
+    //   target: document.getElementById('map'),
+    //   overlays: [this._overlay, this.clickOverlay],
+    //   view: this.view,
+    // });
+
+    // this._select = this._getSelectInteraction();
+    // this._map.addInteraction(this._select);
+    //
+    // this._map.on('singleclick', (event) => {
+    //   const requests = this.backgroundLayers
+    //     ? this.backgroundLayers
+    //         .map((l: Layer) => {
+    //           const layer = this._getMapLayer(l);
+    //           if (layer && l.enabled && l.click) {
+    //             return this.http
+    //               .get(
+    //                 layer.getSource().getFeatureInfoUrl(event.coordinate, this.view.getResolution(), 'EPSG:3857', {
+    //                   INFO_FORMAT: 'application/json',
+    //                 })
+    //               )
+    //               .pipe(
+    //                 switchMap((data: any) => of(l.click(data))),
+    //                 catchError(() => of(''))
+    //               );
+    //           } else {
+    //             return null;
+    //           }
+    //         })
+    //         .filter((r: any) => !!r)
+    //     : [];
+    //   if (requests.length > 0) {
+    //     forkJoin(requests).subscribe((results: string[]) => {
+    //       this.clickText = results.filter((r: string) => r !== '').join('<br/>');
+    //       this.clickOverlay.setPosition(event.coordinate);
+    //     });
+    //   }
+    // });
 
     this._modify = this._getModifyInteraction();
     this._draw = this._getDrawInteraction();
     this._remove = this._getRemoveInteraction();
 
-    setTimeout(() => {
-      this._map.updateSize();
-      this._getData();
-    }, 500);
+    setTimeout(() => {}, 500);
   }
 
   closePopup() {
@@ -224,32 +262,33 @@ export class MapPage implements OnInit, AfterViewInit {
     this.setMapMode(undefined);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setMapMode(mode: MapMode) {
-    this.mapMode = mode;
-
-    if (this.mapMode === MapMode.Edit) {
-      this._map.addInteraction(this._modify);
-    } else {
-      this._map.removeInteraction(this._modify);
-    }
-
-    if (this.mapMode === MapMode.Add) {
-      this._map.addInteraction(this._draw);
-    } else {
-      this._map.removeInteraction(this._draw);
-    }
-
-    if (this.mapMode === MapMode.Remove) {
-      this._map.addInteraction(this._remove);
-    } else {
-      this._map.removeInteraction(this._remove);
-    }
-
-    if (this.mapMode === undefined) {
-      this._map.addInteraction(this._select);
-    } else {
-      this._map.removeInteraction(this._select);
-    }
+    // this.mapMode = mode;
+    //
+    // if (this.mapMode === MapMode.Edit) {
+    //   this._map.addInteraction(this._modify);
+    // } else {
+    //   this._map.removeInteraction(this._modify);
+    // }
+    //
+    // if (this.mapMode === MapMode.Add) {
+    //   this._map.addInteraction(this._draw);
+    // } else {
+    //   this._map.removeInteraction(this._draw);
+    // }
+    //
+    // if (this.mapMode === MapMode.Remove) {
+    //   this._map.addInteraction(this._remove);
+    // } else {
+    //   this._map.removeInteraction(this._remove);
+    // }
+    //
+    // if (this.mapMode === undefined) {
+    //   this._map.addInteraction(this._select);
+    // } else {
+    //   this._map.removeInteraction(this._select);
+    // }
   }
 
   public updateBackgroundLayers(layers: Layer[]) {
@@ -265,8 +304,10 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public _getMapLayer(l: Layer): any {
-    return this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
+    return [];
+    // return this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
   }
 
   private _getLayer(l: Layer): TileLayer {
@@ -410,22 +451,24 @@ export class MapPage implements OnInit, AfterViewInit {
       .pipe(takeUntil(this._destroy))
       .subscribe((vineyards: Vineyard[]) => {
         if (vineyards.length > 0) {
-          this._featureLayer.getSource().clear();
-          this._featureLayer.getSource().addFeatures(
-            vineyards.map(
-              (v: Vineyard) =>
-                new Feature({
-                  geometry: v.location,
-                  name: v.id,
-                  title: v.name,
-                  shared: v.shared,
-                })
-            )
-          );
+          const features: GeoJSON.Feature[] = vineyards.map((v: Vineyard) => ({
+            type: 'Feature',
+            geometry: v.location,
+            properties: {
+              name: v.id,
+              title: v.name,
+              shared: v.shared,
+            },
+          }));
+          console.log(features);
+          (this._map.getSource(this.featureLayer.source) as GeoJSONSource).setData({
+            type: 'FeatureCollection',
+            features,
+          });
 
           if (this._init) {
-            const center = this.utilService.getExtent(vineyards.map((v: Vineyard) => v.location));
-            this._map.getView().fit(center, { size: this._map.getSize(), maxZoom: 18 });
+            const bounds = this.utilService.getExtent(vineyards.map((v: Vineyard) => v.location));
+            this._map.fitBounds(bounds, { maxZoom: 18 });
             this._init = false;
           }
         }

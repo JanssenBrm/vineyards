@@ -1,4 +1,3 @@
-import { Polygon } from 'ol/geom';
 import { SharedVineyardDoc, VineyardDoc, VineyardPermissionsDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
@@ -13,9 +12,9 @@ import {
 import { GeoJSON } from 'ol/format';
 import { AuthService } from './auth.service';
 import { User } from 'firebase';
-import { getCenter } from 'ol/extent';
-import { transformExtent } from 'ol/proj';
+import center from '@turf/center';
 import { UserService } from './user.service';
+import { Polygon } from 'geojson';
 
 @Injectable({
   providedIn: 'root',
@@ -81,12 +80,6 @@ export class VineyardService {
     combineLatest(this.getUserVineyards(), this.getSharedVineyards())
       .pipe(
         map(([owned, shared]) => [...owned, ...shared]),
-        map((docs: VineyardDoc[]) =>
-          docs.map((d: VineyardDoc) => ({
-            ...d,
-            location: new Polygon(JSON.parse(d.location).coordinates).transform('EPSG:4326', 'EPSG:3857'),
-          }))
-        ),
         // tap((vineyards: Vineyard[]) => forkJoin(vineyards.map((v: Vineyard) => this.updateTempStats(v))).subscribe()),
         map((vineyards: Vineyard[]) =>
           vineyards.map((v: Vineyard) => ({
@@ -116,6 +109,12 @@ export class VineyardService {
               shared: false,
               permissions: VineyardPermissions.OWNER,
               owner: this._userId,
+            }))
+          ),
+          map((docs: VineyardDoc[]) =>
+            docs.map((d: VineyardDoc) => ({
+              ...d,
+              location: JSON.parse(d.location) as Polygon,
             }))
           ),
           catchError((error) => {
@@ -175,6 +174,12 @@ export class VineyardService {
               : of([])
             ).pipe(map((docs) => docs.filter((d) => !!d && d.permissions !== VineyardPermissions.NONE)))
           ),
+          map((docs: VineyardDoc[]) =>
+            docs.map((d: VineyardDoc) => ({
+              ...d,
+              location: JSON.parse(d.location) as Polygon,
+            }))
+          ),
           catchError((error) => {
             console.error(`Failed to retrieved shared vineyards for user ${this._userId}`, error);
             return of([]);
@@ -206,10 +211,6 @@ export class VineyardService {
       .filter((v: Vineyard) => ids.indexOf(v.id) >= 0)
       .map((v: Vineyard) => ({
         ...v,
-        location: new Polygon(v.location.getCoordinates()).transform('EPSG:3857', 'EPSG:4326'),
-      }))
-      .map((v: Vineyard) => ({
-        ...v,
         location: geoJSON.writeGeometry(v.location),
       }))
       .forEach((d: VineyardDoc) => this._vineyardCollection.doc(d.id).set(d));
@@ -218,7 +219,7 @@ export class VineyardService {
   async addVineyard(name: string, address: string, location: Polygon): Promise<DocumentReference> {
     const geoJSON = new GeoJSON({
       dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857',
+      featureProjection: 'EPSG:4326',
     });
     return this._vineyardCollection.add({
       name,
@@ -236,6 +237,6 @@ export class VineyardService {
   }
 
   getLocation(vineyard: Vineyard): [number, number] {
-    return getCenter(transformExtent(vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
+    return center(vineyard.location).geometry.coordinates as [number, number];
   }
 }
