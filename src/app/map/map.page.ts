@@ -87,9 +87,9 @@ export class MapPage implements OnInit, AfterViewInit {
 
   public clickText: string;
 
-  private featureLayer = {
-    source: 'vineyards',
-  };
+  private readonly OWNED_VINEYARD_SOURCE = 'owned-vineyards';
+
+  private readonly SHARED_VINEYARD_SOURCE = 'shared-vineyards';
 
   constructor(
     public vineyardService: VineyardService,
@@ -162,14 +162,10 @@ export class MapPage implements OnInit, AfterViewInit {
     });
 
     this._map.on('load', () => {
+      this.addVineyardLayers(this.OWNED_VINEYARD_SOURCE, false);
+      this.addVineyardLayers(this.SHARED_VINEYARD_SOURCE, true);
+
       this._map.resize();
-      this._map.addSource(this.featureLayer.source, {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [],
-        },
-      });
       this._getData();
     });
 
@@ -218,6 +214,35 @@ export class MapPage implements OnInit, AfterViewInit {
     this._remove = this._getRemoveInteraction();
 
     setTimeout(() => {}, 500);
+  }
+
+  addVineyardLayers(source: string, shared: boolean) {
+    this._map.addSource(source, {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [],
+      },
+    });
+    this._map.addLayer({
+      id: `${source}-fill`,
+      type: 'fill',
+      source: source,
+      paint: {
+        'fill-color': this.getFeatureColors(shared)[0],
+        'fill-opacity': 0.5,
+      },
+    });
+
+    this._map.addLayer({
+      id: `${source}-outline`,
+      type: 'line',
+      source: source,
+      paint: {
+        'line-color': this.getFeatureColors(shared)[1],
+        'line-width': 5,
+      },
+    });
   }
 
   closePopup() {
@@ -460,10 +485,14 @@ export class MapPage implements OnInit, AfterViewInit {
               shared: v.shared,
             },
           }));
-          console.log(features);
-          (this._map.getSource(this.featureLayer.source) as GeoJSONSource).setData({
+          (this._map.getSource(this.OWNED_VINEYARD_SOURCE) as GeoJSONSource).setData({
             type: 'FeatureCollection',
-            features,
+            features: features.filter((f: Feature) => !f.properties.shared),
+          });
+
+          (this._map.getSource(this.SHARED_VINEYARD_SOURCE) as GeoJSONSource).setData({
+            type: 'FeatureCollection',
+            features: features.filter((f: Feature) => f.properties.shared),
           });
 
           if (this._init) {
@@ -479,7 +508,7 @@ export class MapPage implements OnInit, AfterViewInit {
       .pipe(takeUntil(this._destroy))
       .subscribe((vineyard: Vineyard) => {
         if (!vineyard) {
-          this._select.getFeatures().clear();
+          //f   this._select.getFeatures().clear();
         }
       });
 
