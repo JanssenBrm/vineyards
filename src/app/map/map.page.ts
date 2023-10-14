@@ -6,7 +6,7 @@ import { buffer } from 'ol/extent';
 import { UtilService } from './../services/util.service';
 import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from '../services/vineyard.service';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -19,7 +19,7 @@ import Draw from 'ol/interaction/Draw';
 import Overlay from 'ol/Overlay';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, merge, Subject } from 'rxjs';
 import { VarietyService } from '../services/variety.service';
 import { Action } from '../models/action.model';
 import { ActionService } from '../services/action.service';
@@ -36,6 +36,8 @@ import { Fill, Stroke, Style } from 'ol/style';
 import * as mapboxgl from 'mapbox-gl';
 import { GeoJSONSource } from 'mapbox-gl';
 import { environment } from '../../environments/environment';
+import center from '@turf/center';
+import { Polygon } from 'geojson';
 
 @Component({
   selector: 'app-map',
@@ -43,6 +45,8 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./map.page.scss'],
 })
 export class MapPage implements OnInit, AfterViewInit {
+  @ViewChild('popupcontent', { static: false }) popupDiv: ElementRef;
+
   public dirty: string[] = [];
 
   public activeVineyard: Vineyard;
@@ -120,22 +124,6 @@ export class MapPage implements OnInit, AfterViewInit {
     this.view = new View({
       center: [0, 1000000],
       zoom: 3,
-    });
-
-    this._overlay = new Overlay({
-      element: document.getElementById('popup'),
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250,
-      },
-    });
-
-    this.clickOverlay = new Overlay({
-      element: document.getElementById('clickPopup'),
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250,
-      },
     });
 
     this._map = new mapboxgl.Map({
@@ -225,7 +213,7 @@ export class MapPage implements OnInit, AfterViewInit {
       },
     });
     this._map.addLayer({
-      id: `${source}-fill`,
+      id: source,
       type: 'fill',
       source: source,
       paint: {
@@ -243,18 +231,39 @@ export class MapPage implements OnInit, AfterViewInit {
         'line-width': 5,
       },
     });
-  }
 
-  closePopup() {
-    this._overlay.setPosition(undefined);
-    this._select.getFeatures().clear();
-    return false;
-  }
+    this._map.on('click', source, (e) => {
+      // Copy coordinates array.
+      const coordinates = center(e.features[0].geometry as Polygon);
+      this.activeVineyard = this.vineyardService.getInfo(e.features[0].properties.name);
 
-  closeClickPopup() {
-    this.clickOverlay.setPosition(undefined);
-    this.clickText = '';
-    return false;
+      const popup = new mapboxgl.Popup()
+        .setLngLat(coordinates.geometry.coordinates as [number, number])
+        .setHTML('<div style="text-align: center"><ion-spinner name="crescent" color="primary"></ion-spinner></div>')
+        .addTo(this._map);
+
+      merge(this.actions, this.varieties).subscribe({
+        next: () => {
+          setTimeout(() => {
+            const visible = this.popupDiv.nativeElement.cloneNode(true);
+            visible.style.display = 'block';
+            popup.setDOMContent(visible);
+          }, 500);
+        },
+      });
+      this.varietyService.getVarieties(this.activeVineyard);
+      this.actionService.getActions(this.activeVineyard);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    this._map.on('mouseenter', source, () => {
+      this._map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    this._map.on('mouseleave', source, () => {
+      this._map.getCanvas().style.cursor = '';
+    });
   }
 
   openVineyard(info: Vineyard): void {
@@ -318,7 +327,6 @@ export class MapPage implements OnInit, AfterViewInit {
 
   public updateBackgroundLayers(layers: Layer[]) {
     this.backgroundLayers = layers;
-    this.closeClickPopup();
     layers.forEach((l: Layer) => {
       const exists = this._getMapLayer(l);
       if (!exists && l.enabled) {
@@ -360,7 +368,6 @@ export class MapPage implements OnInit, AfterViewInit {
         this.actionService.getActions(this.activeVineyard);
         this._overlay.setPosition(feature.mapBrowserEvent.coordinate);
       } else {
-        this.closePopup();
       }
     });
     return select;

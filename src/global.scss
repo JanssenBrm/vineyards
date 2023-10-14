@@ -112,3 +112,60 @@ ion-card {
         --width: 90%;
     }
 }
+
+
+// MAPBOX
+
+.mapboxgl-popup {
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    color: black;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    min-width: 280px;
+    padding: 1rem 1rem 0;
+}
+
+.mapboxgl-popup-content {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    .title {
+        font-weight: bold;
+        margin-bottom: .5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .chip {
+            color: white;
+            padding: .25rem 0.5rem;
+            border-radius: var(--ion-border-radius);
+
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: .25rem;
+
+        .icon {
+            margin-right: .5rem;
+            color: #9c9c9c
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+    }
+}

@@ -1,77 +1,76 @@
-<app-header [title]="'My vineyards'" showSeasons="false" [showBackButton]="false"> </app-header>
+<app-header [showBackButton]="false" [title]="'My vineyards'" showSeasons="false"></app-header>
 <ion-content id="map-content">
-  <div id="map" [class.mobile]="utilService.isMobile()"></div>
-  <app-toolbar [class.mobile]="utilService.isMobile()" [dirty]="dirty.length > 0" [mapMode]="mapMode" (updateState)="updateState($event)" (updateMapMode)="setMapMode($event)" (updateBackgroundLayers)="updateBackgroundLayers($event)"></app-toolbar>
-  <app-search [class.mobile]="utilService.isMobile()" (setLocation)="zoomToLocation($event)"></app-search>
+    <div [class.mobile]="utilService.isMobile()" id="map"></div>
+    <app-toolbar (updateBackgroundLayers)="updateBackgroundLayers($event)" (updateMapMode)="setMapMode($event)" (updateState)="updateState($event)"
+                 [class.mobile]="utilService.isMobile()" [dirty]="dirty.length > 0"
+                 [mapMode]="mapMode"></app-toolbar>
+    <app-search (setLocation)="zoomToLocation($event)" [class.mobile]="utilService.isMobile()"></app-search>
 </ion-content>
 
-<ion-progress-bar type="indeterminate"  *ngIf="vineyardService.getIsVineyardsLoading() | async"></ion-progress-bar>
+<ion-progress-bar *ngIf="vineyardService.getIsVineyardsLoading() | async" type="indeterminate"></ion-progress-bar>
 
 <div id="legend">
-  <div class="legend-item">
-    <div class="color" [style.background-color]="getFeatureColors(false)[0]" [style.border-color]="getFeatureColors(false)[1]"></div>
-    <span>Your vineyards</span>
-  </div>
-  <div class="legend-item">
-    <div class="color" [style.background-color]="getFeatureColors(true)[0]" [style.border-color]="getFeatureColors(true)[1]"></div>
-    <span>Shared vineyards</span>
-  </div>
+    <div class="legend-item">
+        <div [style.background-color]="getFeatureColors(false)[0]" [style.border-color]="getFeatureColors(false)[1]"
+             class="color"></div>
+        <span>Your vineyards</span>
+    </div>
+    <div class="legend-item">
+        <div [style.background-color]="getFeatureColors(true)[0]" [style.border-color]="getFeatureColors(true)[1]"
+             class="color"></div>
+        <span>Shared vineyards</span>
+    </div>
 </div>
 
-<div id="clickPopup" class="ol-popup">
-  <a href="#" id="popup-closer" class="ol-popup-closer" (click)="closeClickPopup()"></a>
-  <div [innerHTML]="clickText"></div>
-</div>
-<div id="popup" class="ol-popup">
-  <div id="popup-content">
+<div #popupcontent class="mapboxgl-popup-content">
     <div class="title">
-      {{activeVineyard?.name}}
-      <div *ngIf="activeVineyard?.shared" class="chip" [style.background-color]="getFeatureColors(true)[1]">Shared</div>
+        {{activeVineyard?.name}}
+        <div *ngIf="activeVineyard?.shared" [style.background-color]="getFeatureColors(true)[1]" class="chip">Shared
+        </div>
     </div>
     <div class="row">
-      <div class="icon">
-        <ion-icon name="home-outline"></ion-icon>
-      </div>
-      <div>
-        {{activeVineyard?.address}}
-      </div>
-    </div>
-    <div class="row" *ngIf="(varieties | async)?.length > 0">
-      <div class="icon">
-        <ion-icon name="leaf-outline"></ion-icon>
-      </div>
-      <div>
-        {{getVarieties((varieties | async))}}
-      </div>
-    </div>
-    <div class="row" *ngIf="(varieties | async)?.length > 0">
         <div class="icon">
-          <ion-icon name="pricetags-outline"></ion-icon>
+            <ion-icon name="home-outline"></ion-icon>
         </div>
         <div>
-          {{getVarietyCount((varieties | async))}} plants
+            {{activeVineyard?.address}}
         </div>
-      </div>
-      <div class="row" *ngIf="(actions | async)?.length > 0">
+    </div>
+    <div *ngIf="(varieties | async)?.length > 0" class="row">
         <div class="icon">
-          <ion-icon name="time-outline"></ion-icon>
+            <ion-icon name="leaf-outline"></ion-icon>
         </div>
         <div>
-          {{getLastUpdate((actions | async)) | moment:'DD/MM/yyyy'}}
+            {{getVarieties((varieties | async))}}
         </div>
-      </div>
+    </div>
+    <div *ngIf="(varieties | async)?.length > 0" class="row">
+        <div class="icon">
+            <ion-icon name="pricetags-outline"></ion-icon>
+        </div>
+        <div>
+            {{getVarietyCount((varieties | async))}} plants
+        </div>
+    </div>
+    <div *ngIf="(actions | async)?.length > 0" class="row">
+        <div class="icon">
+            <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div>
+            {{getLastUpdate((actions | async)) | moment:'DD/MM/yyyy'}}
+        </div>
+    </div>
     <div class="row">
-      <div class="actions">
-        <ion-button size="small" (click)="openVineyard(activeVineyard)">Show info</ion-button>
-      </div>
+        <div class="actions">
+            <ion-button (click)="openVineyard(activeVineyard)" size="small">Show info</ion-button>
+        </div>
     </div>
-  </div>
 </div>
 <ion-fab [vertical]="utilService.isMobile() ? 'center' : 'bottom'" horizontal="start" slot="fixed">
-  <ion-fab-button href="https://github.com/JanssenBrm/vineyards/issues/new?template=bug_report.md'">
-    <ion-icon name="bug-outline"></ion-icon>
-  </ion-fab-button>
-  <ion-fab-button *appUserHasRole="NON_PREMIUM_ROLES"  (click)="router.navigate(['/premium'])">
-    <ion-icon name="diamond-outline"></ion-icon>
-  </ion-fab-button>
+    <ion-fab-button href="https://github.com/JanssenBrm/vineyards/issues/new?template=bug_report.md'">
+        <ion-icon name="bug-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button (click)="router.navigate(['/premium'])" *appUserHasRole="NON_PREMIUM_ROLES">
+        <ion-icon name="diamond-outline"></ion-icon>
+    </ion-fab-button>
 </ion-fab>
