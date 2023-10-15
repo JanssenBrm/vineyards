@@ -1,6 +1,6 @@
 import { MapMode } from './../models/mapmode.model';
 import { Variety } from './../models/variety.model';
-import { TileWMS, XYZ } from 'ol/source';
+import { XYZ } from 'ol/source';
 import { transformExtent } from 'ol/proj';
 import { buffer } from 'ol/extent';
 import { UtilService } from './../services/util.service';
@@ -38,6 +38,7 @@ import { GeoJSONSource } from 'mapbox-gl';
 import { environment } from '../../environments/environment';
 import center from '@turf/center';
 import { Polygon } from 'geojson';
+import { BACKGROUND_LAYERS } from '../conf/layers.config';
 
 @Component({
   selector: 'app-map',
@@ -84,12 +85,6 @@ export class MapPage implements OnInit, AfterViewInit {
   private _init: boolean;
 
   private view: View;
-
-  private clickOverlay: Overlay;
-
-  private backgroundLayers: Layer[];
-
-  public clickText: string;
 
   private readonly OWNED_VINEYARD_SOURCE = 'owned-vineyards';
 
@@ -150,6 +145,7 @@ export class MapPage implements OnInit, AfterViewInit {
     });
 
     this._map.on('load', () => {
+      this.addBackgroundLayers();
       this.addVineyardLayers(this.OWNED_VINEYARD_SOURCE, false);
       this.addVineyardLayers(this.SHARED_VINEYARD_SOURCE, true);
 
@@ -202,6 +198,24 @@ export class MapPage implements OnInit, AfterViewInit {
     this._remove = this._getRemoveInteraction();
 
     setTimeout(() => {}, 500);
+  }
+
+  addBackgroundLayers() {
+    BACKGROUND_LAYERS.map((l: Layer) => {
+      this._map.addSource(l.id, {
+        type: 'raster',
+        tiles: [l.url],
+        tileSize: 256,
+      });
+      this._map.addLayer({
+        id: l.id,
+        type: 'raster',
+        source: l.id,
+        layout: {
+          visibility: 'none',
+        },
+      });
+    });
   }
 
   addVineyardLayers(source: string, shared: boolean) {
@@ -330,14 +344,8 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   public updateBackgroundLayers(layers: Layer[]) {
-    this.backgroundLayers = layers;
     layers.forEach((l: Layer) => {
-      const exists = this._getMapLayer(l);
-      if (!exists && l.enabled) {
-        this._map.addLayer(this._getLayer(l));
-      } else if (exists) {
-        exists.setVisible(l.enabled);
-      }
+      this._map.setLayoutProperty(l.id, 'visibility', l.enabled ? 'visible' : 'none');
     });
   }
 
@@ -345,22 +353,6 @@ export class MapPage implements OnInit, AfterViewInit {
   public _getMapLayer(l: Layer): any {
     return [];
     // return this._map.getLayers().array_.find((mLayer: any) => mLayer.get('id') === l.id);
-  }
-
-  private _getLayer(l: Layer): TileLayer {
-    return new TileLayer({
-      id: l.id,
-      name: l.label,
-      visible: l.enabled,
-      source: new TileWMS({
-        url: l.url,
-        params: {
-          LAYERS: l.params.layer,
-          TILED: true,
-        },
-        transition: 0,
-      }),
-    });
   }
 
   private _getSelectInteraction(): Select {
