@@ -245,8 +245,11 @@ export class MapPage implements OnInit, AfterViewInit {
       merge(this.actions, this.varieties).subscribe({
         next: () => {
           setTimeout(() => {
-            const visible = this.popupDiv.nativeElement.cloneNode(true);
+            const visible: HTMLDivElement = this.popupDiv.nativeElement.cloneNode(true);
             visible.style.display = 'block';
+            visible.children[visible.children.length - 1].children[0].children
+              .namedItem('showVineyardInfo')
+              .addEventListener('click', () => this.openVineyard(this.activeVineyard));
             popup.setDOMContent(visible);
           }, 500);
         },
@@ -267,6 +270,7 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   openVineyard(info: Vineyard): void {
+    console.log('Opening vineyards');
     this.router.navigate([`/vineyard/view/${info.id}/info`]);
   }
 
