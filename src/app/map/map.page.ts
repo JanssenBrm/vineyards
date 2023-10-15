@@ -1,6 +1,5 @@
 import { MapMode } from './../models/mapmode.model';
 import { Variety } from './../models/variety.model';
-import { XYZ } from 'ol/source';
 import { transformExtent } from 'ol/proj';
 import { buffer } from 'ol/extent';
 import { UtilService } from './../services/util.service';
@@ -8,10 +7,7 @@ import { Vineyard } from './../models/vineyard.model';
 import { VineyardService } from '../services/vineyard.service';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import Feature from 'ol/Feature';
 import Select from 'ol/interaction/Select';
 import Modify from 'ol/interaction/Modify';
 import Snap from 'ol/interaction/Snap';
@@ -32,13 +28,13 @@ import { ModalController } from '@ionic/angular';
 import { AddVineyardComponent } from './addvineyard/addvineyard.component';
 import { ConfirmComponent } from '../shared/components/confirm/confirm.component';
 import { NON_PREMIUM_ROLES } from '../models/userdata.model';
-import { Fill, Stroke, Style } from 'ol/style';
 import * as mapboxgl from 'mapbox-gl';
-import { GeoJSONSource } from 'mapbox-gl';
+import { GeoJSONSource, MapboxGeoJSONFeature } from 'mapbox-gl';
 import { environment } from '../../environments/environment';
 import center from '@turf/center';
-import { Polygon } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 import { BACKGROUND_LAYERS } from '../conf/layers.config';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 @Component({
   selector: 'app-map',
@@ -92,6 +88,8 @@ export class MapPage implements OnInit, AfterViewInit {
 
   private activeLayers: string[] = [];
 
+  private draw: MapboxDraw;
+
   constructor(
     public vineyardService: VineyardService,
     public utilService: UtilService,
@@ -116,7 +114,6 @@ export class MapPage implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dirty = [];
     this._destroy = new Subject<boolean>();
-    this._featureLayer = this._getFeatureLayer();
 
     this.view = new View({
       center: [0, 1000000],
@@ -195,11 +192,59 @@ export class MapPage implements OnInit, AfterViewInit {
     //   }
     // });
 
-    this._modify = this._getModifyInteraction();
-    this._draw = this._getDrawInteraction();
-    this._remove = this._getRemoveInteraction();
+    // this._modify = this._getModifyInteraction();
+    // this._draw = this._getDrawInteraction();
+    // this._remove = this._getRemoveInteraction();
 
     setTimeout(() => {}, 500);
+  }
+
+  toggleDraw(enable: boolean) {
+    if (enable) {
+      this.draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true,
+        },
+      });
+      const features: MapboxGeoJSONFeature[] = this.getUniqueFeatures(
+        this._map.querySourceFeatures(this.OWNED_VINEYARD_SOURCE),
+        'name'
+      );
+      this._map.addControl(this.draw);
+      // this._map.on('draw.create', updateArea);
+      // this._map.on('draw.delete', updateArea);
+      // this._map.on('draw.update', updateArea);
+      this.draw.add({
+        type: 'FeatureCollection',
+        features: features.map((f) => ({
+          type: 'Feature',
+          geometry: f.geometry,
+          properties: f.properties,
+        })),
+      });
+      console.log('HIDING LAYERS');
+      this._map.setLayoutProperty(this.OWNED_VINEYARD_SOURCE, 'visibility', 'none');
+      this._map.setLayoutProperty(this.SHARED_VINEYARD_SOURCE, 'visibility', 'none');
+    } else {
+      this._map.removeControl(this.draw);
+      this._map.setLayoutProperty(this.OWNED_VINEYARD_SOURCE, 'visibility', 'visible');
+      this._map.setLayoutProperty(this.SHARED_VINEYARD_SOURCE, 'visibility', 'visible');
+    }
+  }
+
+  getUniqueFeatures(features, comparatorProperty) {
+    const uniqueIds = new Set();
+    const uniqueFeatures = [];
+    for (const feature of features) {
+      const id = feature.properties[comparatorProperty];
+      if (!uniqueIds.has(id)) {
+        uniqueIds.add(id);
+        uniqueFeatures.push(feature);
+      }
+    }
+    return uniqueFeatures;
   }
 
   addBackgroundLayers() {
@@ -245,6 +290,9 @@ export class MapPage implements OnInit, AfterViewInit {
       id: source,
       type: 'fill',
       source: source,
+      layout: {
+        visibility: 'visible',
+      },
       paint: {
         'fill-color': this.getFeatureColors(shared)[0],
         'fill-opacity': 0.5,
@@ -331,6 +379,12 @@ export class MapPage implements OnInit, AfterViewInit {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setMapMode(mode: MapMode) {
+    this.mapMode = mode;
+    if (mode === MapMode.Edit) {
+      this.toggleDraw(true);
+    } else {
+      this.toggleDraw(false);
+    }
     // this.mapMode = mode;
     //
     // if (this.mapMode === MapMode.Edit) {
@@ -399,8 +453,8 @@ export class MapPage implements OnInit, AfterViewInit {
     const modify = new Modify({ source: this._featureLayer.getSource() });
     modify.on('modifyend', (event: any) => {
       event.features.forEach((f: Feature) => {
-        this.dirty.push(f.get('name'));
-        this.vineyardService.updateLocation(f.get('name'), f.getGeometry());
+        this.dirty.push(f.properties.name);
+        this.vineyardService.updateLocation(f.properties.name, f.geometry as Polygon);
       });
     });
     return modify;
@@ -418,7 +472,7 @@ export class MapPage implements OnInit, AfterViewInit {
     const modal = await this.modalController.create({
       component: AddVineyardComponent,
       componentProps: {
-        geometry: f.getGeometry(),
+        geometry: f.geometry,
       },
     });
     modal.present();
@@ -442,51 +496,20 @@ export class MapPage implements OnInit, AfterViewInit {
     const modal = await this.modalController.create({
       component: ConfirmComponent,
       componentProps: {
-        message: `Are you sure you want to delete vineyard ${f.get('title')}?`,
+        message: `Are you sure you want to delete vineyard ${f.properties.title}?`,
       },
     });
     modal.present();
     const data = await modal.onWillDismiss();
     if (data.data && data.data.confirm) {
-      await this.vineyardService.deleteVineyard(f.get('name'));
+      await this.vineyardService.deleteVineyard(f.properties.name);
     } else {
       this._remove.getFeatures().clear();
     }
   }
 
-  private _getFeatureStyle(feature: Feature): Style {
-    const [fill, stroke] = this.getFeatureColors(feature.get('shared'));
-    return new Style({
-      fill: new Fill({
-        color: fill,
-      }),
-      stroke: new Stroke({
-        color: stroke,
-        width: 5,
-      }),
-    });
-  }
-
   public getFeatureColors(shared: boolean): [string, string] {
     return shared ? ['rgba(193,95,232,0.5)', 'rgb(175,86,210)'] : ['rgba(95, 118, 232, 0.5)', 'rgb(86,107,210)'];
-  }
-
-  private _getFeatureLayer(): VectorLayer {
-    return new VectorLayer({
-      zIndex: 99,
-      source: new VectorSource({
-        features: [],
-      }),
-      style: (feature) => this._getFeatureStyle(feature),
-    });
-  }
-
-  private _getBaseMap(): TileLayer {
-    return new TileLayer({
-      source: new XYZ({
-        url: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
-      }),
-    });
   }
 
   private _getData(): void {
@@ -495,7 +518,7 @@ export class MapPage implements OnInit, AfterViewInit {
       .pipe(takeUntil(this._destroy))
       .subscribe((vineyards: Vineyard[]) => {
         if (vineyards.length > 0) {
-          const features: GeoJSON.Feature[] = vineyards.map((v: Vineyard) => ({
+          const features: Feature[] = vineyards.map((v: Vineyard) => ({
             type: 'Feature',
             geometry: v.location,
             properties: {
@@ -508,7 +531,6 @@ export class MapPage implements OnInit, AfterViewInit {
             type: 'FeatureCollection',
             features: features.filter((f: Feature) => !f.properties.shared),
           });
-
           (this._map.getSource(this.SHARED_VINEYARD_SOURCE) as GeoJSONSource).setData({
             type: 'FeatureCollection',
             features: features.filter((f: Feature) => f.properties.shared),

@@ -27,6 +27,9 @@
 
 @import "~ol/ol.css";
 
+@import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+
+
 .ol-zoom {
     right: .5rem;
     bottom: 1.5rem;
