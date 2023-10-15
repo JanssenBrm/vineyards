@@ -90,6 +90,8 @@ export class MapPage implements OnInit, AfterViewInit {
 
   private readonly SHARED_VINEYARD_SOURCE = 'shared-vineyards';
 
+  private activeLayers: string[] = [];
+
   constructor(
     public vineyardService: VineyardService,
     public utilService: UtilService,
@@ -215,6 +217,19 @@ export class MapPage implements OnInit, AfterViewInit {
           visibility: 'none',
         },
       });
+      if (l.click) {
+        this._map.on('click', async (ev) => {
+          if (this.activeLayers.includes(l.id)) {
+            let text = '';
+            try {
+              text = await l.click(ev.lngLat);
+            } catch (e) {
+              text = 'Sorry! Could not retrieve more information.';
+            }
+            new mapboxgl.Popup().setLngLat(ev.lngLat).setText(text).addTo(this._map);
+          }
+        });
+      }
     });
   }
 
@@ -347,6 +362,7 @@ export class MapPage implements OnInit, AfterViewInit {
     layers.forEach((l: Layer) => {
       this._map.setLayoutProperty(l.id, 'visibility', l.enabled ? 'visible' : 'none');
     });
+    this.activeLayers = layers.filter((l: Layer) => l.enabled).map((l: Layer) => l.id);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

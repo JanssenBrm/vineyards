@@ -127,7 +127,9 @@ ion-card {
 }
 
 .mapboxgl-popup-content {
-    padding: 0;
+    .mapboxgl-popup-content {
+        padding: 0;
+    }
     border-radius: 0;
     box-shadow: none;
     .title {

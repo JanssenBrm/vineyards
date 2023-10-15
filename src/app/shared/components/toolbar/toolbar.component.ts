@@ -1,5 +1,5 @@
 import { MapMode } from './../../../models/mapmode.model';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { LayersComponent } from './layers/layers.component';
 import { BACKGROUND_LAYERS } from '../../../conf/layers.config';
