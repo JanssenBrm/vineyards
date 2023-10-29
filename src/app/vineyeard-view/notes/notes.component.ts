@@ -6,7 +6,8 @@ import { Vintage } from '../../models/vintage.model';
 import { AddNoteComponent } from '../add-note/add-note.component';
 import { ModalController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
-import { VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vintageevent.model';
+import { VintageEvent } from '../../models/vintageevent.model';
+import { VintageService } from '../../services/vintage.service';
 
 @Component({
   selector: 'app-notes',
@@ -26,7 +27,11 @@ export class NotesComponent implements OnInit, OnChanges {
 
   public activeTypes: string[] = Object.keys(VintageEvent);
 
-  constructor(private notesService: NotesService, private modalController: ModalController) {}
+  constructor(
+    private notesService: NotesService,
+    private modalController: ModalController,
+    public vintageService: VintageService
+  ) {}
 
   ngOnInit() {
     this.notes$ = this.notesService.getNotesListener();
@@ -65,15 +70,6 @@ export class NotesComponent implements OnInit, OnChanges {
 
   editNote(note: NoteBase) {
     this.openAddNoteModal(note);
-  }
-
-  getEventTypeColor(stage: string): string {
-    const idx = Object.keys(this.STAGE).findIndex((s: string) => s === stage);
-    if (idx >= 0 && this.activeTypes.find((s) => s === stage)) {
-      return VINTAGEEVENT_COLORS[idx];
-    } else {
-      return 'lightgrey';
-    }
   }
 
   toggleNoteType(stage: string) {

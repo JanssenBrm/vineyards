@@ -3,11 +3,12 @@ import { Vineyard } from '../../models/vineyard.model';
 import { Vintage } from '../../models/vintage.model';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { NoteBase } from '../../models/note.model';
-import { SINGLE_DATES, VintageEvent, VINTAGEEVENT_COLORS } from '../../models/vintageevent.model';
+import { SINGLE_DATES, VintageEvent } from '../../models/vintageevent.model';
 import { NotesService } from '../../services/notes.service';
 import { skipWhile } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Chart } from 'chart.js';
+import { VintageService } from '../../services/vintage.service';
 
 @Component({
   selector: 'app-timeline',
@@ -33,7 +34,7 @@ export class TimelineComponent implements OnInit, OnChanges {
 
   private containerReady: BehaviorSubject<boolean>;
 
-  constructor(private notesService: NotesService) {}
+  constructor(private notesService: NotesService, private vintageService: VintageService) {}
 
   createChart(notes: NoteBase[]) {
     if (notes.length > 0) {
@@ -42,7 +43,7 @@ export class TimelineComponent implements OnInit, OnChanges {
         data: {
           datasets: Object.keys(this.STAGE)
             .filter((stage: string) => notes.filter((n: NoteBase) => n.stage === stage).length > 0)
-            .map((stage: string, idx: number) => ({
+            .map((stage: string) => ({
               label: stage,
               data: notes
                 .filter((n: NoteBase) => n.stage === stage)
@@ -51,10 +52,10 @@ export class TimelineComponent implements OnInit, OnChanges {
                   y: stage,
                   description: n.description,
                 })),
-              borderColor: VINTAGEEVENT_COLORS[idx],
+              borderColor: this.vintageService.getEventTypeColor(stage),
               borderWidth: 10,
-              pointBackgroundColor: VINTAGEEVENT_COLORS[idx],
-              pointBorderColor: VINTAGEEVENT_COLORS[idx],
+              pointBackgroundColor: this.vintageService.getEventTypeColor(stage),
+              pointBorderColor: this.vintageService.getEventTypeColor(stage),
               pointRadius: 1,
               pointHoverRadius: 1,
               fill: false,

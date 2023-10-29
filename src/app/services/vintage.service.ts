@@ -4,6 +4,7 @@ import { Vineyard } from '../models/vineyard.model';
 import { Vintage } from '../models/vintage.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { VintageEvent, VINTAGEEVENT_COLORS } from '../models/vintageevent.model';
 
 @Injectable({
   providedIn: 'root',
@@ -52,5 +53,14 @@ export class VintageService {
         map((vintages: Vintage[]) => vintages.sort((v1: Vintage, v2: Vintage) => (v1.year > v2.year ? -1 : 1)))
       )
       .subscribe((vintages: Vintage[]) => this._vintages.next(vintages));
+  }
+
+  public getEventTypeColor(stage: string): string {
+    const idx = Object.keys(VintageEvent).findIndex((s: string) => s === stage);
+    if (idx >= 0) {
+      return VINTAGEEVENT_COLORS[idx];
+    } else {
+      return 'lightgrey';
+    }
   }
 }
