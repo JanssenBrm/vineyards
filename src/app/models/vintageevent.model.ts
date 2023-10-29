@@ -1,9 +1,11 @@
 export enum VintageEvent {
-  'FIRST_FERMENTATION' = 'FIRST_FERMENTATION',
+  'ALCOHOLIC_FERMENTATION' = 'ALCOHOLIC_FERMENTATION',
+  'MALO_FERMENTATION' = 'MALOLACTIC_FERMENTATION',
   'PRESSING' = 'PRESSING',
   'RACKING' = 'RACKING',
   'RESTING' = 'RESTING',
   'TESTING' = 'TESTING',
+  'FINING' = 'FINING',
   'BOTTLING' = 'BOTTLING',
   'TASTING' = 'TASTING',
 }
@@ -14,6 +16,7 @@ export const SINGLE_DATES = [
   VintageEvent.BOTTLING,
   VintageEvent.TASTING,
   VintageEvent.TESTING,
+  VintageEvent.FINING,
 ];
 
 export const VINTAGEEVENT_COLORS = [
@@ -24,4 +27,6 @@ export const VINTAGEEVENT_COLORS = [
   'rgb(54, 162, 235)',
   'rgb(153, 102, 255)',
   'rgb(56,128,255)',
+  'rgb(140,220,50)',
+  'rgb(90,43,185)',
 ];
