@@ -16,6 +16,7 @@ import { Warning, WarningType } from './models/warning.model';
 import * as moment from 'moment';
 import * as sgMail from '@sendgrid/mail';
 import { stripeWebhooks } from './controllers/stripe.controller';
+import { sharingHooks } from './controllers/sharing.controller';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
@@ -118,3 +119,4 @@ exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async ()
 });
 
 exports.stripeWebhooks = stripeWebhooks;
+exports.sharingHooks = sharingHooks;
