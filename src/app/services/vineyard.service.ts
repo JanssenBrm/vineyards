@@ -153,17 +153,14 @@ export class VineyardService {
                             );
                             return of(VineyardPermissions.NONE);
                           })
-                        ),
-                      // Get the user data of the vineyard owner
-                      this.userService.getUserInfo(s.user)
+                        )
                     ).pipe(
-                      map(([doc, permissions, user]) => ({
+                      map(([doc, permissions]) => ({
                         ...doc.data(),
                         id: doc.id,
                         shared: true,
                         permissions: permissions,
                         owner: s.user,
-                        ownerName: user.name,
                       })),
                       catchError((error: any) => {
                         console.error(`Cannot open vineyard ${s.vineyard}`, error);
