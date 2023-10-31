@@ -1,5 +1,7 @@
-import { SharingOpts, SharingPermission } from '../models/sharing.model';
+import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sharing.model';
 import { db } from './utils.service';
+import { SharedVineyard } from '../models/vineyard.model';
+import { getUsername } from './user.service';
 
 const addPermissions = async (
   ownerId: string,
@@ -62,6 +64,49 @@ const deleteSharedVineyard = async (userId: string, ownerId: string, vineyardId:
     throw error;
   }
 };
+
+export const isOwner = async (ownerId: string, vineyardId: string): Promise<boolean> => {
+  try {
+    console.log(`Check if ${ownerId} is the owner of ${vineyardId}`);
+    const doc = await db.collection('users').doc(ownerId).collection('vineyards').doc(vineyardId).get();
+    return doc.exists;
+  } catch (error) {
+    console.error(`Could not check if ${ownerId} is owner of ${vineyardId}`, error);
+    return false;
+  }
+};
+
+export const getSharedVineyards = async (userId: string): Promise<SharedVineyard[]> => {
+  try {
+    console.log(`Retrieving shared vineyards for ${userId}`);
+    const ids = await db.collection('users').doc(userId).collection('sharedVineyards').listDocuments();
+    return await Promise.all(
+      ids.map((doc) =>
+        doc
+          .get()
+          .then((data) => data.data() as SharedVineyardOpts)
+          .then((info: SharedVineyardOpts) =>
+            Promise.all([
+              db.collection('users').doc(info.user).collection('vineyards').doc(info.vineyard).get(),
+              getUsername(info.user),
+            ])
+          )
+          .then(([snapshot, username]) =>
+            snapshot.exists
+              ? ({
+                  ...snapshot.data(),
+                  owner: username,
+                } as SharedVineyard)
+              : undefined
+          )
+      )
+    ).then((vineyards) => vineyards.filter((v) => !!v) as SharedVineyard[]);
+  } catch (error) {
+    console.error(`Could not retrieve shared vineyards for ${userId}`, error);
+    throw error;
+  }
+};
+
 export const shareVineyard = async (ownerId: string, vineyardId: string, opts: SharingOpts): Promise<void> => {
   await addPermissions(ownerId, vineyardId, opts.user, opts.permissions);
   await addSharedVineyard(opts.user, ownerId, vineyardId);

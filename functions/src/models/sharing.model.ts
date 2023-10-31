@@ -6,3 +6,8 @@ export interface SharingOpts {
   user: string;
   permissions: SharingPermission;
 }
+
+export interface SharedVineyardOpts {
+  user: string;
+  vineyard: string;
+}
