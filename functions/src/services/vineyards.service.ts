@@ -103,20 +103,25 @@ export const getSharedVineyards = async (userId: string): Promise<SharedVineyard
                       ? (snapshot.data()?.permissions as VineyardPermissions)
                       : undefined) || VineyardPermissions.NONE
                 ),
+              info,
             ])
           )
-          .then(([snapshot, username, permissions]) =>
+          .then(([snapshot, username, permissions, info]) =>
             snapshot.exists
               ? ({
                   ...snapshot.data(),
-                  owner: username,
+                  id: info.vineyard,
+                  owner: info.user,
+                  ownerName: username,
                   permissions,
                   shared: true,
                 } as SharedVineyard)
               : undefined
           )
       )
-    ).then((vineyards) => vineyards.filter((v) => !!v) as SharedVineyard[]);
+    ).then(
+      (vineyards) => vineyards.filter((v) => !!v && v.permissions >= VineyardPermissions.VIEW) as SharedVineyard[]
+    );
   } catch (error) {
     console.error(`Could not retrieve shared vineyards for ${userId}`, error);
     throw error;

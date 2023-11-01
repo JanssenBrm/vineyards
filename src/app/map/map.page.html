@@ -28,6 +28,14 @@
       {{activeVineyard?.name}}
       <div *ngIf="activeVineyard?.shared" class="chip" [style.background-color]="getFeatureColors(true)[1]">Shared</div>
     </div>
+    <div *ngIf="activeVineyard?.shared && activeVineyard?.owner" class="row">
+      <div class="icon">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <div>
+        {{activeVineyard?.ownerName}}
+      </div>
+    </div>
     <div class="row">
       <div class="icon">
         <ion-icon name="home-outline"></ion-icon>
