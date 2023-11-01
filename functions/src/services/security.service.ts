@@ -11,7 +11,7 @@ export const getUserId = async (req: functions.Request, res: functions.Response)
       throw new Error('No Authorization header detected');
     }
   } catch (error) {
-    res.status(401).json({ error: 'Unauthorized' });
+    console.error(`Could not get user ID from request`, error);
     return '';
   }
 };
