@@ -12,6 +12,6 @@ export const authRequest = async (
   if (!uid) {
     sendError(res, constants.HTTP_STATUS_UNAUTHORIZED);
   } else {
-    return handler(req, res, uid);
+    handler(req, res, uid);
   }
 };
