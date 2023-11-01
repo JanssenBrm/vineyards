@@ -1,6 +1,6 @@
 import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sharing.model';
 import { db } from './utils.service';
-import { SharedVineyard } from '../models/vineyard.model';
+import { SharedVineyard, VineyardPermissions } from '../models/vineyard.model';
 import { getUsername } from './user.service';
 
 const addPermissions = async (
@@ -89,13 +89,29 @@ export const getSharedVineyards = async (userId: string): Promise<SharedVineyard
             Promise.all([
               db.collection('users').doc(info.user).collection('vineyards').doc(info.vineyard).get(),
               getUsername(info.user),
+              db
+                .collection('users')
+                .doc(info.user)
+                .collection('vineyards')
+                .doc(info.vineyard)
+                .collection('permissions')
+                .doc(userId)
+                .get()
+                .then(
+                  (snapshot) =>
+                    (snapshot.exists && snapshot.data()
+                      ? (snapshot.data()?.permissions as VineyardPermissions)
+                      : undefined) || VineyardPermissions.NONE
+                ),
             ])
           )
-          .then(([snapshot, username]) =>
+          .then(([snapshot, username, permissions]) =>
             snapshot.exists
               ? ({
                   ...snapshot.data(),
                   owner: username,
+                  permissions,
+                  shared: true,
                 } as SharedVineyard)
               : undefined
           )

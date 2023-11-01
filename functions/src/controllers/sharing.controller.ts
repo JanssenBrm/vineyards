@@ -8,6 +8,10 @@ import { sendError } from '../utils/error.utils';
 const handleRequest = async (req: functions.Request, resp: functions.Response, uid: string) => {
   try {
     const urlParts = req.path.split('/').filter((s) => s !== '');
+
+    resp.set('Access-Control-Allow-Origin', '*');
+    resp.set('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+
     switch (req.method) {
       case 'GET':
         const vineyards: SharedVineyard[] = await getSharedVineyards(uid);
@@ -39,6 +43,10 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
         } else {
           sendError(resp, constants.HTTP_STATUS_NOT_FOUND);
         }
+        break;
+      case 'OPTIONS':
+        resp.set('Access-Control-Allow-Headers', 'Authorization');
+        resp.sendStatus(200);
         break;
       default:
         sendError(resp, constants.HTTP_STATUS_METHOD_NOT_ALLOWED);

@@ -9,7 +9,7 @@ export const authRequest = async (
   handler: (req: functions.Request, res: functions.Response, userId: string) => void
 ) => {
   const uid = await getUserId(req, res);
-  if (!uid) {
+  if (!uid && req.method !== 'OPTIONS') {
     sendError(res, constants.HTTP_STATUS_UNAUTHORIZED);
   } else {
     handler(req, res, uid);

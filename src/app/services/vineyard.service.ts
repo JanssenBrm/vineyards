@@ -1,8 +1,8 @@
 import { Polygon } from 'ol/geom';
-import { SharedVineyardDoc, VineyardDoc, VineyardPermissionsDoc } from '../models/vineyarddoc.model';
+import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import {
   AngularFirestore,
@@ -15,7 +15,8 @@ import { AuthService } from './auth.service';
 import { User } from 'firebase';
 import { getCenter } from 'ol/extent';
 import { transformExtent } from 'ol/proj';
-import { UserService } from './user.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class VineyardService {
 
   private _userId: string;
 
-  constructor(private fireStore: AngularFirestore, private authService: AuthService, private userService: UserService) {
+  constructor(private fireStore: AngularFirestore, private authService: AuthService, private httpService: HttpClient) {
     this._vineyards$ = new BehaviorSubject<Vineyard[]>([]);
     this._activeVineyard$ = new BehaviorSubject<Vineyard>(null);
     this._activeSeasons$ = new BehaviorSubject<number[]>([new Date().getFullYear()]);
@@ -128,54 +129,14 @@ export class VineyardService {
 
   private getSharedVineyards(): Observable<Vineyard[]> {
     return this._userId
-      ? this._sharedVineyardCollection.snapshotChanges().pipe(
-          map((data: DocumentChangeAction<SharedVineyardDoc>[]) =>
-            data.map((d: DocumentChangeAction<SharedVineyardDoc>) => d.payload.doc.data())
-          ),
-          switchMap((shared: SharedVineyardDoc[]) =>
-            (shared.length > 0
-              ? forkJoin(
-                  shared.map((s: SharedVineyardDoc) =>
-                    forkJoin(
-                      // Fetch the shared vineyard
-                      this.fireStore.collection<VineyardDoc>(`users/${s.user}/vineyards`).doc(s.vineyard).get(),
-                      // Fetch the permissions on the shared vineyard
-                      this.fireStore
-                        .collection<VineyardDoc>(`users/${s.user}/vineyards/${s.vineyard}/permissions/`)
-                        .doc(this._userId)
-                        .get()
-                        .pipe(
-                          map((doc) => (doc.data() as VineyardPermissionsDoc).permissions),
-                          catchError((error) => {
-                            console.error(
-                              `Could not fetch permissions for user ${this._userId} on vineyard ${s.vineyard} of user ${s.user}`,
-                              error
-                            );
-                            return of(VineyardPermissions.NONE);
-                          })
-                        )
-                    ).pipe(
-                      map(([doc, permissions]) => ({
-                        ...doc.data(),
-                        id: doc.id,
-                        shared: true,
-                        permissions: permissions,
-                        owner: s.user,
-                      })),
-                      catchError((error: any) => {
-                        console.error(`Cannot open vineyard ${s.vineyard}`, error);
-                        return of(undefined);
-                      })
-                    )
-                  )
-                )
-              : of([])
-            ).pipe(map((docs) => docs.filter((d) => !!d && d.permissions !== VineyardPermissions.NONE)))
-          ),
-          catchError((error) => {
-            console.error(`Failed to retrieved shared vineyards for user ${this._userId}`, error);
-            return of([]);
-          })
+      ? this.authService.getToken().pipe(
+          switchMap((token: string) =>
+            this.httpService.get<Vineyard[]>(`${environment.api}sharingHooks`, {
+              headers: {
+                Authorization: `${token}`,
+              },
+            })
+          )
         )
       : of([]);
   }

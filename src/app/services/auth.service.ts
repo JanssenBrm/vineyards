@@ -153,4 +153,8 @@ export class AuthService {
       this.router.navigate(['map']);
     }, this.DELAY);
   }
+
+  public getToken() {
+    return this.fbAuth.idToken;
+  }
 }

@@ -1,3 +1,10 @@
+export enum VineyardPermissions {
+  NONE,
+  VIEW,
+  EDIT,
+  OWNER,
+}
+
 export interface Vineyard {
   id: string;
   name: string;
@@ -6,5 +13,7 @@ export interface Vineyard {
 }
 
 export interface SharedVineyard extends Vineyard {
+  shared: boolean;
+  permissions: VineyardPermissions;
   owner: string;
 }
