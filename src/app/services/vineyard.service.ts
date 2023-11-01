@@ -3,7 +3,7 @@ import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
@@ -128,17 +128,7 @@ export class VineyardService {
   }
 
   private getSharedVineyards(): Observable<Vineyard[]> {
-    return this._userId
-      ? this.authService.getToken().pipe(
-          switchMap((token: string) =>
-            this.httpService.get<Vineyard[]>(`${environment.api}sharingHooks`, {
-              headers: {
-                Authorization: `${token}`,
-              },
-            })
-          )
-        )
-      : of([]);
+    return this._userId ? this.httpService.get<Vineyard[]>(`${environment.api}sharingHooks`) : of([]);
   }
 
   getInfo(id: string): Vineyard {

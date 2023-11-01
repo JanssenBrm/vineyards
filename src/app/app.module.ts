@@ -9,7 +9,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -18,6 +18,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 
 import * as Sentry from '@sentry/angular';
+import { AuthInterceptor } from './shared/interceptors/http.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,6 +48,11 @@ import * as Sentry from '@sentry/angular';
     {
       provide: Sentry.TraceService,
       deps: [Router],
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
     },
     {
       provide: APP_INITIALIZER,
