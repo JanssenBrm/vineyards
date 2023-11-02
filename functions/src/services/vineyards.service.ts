@@ -1,7 +1,7 @@
 import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sharing.model';
 import { db } from './utils.service';
 import { SharedVineyard, SharedVineyardPermission, VineyardPermissions } from '../models/vineyard.model';
-import { getUsername } from './user.service';
+import { getUserIdFromEmail, getUsername } from './user.service';
 
 const addPermissions = async (
   ownerId: string,
@@ -129,8 +129,13 @@ export const getSharedVineyards = async (userId: string): Promise<SharedVineyard
 };
 
 export const shareVineyard = async (ownerId: string, vineyardId: string, opts: SharingOpts): Promise<void> => {
-  await addPermissions(ownerId, vineyardId, opts.user, opts.permissions);
-  await addSharedVineyard(opts.user, ownerId, vineyardId);
+  const user = await getUserIdFromEmail(opts.user);
+  if (user) {
+    await addPermissions(ownerId, vineyardId, user, opts.permissions);
+    await addSharedVineyard(user, ownerId, vineyardId);
+  } else {
+    throw Error(`Could not find user ${opts.user}`);
+  }
 };
 export const unshareVineyard = async (ownerId: string, vineyardId: string, userId: string): Promise<void> => {
   await deletePermissions(ownerId, vineyardId, userId);

@@ -67,7 +67,7 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
   } catch (err) {
     console.error('Could not process sharing request', err);
     // @ts-ignore
-    sendError(resp, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, `Sharing Error: ${err.message}`);
+    sendError(resp, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, err.message);
   }
 };
 
