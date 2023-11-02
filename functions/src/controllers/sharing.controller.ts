@@ -1,22 +1,39 @@
 import * as functions from 'firebase-functions';
-import { getSharedVineyards, isOwner, shareVineyard, unshareVineyard } from '../services/vineyards.service';
+import {
+  getSharedVineyards,
+  getVineyardPermissions,
+  isOwner,
+  shareVineyard,
+  unshareVineyard,
+} from '../services/vineyards.service';
 import { constants } from 'http2';
 import { SharedVineyard } from '../models/vineyard.model';
 import { authRequest } from '../utils/auth.middleware';
 import { sendError } from '../utils/error.utils';
+import { corsRequest } from '../utils/cors.middleware';
 
 const handleRequest = async (req: functions.Request, resp: functions.Response, uid: string) => {
   try {
     const urlParts = req.path.split('/').filter((s) => s !== '');
 
-    resp.set('Access-Control-Allow-Origin', '*');
-    resp.set('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-
     switch (req.method) {
       case 'GET':
-        const vineyards: SharedVineyard[] = await getSharedVineyards(uid);
-        resp.status(constants.HTTP_STATUS_OK);
-        resp.send(vineyards);
+        if (urlParts.length === 0) {
+          const vineyards: SharedVineyard[] = await getSharedVineyards(uid);
+          resp.status(constants.HTTP_STATUS_OK);
+          resp.send(vineyards);
+        } else if (urlParts.length === 1) {
+          const vineyardId = urlParts[0];
+          if (await isOwner(uid, vineyardId)) {
+            const permissions = await getVineyardPermissions(uid, vineyardId);
+            resp.json(permissions);
+            resp.sendStatus(200);
+          } else {
+            sendError(resp, constants.HTTP_STATUS_FORBIDDEN, 'Not the owner of the vineyard');
+          }
+        } else {
+          sendError(resp, constants.HTTP_STATUS_NOT_FOUND);
+        }
         break;
       case 'POST':
         if (urlParts.length === 1) {
@@ -44,10 +61,6 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
           sendError(resp, constants.HTTP_STATUS_NOT_FOUND);
         }
         break;
-      case 'OPTIONS':
-        resp.set('Access-Control-Allow-Headers', 'Authorization');
-        resp.sendStatus(200);
-        break;
       default:
         sendError(resp, constants.HTTP_STATUS_METHOD_NOT_ALLOWED);
     }
@@ -59,5 +72,5 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
 };
 
 export const sharingHooks = functions.https.onRequest((req: functions.Request, res: functions.Response) =>
-  authRequest(req, res, handleRequest)
+  corsRequest(req, res, (r, s) => authRequest(r, s, handleRequest))
 );

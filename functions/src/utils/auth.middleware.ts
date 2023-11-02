@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
-import { getUserId } from '../services/security.service';
 import { sendError } from './error.utils';
 import { constants } from 'http2';
+import { getUserId } from '../services/security.service';
 
 export const authRequest = async (
   req: functions.Request,

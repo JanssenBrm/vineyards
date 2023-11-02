@@ -18,3 +18,9 @@ export interface SharedVineyard extends Vineyard {
   owner: string;
   ownerName: string;
 }
+
+export interface SharedVineyardPermission {
+  user: string;
+  username: string;
+  permissions: VineyardPermissions;
+}

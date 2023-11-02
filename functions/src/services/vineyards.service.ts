@@ -1,6 +1,6 @@
 import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sharing.model';
 import { db } from './utils.service';
-import { SharedVineyard, VineyardPermissions } from '../models/vineyard.model';
+import { SharedVineyard, SharedVineyardPermission, VineyardPermissions } from '../models/vineyard.model';
 import { getUsername } from './user.service';
 
 const addPermissions = async (
@@ -135,4 +135,34 @@ export const shareVineyard = async (ownerId: string, vineyardId: string, opts: S
 export const unshareVineyard = async (ownerId: string, vineyardId: string, userId: string): Promise<void> => {
   await deletePermissions(ownerId, vineyardId, userId);
   await deleteSharedVineyard(userId, ownerId, vineyardId);
+};
+
+export const getVineyardPermissions = async (
+  ownerId: string,
+  vineyardId: string
+): Promise<SharedVineyardPermission[]> => {
+  try {
+    console.log(`Getting shared users for vineyard ${vineyardId} of ${ownerId}`);
+    const users = await db
+      .collection('users')
+      .doc(ownerId)
+      .collection('vineyards')
+      .doc(vineyardId)
+      .collection('permissions')
+      .listDocuments();
+    return await Promise.all(
+      users.map(async (user) => {
+        const doc = await user.get();
+        const username = await getUsername(doc.id);
+        return {
+          ...doc.data(),
+          username,
+          user: doc.id,
+        } as SharedVineyardPermission;
+      })
+    );
+  } catch (error) {
+    console.error(`Could not remove permissions from ${vineyardId} of ${ownerId}`, error);
+    throw error;
+  }
 };
