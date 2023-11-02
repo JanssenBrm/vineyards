@@ -1,0 +1,17 @@
+<div class="content-title">
+  <span>Access Control</span>
+</div>
+<ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+<div *ngIf="!loading && permissions?.length === 0">
+  <span>Only you have access to the field</span>
+</div>
+<ion-grid *ngIf="!loading && permissions?.length > 0">
+  <ion-row *ngFor="let user of permissions || []">
+    <ion-col size-lg="2">
+      <span class="date">{{user.username}}</span>
+    </ion-col>
+    <ion-col size-lg="6">
+      <span class="description">{{user.permissions}}</span>
+    </ion-col>
+  </ion-row>
+</ion-grid>

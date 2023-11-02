@@ -52,6 +52,7 @@
                                 [vineyard]="activeVineyard"></app-notebook>
                 <app-vintages *ngIf="activePage === 'vintages'" [vineyard]="activeVineyard" [vintages]="(vintages$ | async)"
                               [vintage]="activeVintage"></app-vintages>
+                <app-sharing *ngIf="activePage === 'sharing'" [vineyard]="activeVineyard"></app-sharing>
             </div>
 
         </div>

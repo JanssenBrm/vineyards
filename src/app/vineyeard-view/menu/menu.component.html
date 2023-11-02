@@ -41,6 +41,17 @@
     </div>
   </div>
 </div>
+<div class="section" *appUserHasRole="PREMIUM_ROLES">
+  <div class="header">
+    <ion-label>Properties</ion-label>
+  </div>
+  <div class="items">
+    <div class="item" (click)="openTab(MenuTab.SHARING)" *appHasPermissions="{vineyard: activeVineyard , permissions: VineyardPermissions.OWNER}"  [class.selected]="activePage === 'sharing'">
+      <ion-icon name="key-outline" slot="start"></ion-icon>
+      <ion-label>Access</ion-label>
+    </div>
+  </div>
+</div>
 
 <div class="section" *appUserHasRole="PREMIUM_ROLES">
   <div class="header">

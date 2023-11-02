@@ -15,6 +15,7 @@ export enum MenuTab {
   STATS = 'stats',
   VINTAGES = 'vintages',
   NOTES = 'notes',
+  SHARING = 'sharing',
 }
 
 @Component({

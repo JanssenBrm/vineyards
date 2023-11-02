@@ -1,5 +1,5 @@
 import { Polygon } from 'ol/geom';
-import { SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
+import { SharedUserInfo, SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
@@ -185,5 +185,9 @@ export class VineyardService {
 
   getLocation(vineyard: Vineyard): [number, number] {
     return getCenter(transformExtent(vineyard.location.getExtent(), 'EPSG:3857', 'EPSG:4326'));
+  }
+
+  getVineyardAccess(vineyard: Vineyard): Observable<SharedUserInfo[]> {
+    return this.httpService.get<SharedUserInfo[]>(`${environment.api}sharingHooks/${vineyard.id}`);
   }
 }
