@@ -9,7 +9,7 @@ export const corsRequest = async (
   res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE');
 
   if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Headers', 'Authorization');
+    res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     res.sendStatus(200);
   } else {
     handler(req, res);

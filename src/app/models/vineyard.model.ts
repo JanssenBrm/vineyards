@@ -27,6 +27,18 @@ export enum VineyardPermissions {
   OWNER,
 }
 
+export const getPermissionString = (permission: VineyardPermissions): string => {
+  switch (permission) {
+    case VineyardPermissions.VIEW:
+      return 'View';
+    case VineyardPermissions.EDIT:
+      return 'Edit';
+    case VineyardPermissions.OWNER:
+      return 'Owner';
+  }
+  return '';
+};
+
 export interface VineyardBase {
   id?: string;
   name: string;

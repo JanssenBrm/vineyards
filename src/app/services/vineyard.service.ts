@@ -190,4 +190,12 @@ export class VineyardService {
   getVineyardAccess(vineyard: Vineyard): Observable<SharedUserInfo[]> {
     return this.httpService.get<SharedUserInfo[]>(`${environment.api}sharingHooks/${vineyard.id}`);
   }
+
+  addVineyardPermissions(vineyard: Vineyard, user: string, permissions: VineyardPermissions): Observable<void> {
+    return this.httpService.post<void>(`${environment.api}sharingHooks/${vineyard.id}`, { user, permissions });
+  }
+
+  deleteVineyardPermissions(vineyard: Vineyard, user: string) {
+    return this.httpService.delete<void>(`${environment.api}sharingHooks/${vineyard.id}/${user}`);
+  }
 }

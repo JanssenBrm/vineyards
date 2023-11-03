@@ -13,9 +13,10 @@ export const updateUserRole = (uid: string, role: UserRole): Promise<WriteResult
 export const getUsername = async (uid: string): Promise<string> => {
   try {
     console.log(`Looking username for ${uid}`);
-    const doc = await db.collection('users').doc(uid).get();
-    if (doc.exists) {
-      return doc.data()?.name || '';
+    const user = await auth.getUser(uid);
+
+    if (user) {
+      return user.displayName || user.email || '';
     } else {
       throw new Error(`Could not find user ${uid}`);
     }

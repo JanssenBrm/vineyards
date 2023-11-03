@@ -155,7 +155,7 @@ export const getVineyardPermissions = async (
       .doc(vineyardId)
       .collection('permissions')
       .listDocuments();
-    return await Promise.all(
+    const permissions = await Promise.all(
       users.map(async (user) => {
         const doc = await user.get();
         const username = await getUsername(doc.id);
@@ -166,6 +166,14 @@ export const getVineyardPermissions = async (
         } as SharedVineyardPermission;
       })
     );
+    return [
+      {
+        user: ownerId,
+        username: (await getUsername(ownerId)) || 'User',
+        permissions: VineyardPermissions.OWNER,
+      },
+      ...permissions,
+    ];
   } catch (error) {
     console.error(`Could not remove permissions from ${vineyardId} of ${ownerId}`, error);
     throw error;

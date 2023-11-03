@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Permissions</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="permissionsForm">
+    <ion-list lines="full">
+      <ion-item>
+        <ion-label position="stacked">Email address</ion-label>
+        <ion-input type="email" formControlName="user"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Permissions</ion-label>
+        <ion-select required formControlName="permissions">
+          <ion-select-option *ngFor="let permission of PermissionValues" [value]="permission">{{
+            getPermissionString(permission)
+          }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+      slot="end"
+      color="primary"
+      [disabled]="!permissionsForm.valid"
+      (click)="save()"
+      >Save</ion-button>
+    <ion-button slot="end" color="light" (click)="discard()">Cancel</ion-button>
+  </ion-toolbar>
+</ion-footer>

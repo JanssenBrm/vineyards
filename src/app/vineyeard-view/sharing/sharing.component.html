@@ -1,17 +1,36 @@
-<div class="content-title">
-  <span>Access Control</span>
-</div>
-<ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
-<div *ngIf="!loading && permissions?.length === 0">
-  <span>Only you have access to the field</span>
-</div>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      <span>Access Control</span>
+      <div class="actions">
+        <ion-buttons *ngIf="!loading">
+          <ion-button color="primary" fill="solid" (click)="addAccess()">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </div>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <div class="loading" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
 <ion-grid *ngIf="!loading && permissions?.length > 0">
   <ion-row *ngFor="let user of permissions || []">
-    <ion-col size-lg="2">
-      <span class="date">{{user.username}}</span>
-    </ion-col>
     <ion-col size-lg="6">
-      <span class="description">{{user.permissions}}</span>
+      <span>{{user.username}}</span>
+    </ion-col>
+    <ion-col size-lg="1">
+      <span>{{getPermissionString(user.permissions)}}</span>
+    </ion-col>
+    <ion-col size-lg="1">
+      <ion-buttons>
+        <ion-button *ngIf="user.permissions !== VineyardPermissions.OWNER" color="primary" fill="solid" (click)="deletePermissions(user.user)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-col>
   </ion-row>
 </ion-grid>
+  </ion-card-content>
+</ion-card>

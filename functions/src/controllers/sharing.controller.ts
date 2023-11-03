@@ -20,14 +20,12 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
       case 'GET':
         if (urlParts.length === 0) {
           const vineyards: SharedVineyard[] = await getSharedVineyards(uid);
-          resp.status(constants.HTTP_STATUS_OK);
           resp.send(vineyards);
         } else if (urlParts.length === 1) {
           const vineyardId = urlParts[0];
           if (await isOwner(uid, vineyardId)) {
             const permissions = await getVineyardPermissions(uid, vineyardId);
-            resp.json(permissions);
-            resp.sendStatus(200);
+            resp.send(permissions);
           } else {
             sendError(resp, constants.HTTP_STATUS_FORBIDDEN, 'Not the owner of the vineyard');
           }
@@ -40,7 +38,10 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
           const vineyardId = urlParts[0];
           if (await isOwner(uid, vineyardId)) {
             await shareVineyard(uid, vineyardId, req.body);
-            resp.sendStatus(constants.HTTP_STATUS_OK);
+            resp.send({
+              vineyard: vineyardId,
+              ...req.body,
+            });
           } else {
             sendError(resp, constants.HTTP_STATUS_FORBIDDEN, 'Not the owner of the vineyard');
           }
@@ -52,8 +53,11 @@ const handleRequest = async (req: functions.Request, resp: functions.Response, u
         if (urlParts.length === 2) {
           const vineyardId = urlParts[0];
           if (await isOwner(uid, vineyardId)) {
-            await unshareVineyard(uid, urlParts[0], urlParts[1]);
-            resp.sendStatus(constants.HTTP_STATUS_OK);
+            await unshareVineyard(uid, vineyardId, urlParts[1]);
+            resp.send({
+              vineyard: vineyardId,
+              user: urlParts[1],
+            });
           } else {
             sendError(resp, constants.HTTP_STATUS_FORBIDDEN, 'Not the owner of the vineyard');
           }
