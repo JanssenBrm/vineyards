@@ -1,5 +1,5 @@
 import { Polygon } from 'ol/geom';
-import { SharedUserInfo, SharedVineyardDoc, VineyardDoc } from '../models/vineyarddoc.model';
+import { SharedUserInfo, VineyardDoc } from '../models/vineyarddoc.model';
 import { Vineyard, VineyardPermissions } from '../models/vineyard.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
@@ -32,8 +32,6 @@ export class VineyardService {
 
   private _vineyardCollection: AngularFirestoreCollection<VineyardDoc>;
 
-  private _sharedVineyardCollection: AngularFirestoreCollection<SharedVineyardDoc>;
-
   private _userId: string;
 
   constructor(private fireStore: AngularFirestore, private authService: AuthService, private httpService: HttpClient) {
@@ -46,9 +44,6 @@ export class VineyardService {
       if (user) {
         this._userId = user.uid;
         this._vineyardCollection = fireStore.collection<VineyardDoc>(`users/${this._userId}/vineyards`);
-        this._sharedVineyardCollection = fireStore.collection<SharedVineyardDoc>(
-          `users/${this._userId}/sharedVineyards`
-        );
         this.getVineyards();
       } else {
         this._userId = undefined;

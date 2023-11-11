@@ -15,16 +15,20 @@
     <div class="loading" *ngIf="loading">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
-<ion-grid *ngIf="!loading && permissions?.length > 0">
+<ion-grid *ngIf="!loading && permissions?.length > 0" [fixed]="utilService.isMobile()">
   <ion-row *ngFor="let user of permissions || []">
-    <ion-col size-lg="6">
-      <span>{{user.username}}</span>
+    <ion-col [size]="utilService.isMobile() ? 8 : 6" class="user">
+      <div>{{user.username}}</div>
+      <div  class="permissions" *ngIf="utilService.isMobile()">{{getPermissionString(user.permissions)}}</div>
     </ion-col>
-    <ion-col size-lg="1">
-      <span>{{getPermissionString(user.permissions)}}</span>
+    <ion-col size="1" *ngIf="!utilService.isMobile()">
+      <div>{{getPermissionString(user.permissions)}}</div>
     </ion-col>
-    <ion-col size-lg="1">
+    <ion-col [size]="utilService.isMobile() ? 2 : 1">
       <ion-buttons>
+        <ion-button *ngIf="user.permissions !== VineyardPermissions.OWNER" color="primary" fill="solid" (click)="editPermissions(user)">
+          <ion-icon name="pencil"></ion-icon>
+        </ion-button>
         <ion-button *ngIf="user.permissions !== VineyardPermissions.OWNER" color="primary" fill="solid" (click)="deletePermissions(user.user)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>

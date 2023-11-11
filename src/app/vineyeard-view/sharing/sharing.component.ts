@@ -5,6 +5,7 @@ import { SharedUserInfo } from '../../models/vineyarddoc.model';
 import { take } from 'rxjs/operators';
 import { ModalController, ToastController } from '@ionic/angular';
 import { AddPermissionsComponent } from '../add-permissions/add-permissions.component';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-sharing',
@@ -26,7 +27,8 @@ export class SharingComponent implements OnChanges {
   constructor(
     private vineyardService: VineyardService,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    public utilService: UtilService
   ) {}
 
   loadPermissions() {
@@ -52,11 +54,12 @@ export class SharingComponent implements OnChanges {
     }
   }
 
-  async openAddPermissionModal() {
+  async openAddPermissionModal(user?: SharedUserInfo) {
     const modal = await this.modalController.create({
       component: AddPermissionsComponent,
       componentProps: {
         vineyard: this.vineyard,
+        user,
       },
     });
     await modal.present();
@@ -80,6 +83,10 @@ export class SharingComponent implements OnChanges {
         this.loading = false;
       },
     });
+  }
+
+  async editPermissions(user: SharedUserInfo) {
+    await this.openAddPermissionModal(user);
   }
 
   deletePermissions(user: string) {

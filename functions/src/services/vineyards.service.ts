@@ -1,7 +1,7 @@
 import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sharing.model';
 import { db } from './utils.service';
 import { SharedVineyard, SharedVineyardPermission, VineyardPermissions } from '../models/vineyard.model';
-import { getUserIdFromEmail, getUsername } from './user.service';
+import { getUserEmail, getUserIdFromEmail, getUsername } from './user.service';
 
 const addPermissions = async (
   ownerId: string,
@@ -159,10 +159,12 @@ export const getVineyardPermissions = async (
       users.map(async (user) => {
         const doc = await user.get();
         const username = await getUsername(doc.id);
+        const email = await getUserEmail(doc.id);
         return {
           ...doc.data(),
           username,
           user: doc.id,
+          email,
         } as SharedVineyardPermission;
       })
     );
@@ -170,6 +172,7 @@ export const getVineyardPermissions = async (
       {
         user: ownerId,
         username: (await getUsername(ownerId)) || 'User',
+        email: await getUserEmail(ownerId),
         permissions: VineyardPermissions.OWNER,
       },
       ...permissions,

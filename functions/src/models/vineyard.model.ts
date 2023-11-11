@@ -22,5 +22,6 @@ export interface SharedVineyard extends Vineyard {
 export interface SharedVineyardPermission {
   user: string;
   username: string;
+  email: string;
   permissions: VineyardPermissions;
 }

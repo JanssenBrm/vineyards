@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { isNumeric } from 'rxjs/internal-compatibility';
+import { SharedUserInfo } from '../../models/vineyarddoc.model';
 
 @Component({
   selector: 'app-add-permissions',
@@ -14,10 +15,7 @@ export class AddPermissionsComponent implements OnInit {
   vineyard: Vineyard;
 
   @Input()
-  user: string;
-
-  @Input()
-  permissions: VineyardPermissions;
+  user: SharedUserInfo;
 
   constructor(private modalController: ModalController, private loadingController: LoadingController) {}
 
@@ -31,8 +29,8 @@ export class AddPermissionsComponent implements OnInit {
 
   ngOnInit() {
     this.permissionsForm = new FormGroup({
-      user: new FormControl(this.user || '', [Validators.required]),
-      permissions: new FormControl(this.permissions, [Validators.required]),
+      user: new FormControl(this.user?.email || '', [Validators.required]),
+      permissions: new FormControl(this.user?.permissions, [Validators.required]),
     });
   }
 

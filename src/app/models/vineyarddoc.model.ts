@@ -15,5 +15,6 @@ export interface SharedVineyardDoc {
 export interface SharedUserInfo {
   user: string;
   username: string;
+  email: string;
   permissions: VineyardPermissions;
 }

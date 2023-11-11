@@ -26,6 +26,22 @@ export const getUsername = async (uid: string): Promise<string> => {
   }
 };
 
+export const getUserEmail = async (uid: string): Promise<string> => {
+  try {
+    console.log(`Looking up email for ${uid}`);
+    const user = await auth.getUser(uid);
+
+    if (user) {
+      return user.email || '';
+    } else {
+      throw new Error(`Could not find user ${uid}`);
+    }
+  } catch (error) {
+    console.error(`Could not retrieve email for ${uid}`, error);
+    throw error;
+  }
+};
+
 export const getUserIdFromEmail = async (email: string): Promise<string | undefined> => {
   try {
     console.log(`Looking up user with email ${email}`);

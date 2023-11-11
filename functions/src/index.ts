@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions';
 import {
   getPremiumUsers,
-  getUserEmail,
   getVineyard,
   getVineyardActions,
   getVineyardLocation,
@@ -17,6 +16,7 @@ import * as moment from 'moment';
 import * as sgMail from '@sendgrid/mail';
 import { stripeWebhooks } from './controllers/stripe.controller';
 import { sharingHooks } from './controllers/sharing.controller';
+import { getUserEmail } from './services/user.service';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
@@ -86,7 +86,7 @@ const execUpdateMeteoStats = async () => {
     console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
     for (const id of vineyards) {
       try {
-        const email: string | undefined = await getUserEmail(uid);
+        const email: string = await getUserEmail(uid);
         const v: Vineyard = await getVineyard(uid, id);
         const location = getVineyardLocation(v);
         const actions = await getVineyardActions(uid, id);
@@ -101,7 +101,7 @@ const execUpdateMeteoStats = async () => {
           moment(d1.date).isBefore(moment(d2.date), 'day') ? -1 : 1
         );
         const warnings = calculateWarnings(stats.data);
-        if (warnings.length > 0 && email) {
+        if (warnings.length > 0 && email !== '') {
           console.log('Sending email to ' + email);
           await emailWarnings(email, v, warnings);
         }
