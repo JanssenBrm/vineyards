@@ -4,38 +4,51 @@ import { Vineyard } from '../models/vineyard.model';
 import * as moment from 'moment/moment';
 import { Action } from '../models/action.model';
 import { executeGraphSync } from '../services/openeo.service';
+import { area, buffer } from '@turf/turf';
+import { CropSARStat } from '../models/stats.model';
 
-const createGraph = (polygon: any, start: string, end: string) => {
+const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR') => {
+  let finalPolygon = polygon;
+  if (area(finalPolygon) < 100) {
+    // Buffer the polygon with 10m as CropSAR does a buffer of -10m
+    finalPolygon = buffer(polygon, 30, { units: 'meters' });
+  }
+  const now = moment().add(-1, 'day');
+  const finalEnd = moment(end).isAfter(now) ? now.format('YYYY-MM-DD') : end;
   return {
     cropsar: {
       process_id: 'CropSAR',
       arguments: {
-        biopar_type: 'ndvi',
-        date: [start, end],
-        polygon,
+        biopar_type: biopar,
+        date: [start, finalEnd],
+        polygon: {
+          type: 'FeatureCollection',
+          features: [finalPolygon],
+        },
       },
       namespace: 'vito',
-    },
-    save: {
-      process_id: 'save_result',
-      arguments: {
-        data: {
-          from_node: 'cropsar',
-        },
-        format: 'JSON',
-      },
       result: true,
     },
   };
 };
-const calculateCropSAR = async (polygon: any, start: string, end: string) => {
+const calculateCropSAR = async (polygon: any, start: string, end: string): Promise<CropSARStat[]> => {
   try {
     console.log(`Calculating CropSAR for polgyon with start ${start} and end ${end}`);
-    const graph = createGraph(polygon, start, end);
-    const result = await executeGraphSync(graph, 'json');
-    console.log(result);
+    const graph = createV1Graph(polygon, start, end);
+    const results = await executeGraphSync(graph, 'json');
+    const keys = Object.keys(results);
+    if (keys.length > 0) {
+      const result = results[keys[0]];
+      return Object.keys(result).map((date) => ({
+        date,
+        value: result[date],
+      }));
+    } else {
+      return [];
+    }
   } catch (e) {
     console.error(`Could not calculate CropSAR`, e);
+    return [];
   }
 };
 export const getCropSARDates = (actions: Action[]): [string, string] | undefined => {
@@ -67,7 +80,8 @@ const calculateAllCropSAR = async () => {
         const dates = getCropSARDates(actions);
 
         if (dates) {
-          await calculateCropSAR(v.location, dates[0], dates[1]);
+          const result = await calculateCropSAR(v.location, dates[0], dates[1]);
+          console.log(result);
         } else {
           console.warn(`No dates found for calculating CropSAR for vineyard ${v.id}`);
         }
@@ -78,9 +92,18 @@ const calculateAllCropSAR = async () => {
   }
 };
 
-export const cropsarPubsub = functions.pubsub.schedule('0 1 * * *').onRun(async () => {
-  return calculateAllCropSAR();
-});
-export const cropsarHook = functions.https.onRequest(async () => {
-  return calculateAllCropSAR();
-});
+export const cropsarPubsub = functions
+  .runWith({
+    timeoutSeconds: 540,
+  })
+  .pubsub.schedule('0 1 * * *')
+  .onRun(async () => {
+    return calculateAllCropSAR();
+  });
+export const cropsarHook = functions
+  .runWith({
+    timeoutSeconds: 540,
+  })
+  .https.onRequest(async () => {
+    return calculateAllCropSAR();
+  });

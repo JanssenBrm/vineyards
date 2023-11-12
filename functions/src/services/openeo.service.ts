@@ -37,10 +37,11 @@ const getHeaders = async (): Promise<any> => {
     'Content-Type': 'application/json',
   };
 };
-export const executeGraphSync = async (graph: any, format: string): Promise<string> => {
+export const executeGraphSync = async (graph: any, format: string): Promise<any> => {
+  const headers = await getHeaders();
   const response = await fetch(`${OPENEO_URL}/result`, {
     method: 'POST',
-    headers: await getHeaders(),
+    headers,
     body: JSON.stringify({
       log_level: 'debug',
       process: {
