@@ -6,6 +6,7 @@ import { Action } from '../models/action.model';
 import { executeGraphSync } from '../services/openeo.service';
 import { area, buffer } from '@turf/turf';
 import { CropSARStat } from '../models/stats.model';
+import { saveCropSAR } from '../services/vineyards.service';
 
 const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR') => {
   let finalPolygon = polygon;
@@ -81,7 +82,7 @@ const calculateAllCropSAR = async () => {
 
         if (dates) {
           const result = await calculateCropSAR(v.location, dates[0], dates[1]);
-          console.log(result);
+          await saveCropSAR(uid, id, result);
         } else {
           console.warn(`No dates found for calculating CropSAR for vineyard ${v.id}`);
         }

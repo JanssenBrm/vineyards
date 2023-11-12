@@ -2,6 +2,9 @@ import { SharedVineyardOpts, SharingOpts, SharingPermission } from '../models/sh
 import { db } from './utils.service';
 import { SharedVineyard, SharedVineyardPermission, VineyardPermissions } from '../models/vineyard.model';
 import { getUserEmail, getUserIdFromEmail, getUsername } from './user.service';
+import { CropSARStat } from '../models/stats.model';
+import * as admin from 'firebase-admin';
+import WriteResult = admin.firestore.WriteResult;
 
 const addPermissions = async (
   ownerId: string,
@@ -181,4 +184,9 @@ export const getVineyardPermissions = async (
     console.error(`Could not remove permissions from ${vineyardId} of ${ownerId}`, error);
     throw error;
   }
+};
+export const saveCropSAR = (uid: string, id: string, stats: CropSARStat[]): Promise<WriteResult> => {
+  return db.collection('users').doc(uid).collection('vineyards').doc(id).collection('stats').doc('cropsar').set({
+    data: stats,
+  });
 };
