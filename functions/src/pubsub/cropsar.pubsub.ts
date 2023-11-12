@@ -12,7 +12,7 @@ const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR
   let finalPolygon = polygon;
   if (area(finalPolygon) < 100) {
     // Buffer the polygon with 10m as CropSAR does a buffer of -10m
-    finalPolygon = buffer(polygon, 30, { units: 'meters' });
+    finalPolygon = buffer(polygon, 30, { units: 'meters' }).geometry;
   }
   const now = moment().add(-1, 'day');
   const finalEnd = moment(end).isAfter(now) ? now.format('YYYY-MM-DD') : end;
@@ -24,7 +24,13 @@ const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR
         date: [start, finalEnd],
         polygon: {
           type: 'FeatureCollection',
-          features: [finalPolygon],
+          features: [
+            {
+              type: 'Feature',
+              properties: {},
+              geometry: finalPolygon,
+            },
+          ],
         },
       },
       namespace: 'vito',
