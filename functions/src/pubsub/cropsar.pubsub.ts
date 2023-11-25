@@ -66,11 +66,12 @@ export const getCropSARDates = (actions: Action[]): [string, string] | undefined
   if (dates.length > 0) {
     return [`${dates[0]}-01-01`, `${dates[dates.length - 1]}-12-31`];
   } else {
-    return undefined;
+    const now = moment().year();
+    return [`${now}-01-01`, `${now}-12-31`];
   }
 };
 
-const calculateAllCropSAR = async () => {
+export const calculateAllCropSAR = async () => {
   console.log('Starting calculation of CropSAR');
 
   const users: string[] = await getPremiumUsers();
