@@ -1,8 +1,15 @@
-const OPENEO_URL = process.env.OPENEO_URL || '';
-const OPENEO_USER = process.env.OPENEO_USER || '';
-const OPENEO_PASSWORD = process.env.OPENEO_PASSWORD || '';
+let OPENEO_URL: string;
+let OPENEO_USER: string;
+let OPENEO_PASSWORD: string;
 
 let AUTH_TOKEN: string;
+
+export const reloadOpenEOSettings = () => {
+  OPENEO_URL = process.env.OPENEO_URL || '';
+  OPENEO_USER = process.env.OPENEO_USER || '';
+  OPENEO_PASSWORD = process.env.OPENEO_PASSWORD || '';
+};
+reloadOpenEOSettings();
 
 const authenticate = async (username: string, password: string): Promise<string> => {
   try {

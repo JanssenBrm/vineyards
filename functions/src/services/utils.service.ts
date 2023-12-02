@@ -7,10 +7,24 @@ import { Action } from '../models/action.model';
 import * as moment from 'moment';
 import { UserRole } from '../models/userdata.model';
 import WriteResult = admin.firestore.WriteResult;
+import Firestore = admin.firestore.Firestore;
+import Auth = admin.auth.Auth;
 
-admin.initializeApp();
-export const db = admin.firestore();
-export const auth = admin.auth();
+export let db: Firestore;
+export let auth: Auth;
+
+export const initApp = () => {
+  admin.initializeApp();
+  db = admin.firestore();
+  auth = admin.auth();
+};
+export const initDb = (credential: string, databaseURL: string) => {
+  admin.initializeApp({
+    credential: admin.credential.cert(credential),
+    databaseURL,
+  });
+  db = admin.firestore();
+};
 
 export const getUsers = (): Promise<string[]> => {
   return db

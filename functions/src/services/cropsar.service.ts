@@ -100,7 +100,7 @@ export const calculateAllCropSAR = async () => {
   }
 };
 
-export const cropsarPubsub = functions
+export const cropsarService = functions
   .runWith({
     timeoutSeconds: 540,
   })

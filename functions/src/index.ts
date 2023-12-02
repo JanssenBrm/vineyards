@@ -6,6 +6,7 @@ import {
   getVineyardLocation,
   getVineyards,
   getVineyardStats,
+  initApp,
   saveMeteo,
 } from './services/utils.service';
 import { Vineyard } from './models/vineyard.model';
@@ -17,8 +18,8 @@ import * as sgMail from '@sendgrid/mail';
 import { stripeWebhooks } from './controllers/stripe.controller';
 import { sharingHooks } from './controllers/sharing.controller';
 import { getUserEmail } from './services/user.service';
-import { cropsarHook, cropsarPubsub } from './pubsub/cropsar.pubsub';
 
+initApp();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 export const emailWarnings = (
@@ -118,8 +119,6 @@ const execUpdateMeteoStats = async () => {
 exports.updateMeteoStats = functions.pubsub.schedule('0 0 * * *').onRun(async () => {
   return execUpdateMeteoStats();
 });
-exports.calculateCropSAR = cropsarPubsub;
-exports.cropSARHook = cropsarHook;
 
 exports.stripeWebhooks = stripeWebhooks;
 exports.sharingHooks = sharingHooks;
