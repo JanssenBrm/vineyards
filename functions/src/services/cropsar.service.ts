@@ -7,6 +7,7 @@ import { executeGraphSync } from '../services/openeo.service';
 import { area, buffer } from '@turf/turf';
 import { CropSARStat } from '../models/stats.model';
 import { saveCropSAR } from '../services/vineyards.service';
+import { logger } from '../utils/logger.util';
 
 const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR') => {
   let finalPolygon = polygon;
@@ -40,7 +41,7 @@ const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR
 };
 const calculateCropSAR = async (polygon: any, start: string, end: string): Promise<CropSARStat[]> => {
   try {
-    console.log(`Calculating CropSAR for polgyon with start ${start} and end ${end}`);
+    logger.info(`Calculating CropSAR for polgyon with start ${start} and end ${end}`);
     const graph = createV1Graph(polygon, start, end);
     const results = await executeGraphSync(graph, 'json');
     const keys = Object.keys(results);
@@ -54,7 +55,7 @@ const calculateCropSAR = async (polygon: any, start: string, end: string): Promi
       return [];
     }
   } catch (e) {
-    console.error(`Could not calculate CropSAR`, e);
+    logger.error(`Could not calculate CropSAR`, e);
     return [];
   }
 };
@@ -72,14 +73,14 @@ export const getCropSARDates = (actions: Action[]): [string, string] | undefined
 };
 
 export const calculateAllCropSAR = async () => {
-  console.log('Starting calculation of CropSAR');
+  logger.debug('Starting calculation of CropSAR');
 
   const users: string[] = await getPremiumUsers();
-  console.log(`Found ${users.length} users to process`);
+  logger.debug(`Found ${users.length} users to process`);
 
   for (const uid of users) {
     const vineyards: string[] = await getVineyards(uid);
-    console.log(`Found ${vineyards.length} vineyards for user ${uid}`);
+    logger.debug(`Found ${vineyards.length} vineyards for user ${uid}`);
 
     for (const id of vineyards) {
       try {
@@ -91,10 +92,10 @@ export const calculateAllCropSAR = async () => {
           const result = await calculateCropSAR(v.location, dates[0], dates[1]);
           await saveCropSAR(uid, id, result);
         } else {
-          console.warn(`No dates found for calculating CropSAR for vineyard ${v.id}`);
+          logger.warn(`No dates found for calculating CropSAR for vineyard ${v.id}`);
         }
       } catch (error) {
-        console.error(`Error processing vineyard ${id} of ${uid}`, error);
+        logger.error(`Error processing vineyard ${id} of ${uid}`, error);
       }
     }
   }

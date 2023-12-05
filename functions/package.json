@@ -10,7 +10,7 @@
     "deploy": "firebase use winery-f4d20 && firebase deploy --only functions && firebase use winery-dev",
     "logs": "firebase functions:log",
     "webhooks": "stripe listen --forward-to http://localhost:5001/winery-f4d20/us-central1/stripeWebhooks",
-    "cropsar": "ts-node workflows/cropsar.workflow.ts"
+    "cropsar": "ts-node workflows/cropsar.workflow.ts | pino-pretty"
   },
   "engines": {
     "node": "16"
@@ -27,6 +27,7 @@
     "firebase-functions": "^3.22.0",
     "firebase-tools": "^10.6.0",
     "moment": "^2.29.4",
+    "pino": "^8.16.2",
     "rxjs": "^6.5.5",
     "stripe": "^12.18.0",
     "ts-node": "^10.9.1",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "firebase-functions-test": "^0.1.6",
+    "pino-pretty": "^10.2.3",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   },

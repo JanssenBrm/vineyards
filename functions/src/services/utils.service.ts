@@ -6,6 +6,7 @@ import { MeteoStats } from '../models/stats.model';
 import { Action } from '../models/action.model';
 import * as moment from 'moment';
 import { UserRole } from '../models/userdata.model';
+import { logger } from '../utils/logger.util';
 import WriteResult = admin.firestore.WriteResult;
 import Firestore = admin.firestore.Firestore;
 import Auth = admin.auth.Auth;
@@ -54,7 +55,7 @@ export const isUserPremium = (uid: string): Promise<boolean> => {
       doc.exists ? [UserRole.PREMIUM, UserRole.ADMIN].includes(doc.data()?.role || UserRole.BASIC) : false
     )
     .catch((error) => {
-      console.error(`Could not detect if user ${uid} is premium`, error);
+      logger.error(`Could not detect if user ${uid} is premium`, error);
       return false;
     });
 };

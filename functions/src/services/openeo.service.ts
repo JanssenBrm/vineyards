@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger.util';
+
 let OPENEO_URL: string;
 let OPENEO_USER: string;
 let OPENEO_PASSWORD: string;
@@ -25,7 +27,7 @@ const authenticate = async (username: string, password: string): Promise<string>
     const data = await response.json();
     return `basic//${data.access_token}`;
   } catch (e) {
-    console.error('Could not authenticate with OpenEO', e);
+    logger.error('Could not authenticate with OpenEO', e);
     throw new Error('Could not authenticate with OpenEO service');
   }
 };
