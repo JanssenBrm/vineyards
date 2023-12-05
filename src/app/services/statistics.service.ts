@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { Action } from '../models/action.model';
-import { MeteoStatEntry, MeteoStats, Vineyard } from '../models/vineyard.model';
+import { MeteoStatEntry, MeteoStats, TimeSeriesEntry, TimeSeriesStats, Vineyard } from '../models/vineyard.model';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment/moment';
 import { SeasonsService } from './seasons.service';
@@ -13,13 +13,16 @@ import { SeasonsService } from './seasons.service';
 export class StatisticsService {
   private _meteoStats: BehaviorSubject<MeteoStatEntry[]>;
 
+  private _ndviStats: BehaviorSubject<TimeSeriesEntry[]>;
+
   private BASE_TEMP = 10.0;
 
   constructor(private fireStore: AngularFirestore, private seasonService: SeasonsService) {
     this._meteoStats = new BehaviorSubject<MeteoStatEntry[]>([]);
+    this._ndviStats = new BehaviorSubject<TimeSeriesEntry[]>([]);
   }
 
-  private getVineyardMeteoCollectionPath(vineyard: Vineyard): string {
+  private getVineyardStatsCollectionPath(vineyard: Vineyard): string {
     return `users/${vineyard.owner}/vineyards/${vineyard.id}/stats`;
   }
 
@@ -27,9 +30,31 @@ export class StatisticsService {
     return this._meteoStats;
   }
 
+  public getNDVIListener(): BehaviorSubject<TimeSeriesEntry[]> {
+    return this._ndviStats;
+  }
+
+  public getNDVIStats(vineyard: Vineyard): void {
+    this.fireStore
+      .collection(this.getVineyardStatsCollectionPath(vineyard))
+      .doc('cropsar')
+      .snapshotChanges()
+      .pipe(
+        map((data) => (data.payload.data() as TimeSeriesStats)?.data || []),
+        map((entries: TimeSeriesEntry[]) =>
+          entries.map((e: TimeSeriesEntry) => ({
+            ...e,
+            date: moment(e.date),
+            value: Math.ceil(e.value * 100) / 100,
+          }))
+        )
+      )
+      .subscribe((entries: TimeSeriesEntry[]) => this._ndviStats.next(entries));
+  }
+
   public getMeteoStats(vineyard: Vineyard): void {
     this.fireStore
-      .collection(this.getVineyardMeteoCollectionPath(vineyard))
+      .collection(this.getVineyardStatsCollectionPath(vineyard))
       .doc('meteo')
       .snapshotChanges()
       .pipe(

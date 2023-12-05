@@ -2,6 +2,10 @@ import { Variety } from './variety.model';
 import { Polygon } from 'ol/geom/Polygon';
 import { Action } from './action.model';
 
+export interface TimeSeriesEntry {
+  date: moment.Moment;
+  value: number;
+}
 export interface MeteoStatEntry {
   date: moment.Moment;
   tavg: number;
@@ -16,6 +20,9 @@ export interface MeteoStatEntry {
   tsun: number;
 }
 
+export interface TimeSeriesStats {
+  data: TimeSeriesEntry[];
+}
 export interface MeteoStats {
   data: MeteoStatEntry[];
 }

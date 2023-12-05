@@ -3,12 +3,10 @@ import { LoadingController, Platform } from '@ionic/angular';
 import { ActionType, BBCHAction, BrixAction } from './../../models/action.model';
 import { STATS_OPTIONS } from './../../conf/statistics.config';
 import { StatisticsService } from './../../services/statistics.service';
-import { VineyardService } from './../../services/vineyard.service';
-import { MeteoStatEntry, Vineyard } from './../../models/vineyard.model';
+import { MeteoStatEntry, TimeSeriesEntry, Vineyard } from './../../models/vineyard.model';
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts/highstock';
 import { Action } from 'src/app/models/action.model';
-import { TitleCasePipe } from '@angular/common';
 import * as moment from 'moment';
 import { Variety } from '../../models/variety.model';
 import { COLOR, ColorService } from '../../services/color.service';
@@ -25,13 +23,14 @@ enum StatTypes {
   ACTIONS = 'Actions',
   BBCH = 'BBCH',
   METEO = 'Meteo',
+  NDVI = 'NDVI',
   DGD = 'Growing Days',
   BRIX = 'Brix',
   SUNHOURS = 'Sun Hours',
   HUMIDITY = 'Humidity',
 }
 
-const PREMIUM_TYPES: StatTypes[] = [StatTypes.METEO, StatTypes.DGD];
+const PREMIUM_TYPES: StatTypes[] = [StatTypes.METEO, StatTypes.NDVI, StatTypes.DGD];
 
 @Component({
   selector: 'app-statistics',
@@ -76,9 +75,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
   constructor(
     private utilService: UtilService,
-    private vineyardService: VineyardService,
     private statService: StatisticsService,
-    private titlecasePipe: TitleCasePipe,
     private platform: Platform,
     private colorService: ColorService,
     private integrationsService: IntegrationsService,
@@ -177,6 +174,7 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       ...this.getSunHoursAxis(),
       ...this.getHumidityAxis(),
       ...this.getBBCHAxis(),
+      ...this.getNDVIAxis(),
     ];
     axes.forEach((a: any) => this._chart.addAxis(a));
   }
@@ -190,6 +188,10 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
 
     if (this.activeStats.includes(StatTypes.METEO)) {
       requests.push(this.getWeatherStationMeteoGraphs(), this.getMeteoTimelines());
+    }
+
+    if (this.activeStats.includes(StatTypes.NDVI)) {
+      requests.push(this.getNDVITimelines());
     }
 
     if (this.activeStats.includes(StatTypes.DGD)) {
@@ -250,6 +252,21 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
       categories: this.seasons,
       opposite: false,
     };
+  }
+
+  getNDVIAxis(): any[] {
+    return [
+      {
+        id: 'ndvi',
+        labels: {
+          format: '{value}',
+        },
+        title: {
+          text: 'NDVI',
+        },
+        opposite: true,
+      },
+    ];
   }
 
   getMeteoAxis(): any[] {
@@ -445,6 +462,41 @@ export class StatisticsComponent implements AfterViewInit, OnChanges {
             y: action.date.year(),
           })),
       }))
+    );
+  }
+
+  getNDVITimelines(): Observable<any> {
+    const stats: TimeSeriesEntry[] = this.statService.getNDVIListener().getValue();
+    const years = stats
+      .map((s: TimeSeriesEntry) => s.date.year())
+      .filter((y: number, idx: number, ys: number[]) => ys.indexOf(y) === idx);
+
+    return merge(
+      [].concat(
+        ...years
+          .filter((y: number) => this.seasons.indexOf(y) >= 0)
+          .map((y: number, idx: number) => [
+            {
+              id: `NDVI ${y}`,
+              name: `NDVI ${y}`,
+              type: 'spline',
+              yAxis: 'ndvi',
+              color: this.colorService.darken(COLOR.NDVI, idx),
+              showInNavigator: true,
+              tooltip: {
+                formatter(point) {
+                  return `<span style="color:${point.color}">●</span>  <b>NDVI ${y}</b>: ${point.y}`;
+                },
+              },
+              data: stats
+                .filter((s: TimeSeriesEntry) => s.date.year() === y)
+                .map((e: TimeSeriesEntry) => ({
+                  x: this.statService.getNormalizedDate(e.date),
+                  y: e.value,
+                })),
+            },
+          ])
+      )
     );
   }
 

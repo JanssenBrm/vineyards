@@ -13,6 +13,7 @@ export enum COLOR {
   STATION_GDD = '#00ef00',
   STATION_SUNHOURS = '#efbf00',
   STATION_HUMIDITY = '#044ce8',
+  NDVI = '#409b00',
 }
 
 @Injectable({

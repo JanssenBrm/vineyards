@@ -95,6 +95,7 @@ export class VineyardViewPage implements OnInit, OnDestroy, AfterViewInit {
           this.varietyService.getVarieties(this.activeVineyard);
           this.noteService.getNotes(this.activeVineyard);
           this.statService.getMeteoStats(this.activeVineyard);
+          this.statService.getNDVIStats(this.activeVineyard);
           this.integrationsService.getIntegrations(this.activeVineyard);
         }
       });
