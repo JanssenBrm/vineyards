@@ -16,13 +16,6 @@
       {
         "changelogFile": "CHANGELOG.md"
       }
-    ],
-    [
-      "@semantic-release/github",
-      {
-        "successComment": false,
-        "failTitle": false
-      }
     ]
   ]
 }
