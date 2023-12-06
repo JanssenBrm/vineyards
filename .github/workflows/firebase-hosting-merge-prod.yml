@@ -21,7 +21,7 @@ jobs:
       - name: Create Release
         run: npm run semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SEMVER_RELEASE_KEY }}
       - name: Create env files
         run: sh scripts/create_env_file.sh
         env:
