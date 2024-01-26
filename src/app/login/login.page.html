@@ -6,7 +6,7 @@
             <img alt="logo" src="assets/logo.png" height="100px"/>
             <span>Vineyards</span>
         </div>
-        <form [formGroup]="form" (submit)="login()">
+        <form [formGroup]="form" (submit)="login()" (keyup.enter)="login()">
             <ion-item>
                 <ion-label position="stacked">Email</ion-label>
                 <ion-input type="email" formControlName="username"></ion-input>
