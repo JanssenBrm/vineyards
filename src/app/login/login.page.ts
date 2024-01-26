@@ -34,7 +34,11 @@ export class LoginPage implements OnInit {
     this.authService.getUser().subscribe({
       next: (user) => {
         if (user && user.emailVerified) {
-          this.router.navigate(['map']);
+          if (user.emailVerified) {
+            this.router.navigate(['map']);
+          } else {
+            this.router.navigate(['verify-email']);
+          }
         }
       },
     });
