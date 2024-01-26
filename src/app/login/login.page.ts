@@ -30,21 +30,31 @@ export class LoginPage implements OnInit {
       password: new FormControl('', Validators.required),
     });
     this.loading = false;
+
+    this.authService.getUser().subscribe({
+      next: (user) => {
+        if (user) {
+          this.router.navigate(['map']);
+        }
+      },
+    });
   }
 
   login() {
     this.loading = true;
-    this.authService.login(this.form.get('username').value, this.form.get('password').value).catch((error: any) => {
-      this.analytics.logEvent('user_login_error', { username: this.form.get('username'), error });
-      this.showError(error.message);
-      this.loading = false;
-    });
+    this.authService
+      .login(this.form.get('username').value, this.form.get('password').value)
+      .catch(async (error: any) => {
+        await this.analytics.logEvent('user_login_error', { username: this.form.get('username'), error });
+        await this.showError(error.message);
+        this.loading = false;
+      });
   }
 
   loginWithGoogle() {
     this.loading = true;
-    this.authService.loginWithGoogle().catch((error: any) => {
-      this.showError(error.message);
+    this.authService.loginWithGoogle().catch(async (error: any) => {
+      await this.showError(error.message);
       this.loading = false;
     });
   }
@@ -55,6 +65,6 @@ export class LoginPage implements OnInit {
       duration: 5000,
       color: 'danger',
     });
-    toast.present();
+    await toast.present();
   }
 }

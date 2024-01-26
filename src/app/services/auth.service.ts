@@ -44,7 +44,6 @@ export class AuthService {
         })
       )
       .subscribe(({ user, data }) => {
-        this.user.next(user);
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.updateUser(user, data).then(() => {
@@ -53,6 +52,7 @@ export class AuthService {
         } else {
           localStorage.removeItem('user');
         }
+        this.user.next(user);
       });
   }
 
@@ -111,10 +111,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     await this.fbAuth.signInWithEmailAndPassword(email, password);
-    setTimeout(() => {
-      this.analytics.logEvent('auth_login_email_success', { username: email });
-      this.router.navigate(['map']);
-    }, this.DELAY);
+    await this.analytics.logEvent('auth_login_email_success', { username: email });
   }
 
   async register(email: string, password: string) {
@@ -148,10 +145,7 @@ export class AuthService {
 
   async loginWithGoogle() {
     const user: auth.UserCredential = await this.fbAuth.signInWithPopup(new auth.GoogleAuthProvider());
-    setTimeout(() => {
-      this.analytics.logEvent('auth_login_google_success', { username: user.user.email });
-      this.router.navigate(['map']);
-    }, this.DELAY);
+    await this.analytics.logEvent('auth_login_google_success', { username: user.user.email });
   }
 
   public getToken() {
