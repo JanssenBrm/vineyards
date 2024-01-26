@@ -33,7 +33,7 @@ export class LoginPage implements OnInit {
 
     this.authService.getUser().subscribe({
       next: (user) => {
-        if (user) {
+        if (user && user.emailVerified) {
           this.router.navigate(['map']);
         }
       },
