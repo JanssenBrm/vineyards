@@ -39,6 +39,7 @@ export class LoginPage implements OnInit {
           } else {
             this.router.navigate(['verify-email']);
           }
+          this.loading = false;
         }
       },
     });

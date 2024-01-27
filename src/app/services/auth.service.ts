@@ -43,12 +43,9 @@ export class AuthService {
           }
         })
       )
-      .subscribe(({ user, data }) => {
+      .subscribe(({ user }) => {
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
-          this.updateUser(user, data).then(() => {
-            console.log('User updated');
-          });
         } else {
           localStorage.removeItem('user');
         }
@@ -56,15 +53,18 @@ export class AuthService {
       });
   }
 
-  public async updateUser(user: User, data: UserData): Promise<UserData> {
+  public updateUser(user: User, data: UserData): Observable<UserData> {
     const newData: UserData = {
       id: user.uid,
       name: user.displayName,
       role: data?.role || UserRole.BASIC,
       customerId: data?.customerId || '',
     };
-    await this.fireStore.collection<UserData>('users').doc(user.uid).set(newData);
-    return newData;
+    return from(this.fireStore.collection<UserData>('users').doc(user.uid).set(newData)).pipe(
+      map(() => {
+        return newData;
+      })
+    );
   }
 
   public readUserData(user: User): Observable<UserData> {
@@ -75,7 +75,7 @@ export class AuthService {
       .pipe(
         take(1),
         map((data: DocumentSnapshot<UserData>) => data.data()),
-        switchMap((data: UserData) => (!data ? from(this.updateUser(user, null)) : of(data))),
+        switchMap((data: UserData) => (!data ? this.updateUser(user, null) : of(data))),
         switchMap((data: UserData) =>
           data.customerId !== ''
             ? of(data)

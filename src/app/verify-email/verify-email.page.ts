@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'firebase';
 import { UtilService } from '../services/util.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-verify-email',
@@ -12,9 +13,14 @@ import { UtilService } from '../services/util.service';
 export class VerifyEmailPage implements OnInit {
   public user: BehaviorSubject<User>;
 
-  constructor(public authService: AuthService, public utilService: UtilService) {}
+  constructor(public authService: AuthService, private router: Router, public utilService: UtilService) {}
 
   ngOnInit() {
     this.user = this.authService.getUser();
+  }
+
+  async toLogin() {
+    await this.authService.logout();
+    await this.router.navigate(['login']);
   }
 }
