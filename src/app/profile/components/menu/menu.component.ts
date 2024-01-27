@@ -35,4 +35,8 @@ export class MenuComponent implements OnInit, AfterViewInit {
     this.activePage = tab;
     this.tabUpdated.emit(tab);
   }
+
+  goBack() {
+    this.location.back();
+  }
 }

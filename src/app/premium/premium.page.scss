@@ -1,7 +1,7 @@
 
 .roles {
   display: flex;
-  padding: 10vw;
+  padding: 10vw 10vw 5vw;
 }
 
 .role {
@@ -63,4 +63,20 @@
 
 ion-content {
   --ion-background-color: var(--ion-primary-gradient)
+}
+
+.actions {
+  text-align: center;
+  width: 100%;
+
+  span {
+    color: white !important;
+    font-variant: all-petite-caps;
+    font-size:larger;
+    text-decoration: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { ROLES } from './config/features.config';
 import { FeaturesService } from '../services/features.service';
 import { from, Observable } from 'rxjs';
@@ -27,7 +28,8 @@ export class PremiumPage {
     private featureService: FeaturesService,
     private toastController: ToastController,
     private stripeService: StripeService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {
     this.userRole = this.featureService.getUserRole();
   }
@@ -86,5 +88,9 @@ export class PremiumPage {
       this.toast.dismiss();
       this.toast = null;
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
