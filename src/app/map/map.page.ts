@@ -351,6 +351,7 @@ export class MapPage implements OnInit, AfterViewInit {
         );
       }
     }
+    this.setMapMode(undefined);
   }
 
   async openDeleteConfirmModal(f: Feature) {
@@ -367,6 +368,7 @@ export class MapPage implements OnInit, AfterViewInit {
     } else {
       this._remove.getFeatures().clear();
     }
+    this.setMapMode(undefined);
   }
 
   private _getFeatureStyle(feature: Feature): Style {
