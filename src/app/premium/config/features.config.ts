@@ -3,13 +3,14 @@ import { ProductInfo } from '../premium.model';
 import { environment } from '../../../environments/environment';
 
 const BASIC_FEATURES = [
-  'Create multiple vineyards',
+  'Create a single vineyard',
   'Register the actions on your vineyard',
   'Access basic statistics',
   'Create notes',
 ];
 
 const PREMIUM_FEATURES = [
+  'Add multiple vineyards',
   'Features of the basic user',
   'Get weather statistics and frost warnings',
   'Compare growing seasons',

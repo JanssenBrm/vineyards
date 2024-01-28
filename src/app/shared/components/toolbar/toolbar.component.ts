@@ -1,10 +1,15 @@
 import { MapMode } from './../../../models/mapmode.model';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { LayersComponent } from './layers/layers.component';
 import { BACKGROUND_LAYERS } from '../../../conf/layers.config';
 import { Layer } from '../../../models/layer.model';
 import { OverlayEventDetail } from '@ionic/core';
+import { FeaturesService } from '../../../services/features.service';
+import { map } from 'rxjs/operators';
+import { VineyardService } from '../../../services/vineyard.service';
+import { combineLatest } from 'rxjs';
+import { Vineyard } from '../../../models/vineyard.model';
 
 @Component({
   selector: 'app-toolbar',
@@ -31,7 +36,11 @@ export class ToolbarComponent {
 
   public layers: Layer[] = [...BACKGROUND_LAYERS];
 
-  constructor(private popoverController: PopoverController) {}
+  constructor(
+    private popoverController: PopoverController,
+    private featureService: FeaturesService,
+    private vineyardService: VineyardService
+  ) {}
 
   save(): void {
     this.updateState.emit(true);
@@ -62,5 +71,13 @@ export class ToolbarComponent {
       }
     });
     return popover.present();
+  }
+
+  allowAdd() {
+    return combineLatest(this.vineyardService.getVineyardsListener(), this.featureService.isUserPremium()).pipe(
+      map(([vineyards, isPremium]: [Vineyard[], boolean]) => {
+        return this.mapMode === undefined && (isPremium || (!isPremium && vineyards.length === 0));
+      })
+    );
   }
 }
