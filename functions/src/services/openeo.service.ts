@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.util';
+import { sleep } from './utils.service';
 
 let OPENEO_URL: string;
 let OPENEO_USER: string;
@@ -66,5 +67,62 @@ export const executeGraphSync = async (graph: any, format: string): Promise<any>
     return response.json();
   } else {
     throw new Error(`Unknown output format ${format}`);
+  }
+};
+
+const createBatchJob = async (title: string, graph: any, description: string = ''): Promise<string> => {
+  const headers = await getHeaders();
+  const response = await fetch(`${OPENEO_URL}/jobs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title,
+      description,
+      process: {
+        process_graph: graph,
+      },
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  const job = await response.json();
+  return job.id;
+};
+
+const getJobStatus = async (jobId: string): Promise<string> => {
+  const headers = await getHeaders();
+  const response = await fetch(`${OPENEO_URL}/jobs/${jobId}`, {
+    method: 'GET',
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  const info = await response.json();
+  return info.status;
+};
+
+const startBatchJob = async (jobId: string): Promise<void> => {
+  const headers = await getHeaders();
+  const response = await fetch(`${OPENEO_URL}/jobs/${jobId}/result`, {
+    method: 'POST',
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+};
+
+export const executeBatch = async (title: string, graph: string, format: string): Promise<void> => {
+  const jobId = await createBatchJob(title, graph);
+  let status = 'queued';
+
+  await startBatchJob(jobId);
+
+  while (['finished', 'error'].includes(status)) {
+    status = await getJobStatus(jobId);
+    await sleep(5000);
   }
 };

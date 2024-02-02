@@ -39,6 +39,33 @@ const createV1Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR
     },
   };
 };
+
+const createV2Graph = (polygon: any, start: string, end: string, biopar = 'FAPAR') => {
+  const now = moment().add(-1, 'day');
+  const finalEnd = moment(end).isAfter(now) ? now.format('YYYY-MM-DD') : end;
+  return {
+    cropsar: {
+      process_id: 'CropSAR_px',
+      arguments: {
+        biopar_type: biopar,
+        startdate: start,
+        enddate: finalEnd,
+        geometry: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              properties: {},
+              geometry: polygon,
+            },
+          ],
+        },
+      },
+      namespace: 'vito',
+      result: true,
+    },
+  };
+};
 const calculateCropSAR = async (polygon: any, start: string, end: string): Promise<CropSARStat[]> => {
   try {
     logger.info(`Calculating CropSAR for polgyon with start ${start} and end ${end}`);
@@ -54,6 +81,16 @@ const calculateCropSAR = async (polygon: any, start: string, end: string): Promi
     } else {
       return [];
     }
+  } catch (e) {
+    logger.error(`Could not calculate CropSAR`, e);
+    return [];
+  }
+};
+
+const calculateCropSARMaps = async (polygon: any, start: string, end: string): Promise<string[]> => {
+  try {
+    logger.info(`Calculating CropSAR maps for polgyon with start ${start} and end ${end}`);
+    const graph = createV2Graph(polygon, start, end);
   } catch (e) {
     logger.error(`Could not calculate CropSAR`, e);
     return [];

@@ -140,3 +140,7 @@ export const getVineyardLocation = (v: Vineyard): number[] => {
 
 export const dateInArray = (date: moment.Moment, dates: moment.Moment[]): boolean =>
   !!dates.find((d: moment.Moment) => d.isSame(date, 'day'));
+
+export const sleep = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
