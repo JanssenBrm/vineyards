@@ -68,7 +68,7 @@ export class SeasonsService {
       .filter((a: Action) => a.date.year() === year)
       .find((a: Action) => a.type === ActionType.Harvest)?.date;
     const frozenPeriod = [moment(`${year}-04-01`), moment(`${year}-06-01`)];
-    let start = moment(`${year}-04-01`);
+    let start = yStats.find((e: MeteoStatEntry) => (e.tmin + e.tmax) / 2 >= 10)?.date || moment(`${year}-04-01`);
     let frozen = yStats
       .filter((e: MeteoStatEntry) => e.date.isSameOrAfter(frozenPeriod[0]) && e.date.isSameOrBefore(frozenPeriod[1]))
       .filter((e: MeteoStatEntry) => e.tmin < 0)
