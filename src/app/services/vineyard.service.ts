@@ -123,7 +123,8 @@ export class VineyardService {
   }
 
   private getSharedVineyards(): Observable<Vineyard[]> {
-    return this._userId ? this.httpService.get<Vineyard[]>(`${environment.api}sharingHooks`) : of([]);
+    return of([]);
+    // return this._userId ? this.httpService.get<Vineyard[]>(`${environment.api}sharingHooks`) : of([]);
   }
 
   getInfo(id: string): Vineyard {
